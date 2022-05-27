@@ -1,0 +1,3 @@
+defmodule Adapters do
+
+end
