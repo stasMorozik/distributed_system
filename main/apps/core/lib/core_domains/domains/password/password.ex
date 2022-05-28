@@ -2,11 +2,11 @@ defmodule Core.CoreDomains.Domains.Password do
   alias Core.CoreDomains.Domains.Password
 
   alias Core.CoreDomains.Domains.Password.ValueObjects.Email
-  alias Core.CoreDomains.Domains.Password.ValueObjects.Created
   alias Core.CoreDomains.Domains.Password.ValueObjects.ConfirmingCode
   alias Core.CoreDomains.Domains.Password.ValueObjects.Confirmed
   alias Core.CoreDomains.Domains.Password.ValueObjects.Password, as: ValuePassword
   alias Core.CoreDomains.Common.ValueObjects.Id
+  alias Core.CoreDomains.Common.ValueObjects.Created
 
   alias Core.CoreDomains.Domains.Password.Dtos.EmailIsInvalidError
   alias Core.CoreDomains.Domains.Password.Dtos.PasswordIsInvalidError
@@ -59,6 +59,7 @@ defmodule Core.CoreDomains.Domains.Password do
   @doc """
    Function creating password
   """
+  @spec create(binary, binary) :: ok | error
   def create(email, password) when is_binary(email) and is_binary(password) do
     case Email.new(email) do
       {:error, dto} -> {:error, dto}
@@ -96,6 +97,7 @@ defmodule Core.CoreDomains.Domains.Password do
    Function confirming password
    To confirm password must check it and check confirming code
   """
+  @spec confirm(Password.t(), binary, integer) :: ok | error
   def confirm(%Password{
     confirmed: %Confirmed{value: :false},
     confirmed_code: %ConfirmingCode{value: own_code},
@@ -113,6 +115,7 @@ defmodule Core.CoreDomains.Domains.Password do
             :ok,
             %Password{
               confirmed: %Confirmed{value: :true},
+              confirmed_code: %ConfirmingCode{value: own_code},
               email: email,
               id: id,
               password: %ValuePassword{value: own_password},
@@ -186,6 +189,7 @@ defmodule Core.CoreDomains.Domains.Password do
    Function changing password
    To change password must check it and confirm it
   """
+  @spec change_password(Password.t(), binary, binary) :: ok | error
   def change_password(%Password{
     confirmed: %Confirmed{value: :true},
     confirmed_code: _,
@@ -243,6 +247,7 @@ defmodule Core.CoreDomains.Domains.Password do
    Function changing email
    To change email must check password and confirm it
   """
+  @spec change_email(Password.t(), binary, binary) :: ok | error
   def change_email(%Password{
     confirmed: %Confirmed{value: :true},
     confirmed_code: _,
@@ -322,6 +327,7 @@ defmodule Core.CoreDomains.Domains.Password do
    Function validating password
    To validate password must check password and confirm it
   """
+  @spec validate_password(Password.t(), binary) :: ok | error
   def validate_password(%Password{
     confirmed: %Confirmed{value: :true},
     confirmed_code: _,
@@ -374,6 +380,7 @@ defmodule Core.CoreDomains.Domains.Password do
   @doc """
    Function checking password
   """
+  @spec check_password(binary, binary) :: boolean
   defp check_password(own_password, maybe_own_password) when is_binary(own_password) when is_binary(maybe_own_password) do
     Bcrypt.verify_pass(maybe_own_password, own_password)
   end

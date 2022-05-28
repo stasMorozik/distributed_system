@@ -8,12 +8,12 @@
 import Config
 
 # Configures the endpoint
-config :password_http_changing_service, PasswordHttpChangingServiceWeb.Endpoint,
+config :user_http_registration_service, UserHttpRegistrationServiceWeb.Endpoint,
   url: [host: "localhost"],
   debug_errors: false,
-  render_errors: [view: PasswordHttpChangingServiceWeb.ErrorView, accepts: ~w(json)],
-  pubsub_server: PasswordHttpChangingService.PubSub,
-  live_view: [signing_salt: "Z4AO24qc"]
+  render_errors: [view: UserHttpRegistrationServiceWeb.ErrorView, accepts: ~w(json), layout: false],
+  pubsub_server: UserHttpRegistrationService.PubSub,
+  live_view: [signing_salt: "IDw861vE"]
 
 # Configures Elixir's Logger
 config :logger, :console,

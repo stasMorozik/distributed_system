@@ -26,11 +26,7 @@ defmodule Adapters.AdaptersPassword.ChangingEmailAdapter do
           :false -> {:error, ImpossibleChangeEmailError.new()}
           :ignored -> {:error, ImpossibleChangeEmailError.new()}
           :true ->
-            case Task.Supervisor.async(
-              {Passwords.Repo.TaskSupervisor, :password_postgres_service@localhost},
-              PasswordPostgresService,
-              :change_email, [id, email]
-            ) |> Task.await() do
+            case generate_task(id, email) |> Task.await() do
               {:ok, _} -> {:ok, %Password{
                 confirmed: confirmed,
                 confirmed_code: confirmed_code,
@@ -47,5 +43,14 @@ defmodule Adapters.AdaptersPassword.ChangingEmailAdapter do
 
   def change(_) do
     {:error, ImpossibleChangeEmailError.new()}
+  end
+
+  defp generate_task(id, email) do
+    Task.Supervisor.async(
+      {Passwords.Repo.TaskSupervisor, :password_postgres_service@localhost},
+      PasswordPostgresService,
+      :change_email,
+      [id, email]
+    )
   end
 end

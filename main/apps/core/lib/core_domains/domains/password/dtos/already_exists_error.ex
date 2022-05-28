@@ -7,6 +7,6 @@ defmodule Core.CoreDomains.Domains.Password.Dtos.AlreadyExistsError do
 
   @spec new :: AlreadyExistsError.t()
   def new() do
-    %AlreadyExistsError{message: "Password already exists"}
+    %AlreadyExistsError{message: "Email already exists"}
   end
 end

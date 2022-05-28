@@ -9,6 +9,7 @@ defmodule PasswordHttpChangingServiceWeb.Router do
     pipe_through :api
 
     patch "/:id", PasswordController, :update_email
+    put "/:id", PasswordController, :update_password
   end
 
   if Mix.env() in [:dev, :test] do
