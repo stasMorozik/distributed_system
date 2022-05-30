@@ -9,6 +9,7 @@ defmodule UserHttpRegistrationServiceWeb.Router do
     pipe_through :api
 
     put "/:id", UserController, :confirm_password
+    post "/", UserController, :register
   end
 
   # Enables LiveDashboard only for development

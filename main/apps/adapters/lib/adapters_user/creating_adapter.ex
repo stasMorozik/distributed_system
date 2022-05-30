@@ -1,0 +1,53 @@
+defmodule Adapters.AdaptersUser.CreatingAdapter do
+  alias Core.CoreDomains.Domains.User.Ports.CreatingPort
+
+  alias alias Core.CoreDomains.Domains.User
+
+  alias Core.CoreDomains.Domains.User.Dtos.ImpossibleCreateError
+
+  alias Core.CoreDomains.Common.ValueObjects.Id
+  alias Core.CoreDomains.Common.ValueObjects.Created
+  alias Core.CoreDomains.Common.ValueObjects.Name
+
+  @behaviour CreatingPort
+
+  @spec create(User.t()) :: CreatingPort.error() | CreatingPort.ok()
+  def create(%User{
+    id: %Id{value: id},
+    name: %Name{value: name},
+    created: %Created{value: created}
+  }) when
+    is_binary(id) and
+    is_binary(name) do
+      case UUID.info(id) do
+        {:error, _} -> {:error, ImpossibleCreateError.new()}
+        {:ok, _} ->
+          case Node.connect(:user_postgres_service@localhost) do
+            :false -> {:error, ImpossibleCreateError.new()}
+            :ignored -> {:error, ImpossibleCreateError.new()}
+            :true ->
+              case generate_task(id, name, created) |> Task.await() do
+                {:ok, _} -> {:ok, %User{
+                  id: %Id{value: id},
+                  name: %Name{value: name},
+                  created: %Created{value: created}
+                }}
+                {:error, _} -> {:error, ImpossibleCreateError.new()}
+              end
+          end
+      end
+  end
+
+  def create(_) do
+    {:error, ImpossibleCreateError.new()}
+  end
+
+  defp generate_task(id, name, created) do
+    Task.Supervisor.async(
+      {Persons.Repo.TaskSupervisor, :user_postgres_service@localhost},
+      UserPostgresService,
+      :create,
+      [id, name, created]
+    )
+  end
+end

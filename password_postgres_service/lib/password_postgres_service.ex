@@ -100,6 +100,37 @@ defmodule PasswordPostgresService do
     {:error, nil}
   end
 
+  def create(%{
+    id: id,
+    password: password,
+    email: email,
+    confirmed: confirmed,
+    confirmed_code: confirmed_code,
+    created: created
+  }) when
+    is_binary(id) and
+    is_binary(password) and
+    is_binary(email) and
+    is_integer(confirmed_code) and
+    is_boolean(confirmed) do
+
+    pswd = PasswordScheme.changeset(%PasswordScheme{}, %{uid: id, password: password, confirmed: confirmed, email: email, created: created})
+    confirming_data = ConfirmingDataScheme.changeset(%ConfirmingDataScheme{}, %{email: email, code: confirmed_code, uid: UUID.uuid4()})
+
+    multi_struct = Multi.new()
+      |> Multi.insert( :passwords, pswd )
+      |> Multi.insert( :confirming_data, confirming_data )
+
+    case Passwords.Repo.transaction(multi_struct) do
+      {:ok, _} -> {:ok, nil}
+      _ -> {:error, nil}
+    end
+  end
+
+  def create(_) do
+    {:error, nil}
+  end
+
   defp map_to_asoc(password) do
     {
       :ok,
@@ -128,5 +159,4 @@ defmodule PasswordPostgresService do
       }
     }
   end
-
 end

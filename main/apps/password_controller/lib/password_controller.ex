@@ -102,6 +102,10 @@ defmodule PasswordController do
     }}
   end
 
+  def map_ok_from_domain(_) do
+    {:error, %{message: "Error mapping password from domain"}}
+  end
+
   defp map_error_from_domain(error) do
     {:error, %{message: error.message}}
   end

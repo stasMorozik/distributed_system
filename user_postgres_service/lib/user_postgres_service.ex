@@ -1,18 +1,22 @@
 defmodule UserPostgresService do
-  @moduledoc """
-  Documentation for `UserPostgresService`.
-  """
+  import Ecto.Query
 
-  @doc """
-  Hello world.
+  alias Ecto.Multi
+  alias Persons.Repo
+  alias UserPostgresService.PersonsScheme
 
-  ## Examples
+  def create(id, name, created) when is_binary(id) and is_binary(name) do
+    person = PersonsScheme.changeset(%PersonsScheme{}, %{id: id, name: name, created: created})
+    multi_struct = Multi.new()
+      |> Multi.insert( :persons, person )
 
-      iex> UserPostgresService.hello()
-      :world
+    case Repo.transaction(multi_struct) do
+      {:ok, _} -> {:ok, nil}
+      _ -> {:error, nil}
+    end
+  end
 
-  """
-  def hello do
-    :world
+  def create(_, _, _) do
+    {:error, nil}
   end
 end
