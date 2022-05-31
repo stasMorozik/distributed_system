@@ -80,6 +80,6 @@ defmodule Core.CoreDomains.Domains.User do
   end
 
   def create(_, _) do
-    {:error, ImpossibleCreateError.new()}
+    {:error, ImpossibleCreateError.new("Data for creating user is invalid")}
   end
 end

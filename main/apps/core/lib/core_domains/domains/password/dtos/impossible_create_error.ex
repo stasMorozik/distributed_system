@@ -5,8 +5,12 @@ defmodule Core.CoreDomains.Domains.Password.Dtos.ImpossibleCreateError do
 
   @type t :: %ImpossibleCreateError{message: binary}
 
-  @spec new :: ImpossibleCreateError.t()
-  def new() do
+  @spec new(binary) :: ImpossibleCreateError.t()
+  def new(message) when is_binary(message) do
+    %ImpossibleCreateError{message: message}
+  end
+
+  def new(_) do
     %ImpossibleCreateError{message: "Impossible create password"}
   end
 end

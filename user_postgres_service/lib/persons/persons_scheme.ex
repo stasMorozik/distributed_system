@@ -10,7 +10,8 @@ defmodule UserPostgresService.PersonsScheme do
 
   def changeset(data, params \\ %{}) do
     data
-    |> cast(params, [:name, :created, :id])
-    |> validate_required([:name, :created, :id])
+    |> cast(params, [:id, :name, :created])
+    |> validate_required([:id, :name, :created])
+    |> unique_constraint(:id, name: :persons_pkey)
   end
 end

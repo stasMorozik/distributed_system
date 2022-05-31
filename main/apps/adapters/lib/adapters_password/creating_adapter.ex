@@ -3,6 +3,7 @@ defmodule Adapters.AdaptersPassword.CreatingAdapter do
 
   alias Core.CoreDomains.Domains.Password.Dtos.AlreadyExistsError
   alias Core.CoreDomains.Domains.Password.Dtos.ImpossibleCreateError
+  alias Core.CoreDomains.Common.Dtos.IdIsInvalidError
 
   alias alias Core.CoreDomains.Domains.Password
 
@@ -30,11 +31,11 @@ defmodule Adapters.AdaptersPassword.CreatingAdapter do
     is_integer(confirmed_code) and
     is_boolean(confirmed)  do
       case UUID.info(id) do
-        {:error, _} -> {:error, ImpossibleCreateError.new()}
+        {:error, _} -> {:error, IdIsInvalidError.new()}
         {:ok, _} ->
           case Node.connect(:password_postgres_service@localhost) do
-            :false -> {:error, ImpossibleCreateError.new()}
-            :ignored -> {:error, ImpossibleCreateError.new()}
+            :false -> {:error, ImpossibleCreateError.new("Postgres password service unavailable")}
+            :ignored -> {:error, ImpossibleCreateError.new("Postgres password service unavailable")}
             :true ->
               pswd_map = %{
                 id: id,
@@ -60,7 +61,7 @@ defmodule Adapters.AdaptersPassword.CreatingAdapter do
   end
 
   def create(_) do
-    {:error, ImpossibleCreateError.new()}
+    {:error, ImpossibleCreateError.new("Impossible create password into database for invalid data")}
   end
 
   defp generate_task(password_map) do

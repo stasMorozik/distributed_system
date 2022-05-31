@@ -11,8 +11,8 @@ defmodule Adapters.AdaptersPassword.GettingByEmailAdapter do
   @spec get(binary) :: GettingPort.ok() | GettingPort.error()
   def get(email) when is_binary(email) do
     case Node.connect(:password_postgres_service@localhost) do
-      :false -> {:error, ImpossibleGetError.new()}
-      :ignored -> {:error, ImpossibleGetError.new()}
+      :false -> {:error, ImpossibleGetError.new("Postgres password service unavailable")}
+      :ignored -> {:error, ImpossibleGetError.new("Postgres password service unavailable")}
       :true ->
         case generate_task(email) |> Task.await() do
           {:ok, password} -> Mapper.map_to_domain(password)
@@ -23,7 +23,7 @@ defmodule Adapters.AdaptersPassword.GettingByEmailAdapter do
   end
 
   def get(_) do
-    {:error, ImpossibleGetError.new()}
+    {:error, ImpossibleGetError.new("Impossible get password from database for invalid data")}
   end
 
   defp generate_task(email) do

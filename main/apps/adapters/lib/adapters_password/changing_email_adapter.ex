@@ -7,6 +7,7 @@ defmodule Adapters.AdaptersPassword.ChangingEmailAdapter do
 
   alias Core.CoreDomains.Domains.Password.Dtos.AlreadyExistsError
   alias Core.CoreDomains.Domains.Password.Dtos.ImpossibleChangeEmailError
+  alias Core.CoreDomains.Common.Dtos.IdIsInvalidError
 
   @behaviour ChangingEmailPort
 
@@ -20,11 +21,11 @@ defmodule Adapters.AdaptersPassword.ChangingEmailAdapter do
     created: created
   }) when is_binary(email) and is_binary(id) do
     case UUID.info(id) do
-      {:error, _} -> {:error, ImpossibleChangeEmailError.new()}
+      {:error, _} -> {:error, IdIsInvalidError.new()}
       {:ok, _} ->
         case Node.connect(:password_postgres_service@localhost) do
-          :false -> {:error, ImpossibleChangeEmailError.new()}
-          :ignored -> {:error, ImpossibleChangeEmailError.new()}
+          :false -> {:error, ImpossibleChangeEmailError.new("Postgres password service unavailable")}
+          :ignored -> {:error, ImpossibleChangeEmailError.new("Postgres password service unavailable")}
           :true ->
             case generate_task(id, email) |> Task.await() do
               {:ok, _} -> {:ok, %Password{
@@ -42,7 +43,7 @@ defmodule Adapters.AdaptersPassword.ChangingEmailAdapter do
   end
 
   def change(_) do
-    {:error, ImpossibleChangeEmailError.new()}
+    {:error, ImpossibleChangeEmailError.new("Impossible change email into database for invalid data")}
   end
 
   defp generate_task(id, email) do

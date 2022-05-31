@@ -5,8 +5,12 @@ defmodule Core.CoreDomains.Domains.Password.Dtos.ImpossibleChangeError do
 
   @type t :: %ImpossibleChangeError{message: binary}
 
-  @spec new :: ImpossibleChangeError.t()
-  def new() do
+  @spec new(binary) :: ImpossibleChangeError.t()
+  def new(message) when is_binary(message) do
+    %ImpossibleChangeError{message: message}
+  end
+
+  def new(_) do
     %ImpossibleChangeError{message: "Impossible change password"}
   end
 end

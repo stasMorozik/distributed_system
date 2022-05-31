@@ -5,8 +5,12 @@ defmodule Core.CoreDomains.Domains.Password.Dtos.ImpossibleConfirmError do
 
   @type t :: %ImpossibleConfirmError{message: binary}
 
-  @spec new :: ImpossibleConfirmError.t()
-  def new() do
-    %ImpossibleConfirmError{message: "Impossible confirm password"}
+  @spec new(binary) :: ImpossibleConfirmError.t()
+  def new(message) when is_binary(message) do
+    %ImpossibleConfirmError{message: message}
+  end
+
+  def new(_) do
+    %ImpossibleConfirmError{message: "Impossible confirm email"}
   end
 end

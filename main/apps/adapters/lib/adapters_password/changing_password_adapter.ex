@@ -9,6 +9,7 @@ defmodule Adapters.AdaptersPassword.ChangingPasswordAdapter do
 
   alias Core.CoreDomains.Domains.Password.Dtos.NotFoundError
   alias Core.CoreDomains.Domains.Password.Dtos.ImpossibleChangeError
+  alias Core.CoreDomains.Common.Dtos.IdIsInvalidError
 
   @behaviour ChangingPasswordPort
 
@@ -22,11 +23,11 @@ defmodule Adapters.AdaptersPassword.ChangingPasswordAdapter do
     created: created
   }) when is_binary(id) and is_binary(password) do
     case UUID.info(id) do
-      {:error, _} -> {:error, ImpossibleChangeError.new()}
+      {:error, _} -> {:error, IdIsInvalidError.new()}
       {:ok, _} ->
         case Node.connect(:password_postgres_service@localhost) do
-          :false -> {:error, ImpossibleChangeError.new()}
-          :ignored -> {:error, ImpossibleChangeError.new()}
+          :false -> {:error, ImpossibleChangeError.new("Postgres password service unavailable")}
+          :ignored -> {:error, ImpossibleChangeError.new("Postgres password service unavailable")}
           :true ->
             case generate_task(id, password) |> Task.await() do
               {:ok, _} -> {:ok, %Password{
@@ -44,7 +45,7 @@ defmodule Adapters.AdaptersPassword.ChangingPasswordAdapter do
   end
 
   def change(_) do
-    {:error, ImpossibleChangeError.new()}
+    {:error, ImpossibleChangeError.new("Impossible change password into database for invalid data")}
   end
 
   defp generate_task(id, password) do

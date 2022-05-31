@@ -53,6 +53,7 @@ defmodule Core.CoreDomains.Domains.Password do
     ImpossibleChangeError                 |
     HaveToConfirmError                    |
     ImpossibleChangeEmailError            |
+    ImpossibleValidateError               |
     PasswordConfirmingCodeAreInvalidError
   }
 
@@ -182,7 +183,7 @@ defmodule Core.CoreDomains.Domains.Password do
   end
 
   def confirm(_, _, _) do
-    {:error, ImpossibleConfirmError.new()}
+    {:error, ImpossibleConfirmError.new("Impossible confirm email for invalid data")}
   end
 
   @doc """
@@ -240,7 +241,7 @@ defmodule Core.CoreDomains.Domains.Password do
   end
 
   def change_password(_, _) do
-    {:error, ImpossibleChangeError.new()}
+    {:error, ImpossibleChangeError.new("Impossible change password for invalid data")}
   end
 
   @doc """
@@ -320,7 +321,7 @@ defmodule Core.CoreDomains.Domains.Password do
   end
 
   def change_email(_, _, _) do
-    {:error, ImpossibleChangeEmailError.new()}
+    {:error, ImpossibleChangeEmailError.new("Impossible change email for invalid data")}
   end
 
   @doc """
@@ -374,7 +375,7 @@ defmodule Core.CoreDomains.Domains.Password do
   end
 
   def validate_password(_, _) do
-    {:error, ImpossibleValidateError.new()}
+    {:error, ImpossibleValidateError.new("Impossible validate password for invalid data")}
   end
 
   @doc """

@@ -9,6 +9,7 @@ defmodule Adapters.AdaptersPassword.ConfirmingAdapter do
 
   alias Core.CoreDomains.Domains.Password.Dtos.NotFoundError
   alias Core.CoreDomains.Domains.Password.Dtos.ImpossibleConfirmError
+  alias Core.CoreDomains.Common.Dtos.IdIsInvalidError
 
   @behaviour ConfirmingPort
 
@@ -22,11 +23,11 @@ defmodule Adapters.AdaptersPassword.ConfirmingAdapter do
     created: created
   }) when is_binary(id) and is_binary(email) and is_integer(confirmed_code) do
     case UUID.info(id) do
-      {:error, _}-> {:error, ImpossibleConfirmError.new()}
+      {:error, _}-> {:error, IdIsInvalidError.new()}
       {:ok, _} ->
         case Node.connect(:password_postgres_service@localhost) do
-          :false -> {:error, ImpossibleConfirmError.new()}
-          :ignored -> {:error, ImpossibleConfirmError.new()}
+          :false -> {:error, ImpossibleConfirmError.new("Postgres password service unavailable")}
+          :ignored -> {:error, ImpossibleConfirmError.new("Postgres password service unavailable")}
           :true ->
             case generate_task(id, email, confirmed_code) |> Task.await() do
               {:ok, _} -> {:ok, %Password{
@@ -43,7 +44,7 @@ defmodule Adapters.AdaptersPassword.ConfirmingAdapter do
   end
 
   def confirm(_) do
-    {:error, ImpossibleConfirmError.new()}
+    {:error, ImpossibleConfirmError.new("Impossible confirm email into database for invalid data")}
   end
 
   defp generate_task(id, email, confirmed_code) do

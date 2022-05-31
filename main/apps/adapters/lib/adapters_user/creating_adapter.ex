@@ -4,6 +4,8 @@ defmodule Adapters.AdaptersUser.CreatingAdapter do
   alias alias Core.CoreDomains.Domains.User
 
   alias Core.CoreDomains.Domains.User.Dtos.ImpossibleCreateError
+  alias Core.CoreDomains.Domains.User.Dtos.AlreadyExistsError
+  alias Core.CoreDomains.Common.Dtos.IdIsInvalidError
 
   alias Core.CoreDomains.Common.ValueObjects.Id
   alias Core.CoreDomains.Common.ValueObjects.Created
@@ -20,11 +22,11 @@ defmodule Adapters.AdaptersUser.CreatingAdapter do
     is_binary(id) and
     is_binary(name) do
       case UUID.info(id) do
-        {:error, _} -> {:error, ImpossibleCreateError.new()}
+        {:error, _} -> {:error, IdIsInvalidError.new()}
         {:ok, _} ->
           case Node.connect(:user_postgres_service@localhost) do
-            :false -> {:error, ImpossibleCreateError.new()}
-            :ignored -> {:error, ImpossibleCreateError.new()}
+            :false -> {:error, ImpossibleCreateError.new("User service postgres unavailable")}
+            :ignored -> {:error, ImpossibleCreateError.new("User service postgres unavailable")}
             :true ->
               case generate_task(id, name, created) |> Task.await() do
                 {:ok, _} -> {:ok, %User{
@@ -32,14 +34,14 @@ defmodule Adapters.AdaptersUser.CreatingAdapter do
                   name: %Name{value: name},
                   created: %Created{value: created}
                 }}
-                {:error, _} -> {:error, ImpossibleCreateError.new()}
+                {:error, _} -> {:error, AlreadyExistsError.new()}
               end
           end
       end
   end
 
   def create(_) do
-    {:error, ImpossibleCreateError.new()}
+    {:error, ImpossibleCreateError.new("Impossible create user into database for invalid data")}
   end
 
   defp generate_task(id, name, created) do
