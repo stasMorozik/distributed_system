@@ -2,13 +2,13 @@ defmodule PasswordHttpChangingServiceWeb.PasswordController do
   use PasswordHttpChangingServiceWeb, :controller
 
   def update_email(conn, params) do
-    case Node.connect(remote_node()) do
+    case Node.connect(Application.get_env(:password_http_changing_service, :remote_password_controller_node)) do
       :false -> conn |> put_status(:service_unavailable) |> json(%{message: "Controller Service Unavailable"})
       :ignored -> conn |> put_status(:service_unavailable) |> json(%{message: "Controller Service Unavailable"})
       :true ->
         task = Task.Supervisor.async(
-          remote_super(),
-          PasswordController,
+          Application.get_env(:password_http_changing_service, :remote_password_controller_super),
+          Application.get_env(:password_http_changing_service, :remote_password_controller_module),
           :change_email,
           [ params["id"], params["password"], params["new_email"] ]
         )
@@ -20,13 +20,13 @@ defmodule PasswordHttpChangingServiceWeb.PasswordController do
   end
 
   def update_password(conn, params) do
-    case Node.connect(remote_node()) do
+    case Node.connect(Application.get_env(:password_http_changing_service, :remote_password_controller_node)) do
       :false -> conn |> put_status(:service_unavailable) |> json(%{message: "Controller Service Unavailable"})
       :ignored -> conn |> put_status(:service_unavailable) |> json(%{message: "Controller Service Unavailable"})
       :true ->
         task = Task.Supervisor.async(
-          remote_super(),
-          PasswordController,
+          Application.get_env(:password_http_changing_service, :remote_password_controller_super),
+          Application.get_env(:password_http_changing_service, :remote_password_controller_module),
           :change_password,
           [ params["id"], params["password"], params["new_password"] ]
         )
@@ -35,13 +35,5 @@ defmodule PasswordHttpChangingServiceWeb.PasswordController do
           {:ok, password} -> conn |> put_status(:ok) |> json(password)
         end
     end
-  end
-
-  defp remote_super do
-    {PasswordController.TaskSupervisor, remote_node()}
-  end
-
-  defp remote_node do
-    :password_controller@localhost
   end
 end

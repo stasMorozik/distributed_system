@@ -33,7 +33,7 @@ defmodule Adapters.AdaptersPassword.CreatingAdapter do
       case UUID.info(id) do
         {:error, _} -> {:error, IdIsInvalidError.new()}
         {:ok, _} ->
-          case Node.connect(:password_postgres_service@localhost) do
+          case Node.connect(Application.get_env(:adapters_password, :remote_node)) do
             :false -> {:error, ImpossibleCreateError.new("Postgres password service unavailable")}
             :ignored -> {:error, ImpossibleCreateError.new("Postgres password service unavailable")}
             :true ->
@@ -66,8 +66,8 @@ defmodule Adapters.AdaptersPassword.CreatingAdapter do
 
   defp generate_task(password_map) do
     Task.Supervisor.async(
-      {Passwords.Repo.TaskSupervisor, :password_postgres_service@localhost},
-      PasswordPostgresService,
+      Application.get_env(:adapters_password, :remote_supervisor),
+      Application.get_env(:adapters_password, :remote_module),
       :create,
       [password_map]
     )

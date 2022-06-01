@@ -2,9 +2,9 @@ defmodule PasswordController do
   @moduledoc """
 
   """
-  alias Core.CoreApplications.Password.ChangingEmailService
-  alias Core.CoreApplications.Password.ChangingPasswordService
-  alias Core.CoreApplications.Password.ConfirmingService
+  alias Core.CoreApplications.Password.LoggingChangingEmailService
+  alias Core.CoreApplications.Password.LoggingChangingPasswordService
+  alias Core.CoreApplications.Password.LoggingConfirmingService
 
   alias Core.CoreDomains.Domains.Password
   alias Core.CoreDomains.Domains.Password.ValueObjects.Email
@@ -23,15 +23,17 @@ defmodule PasswordController do
   alias Adapters.AdaptersPassword.ChangingPasswordAdapter
   alias Adapters.AdaptersPassword.GettingByEmailAdapter
   alias Adapters.AdaptersPassword.ConfirmingAdapter
+  alias Adapters.AdaptersCommon.NotifyingTelegramAdapter
 
   @doc """
 
   """
   def change_email(id, password, new_email) do
-    case ChangingEmailService.change(
+    case LoggingChangingEmailService.change(
       ChangeEmailCommand.new(id, password, new_email),
       GettingAdapter,
-      ChangingEmailAdapter
+      ChangingEmailAdapter,
+      NotifyingTelegramAdapter
     ) do
       {:ok, password} -> map_ok_from_domain(password)
       {:error, error} -> map_error_from_domain(error)
@@ -43,10 +45,11 @@ defmodule PasswordController do
 
   """
   def change_password(id, password, new_password) do
-    case ChangingPasswordService.change(
+    case LoggingChangingPasswordService.change(
       ChangePasswordCommand.new(id, password, new_password),
       GettingAdapter,
-      ChangingPasswordAdapter
+      ChangingPasswordAdapter,
+      NotifyingTelegramAdapter
     ) do
       {:ok, password} -> map_ok_from_domain(password)
       {:error, error} -> map_error_from_domain(error)
@@ -58,10 +61,11 @@ defmodule PasswordController do
 
   """
   def confirm(email, password, code) do
-    case ConfirmingService.confirm(
+    case LoggingConfirmingService.confirm(
       ConfirmCommand.new(email, password, code),
       GettingByEmailAdapter,
-      ConfirmingAdapter
+      ConfirmingAdapter,
+      NotifyingTelegramAdapter
     ) do
       {:ok, password} -> map_ok_from_domain(password)
       {:error, error} -> map_error_from_domain(error)
@@ -102,7 +106,7 @@ defmodule PasswordController do
     }}
   end
 
-  def map_ok_from_domain(_) do
+  defp map_ok_from_domain(_) do
     {:error, %{message: "Error mapping password from domain"}}
   end
 

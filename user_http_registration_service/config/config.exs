@@ -13,7 +13,21 @@ config :user_http_registration_service, UserHttpRegistrationServiceWeb.Endpoint,
   debug_errors: false,
   render_errors: [view: UserHttpRegistrationServiceWeb.ErrorView, accepts: ~w(json), layout: false],
   pubsub_server: UserHttpRegistrationService.PubSub,
-  live_view: [signing_salt: "IDw861vE"]
+  live_view: [signing_salt: "IDw861vE"],
+  remote_password_controller_node: :password_controller@localhost,
+  remote_user_controller_node: :user_controller@localhost,
+  remote_password_controller_super: {PasswordController.TaskSupervisor, :password_controller@localhost},
+  remote_user_controller_super: {UserController.TaskSupervisor, :user_controller@localhost},
+  remote_password_controller_module: PasswordController,
+  remote_user_controller_module: UserController
+
+config :user_http_registration_service,
+  remote_password_controller_node: :password_controller@localhost,
+  remote_user_controller_node: :user_controller@localhost,
+  remote_password_controller_super: {PasswordController.TaskSupervisor, :password_controller@localhost},
+  remote_user_controller_super: {UserController.TaskSupervisor, :user_controller@localhost},
+  remote_password_controller_module: PasswordController,
+  remote_user_controller_module: UserController
 
 # Configures Elixir's Logger
 config :logger, :console,
@@ -22,6 +36,8 @@ config :logger, :console,
 
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
+
+
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

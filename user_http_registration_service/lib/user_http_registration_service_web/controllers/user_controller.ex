@@ -2,13 +2,13 @@ defmodule UserHttpRegistrationServiceWeb.UserController do
   use UserHttpRegistrationServiceWeb, :controller
 
   def confirm_password(conn, params) do
-    case Node.connect(remote_password_node()) do
+    case Node.connect(Application.get_env(:user_http_registration_service, :remote_password_controller_node)) do
       :false -> conn |> put_status(:service_unavailable) |> json(%{message: "Password Controller Service Unavailable"})
       :ignored -> conn |> put_status(:service_unavailable) |> json(%{message: "Password Controller Service Unavailable"})
       :true ->
         task = Task.Supervisor.async(
-          remote_password_super(),
-          PasswordController,
+          Application.get_env(:user_http_registration_service, :remote_password_controller_super),
+          Application.get_env(:user_http_registration_service, :remote_password_controller_module),
           :confirm,
           [ params["id"], params["password"], params["code"] ]
         )
@@ -20,13 +20,13 @@ defmodule UserHttpRegistrationServiceWeb.UserController do
   end
 
   def register(conn, params) do
-    case Node.connect(remote_user_node()) do
+    case Node.connect(Application.get_env(:user_http_registration_service, :remote_user_controller_node)) do
       :false -> conn |> put_status(:service_unavailable) |> json(%{message: "User Controller Service Unavailable"})
       :ignored -> conn |> put_status(:service_unavailable) |> json(%{message: "User Controller Service Unavailable"})
       :true ->
         task = Task.Supervisor.async(
-          remote_user_super(),
-          UserController,
+          Application.get_env(:user_http_registration_service, :remote_user_controller_super),
+          Application.get_env(:user_http_registration_service, :remote_user_controller_module),
           :register,
           [ params["email"], params["password"], params["name"] ]
         )
@@ -35,21 +35,5 @@ defmodule UserHttpRegistrationServiceWeb.UserController do
           {:ok, password} -> conn |> put_status(:ok) |> json(password)
         end
     end
-  end
-
-  defp remote_user_super() do
-    {UserController.TaskSupervisor, remote_user_node()}
-  end
-
-  defp remote_user_node do
-    :user_controller@localhost
-  end
-
-  defp remote_password_super do
-    {PasswordController.TaskSupervisor, remote_password_node()}
-  end
-
-  defp remote_password_node do
-    :password_controller@localhost
   end
 end

@@ -1,5 +1,5 @@
 defmodule UserController do
-  alias Core.CoreApplications.User.RegisteringService
+  alias Core.CoreApplications.User.LoggingRegisteringService
 
   alias Core.CoreDomains.Domains.User
 
@@ -12,13 +12,15 @@ defmodule UserController do
   alias Adapters.AdaptersUser.CreatingAdapter, as: CreatingUserAdapter
   alias Adapters.AdaptersPassword.CreatingAdapter, as: CreatingPasswordAdapter
   alias Adapters.AdaptersCommon.NotifyingMailerAdapter
+  alias Adapters.AdaptersCommon.NotifyingTelegramAdapter
 
   def register(email, password, name) do
-    case RegisteringService.register(
+    case LoggingRegisteringService.register(
       RegisteringCommand.new(email, password, name),
       CreatingUserAdapter,
       CreatingPasswordAdapter,
-      NotifyingMailerAdapter
+      NotifyingMailerAdapter,
+      NotifyingTelegramAdapter
     ) do
       {:ok, password} -> map_ok_from_domain(password)
       {:error, error} -> map_error_from_domain(error)

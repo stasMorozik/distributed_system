@@ -9,7 +9,8 @@ defmodule Core.CoreApplications.Password.ConfirmingService do
   alias Core.CoreDomains.Domains.Password
 
   @behaviour ConfirmingPasswordUseCase
-  @callback confirm(
+
+  @spec confirm(
     ConfirmCommand.t(),
     GettingPort.t(),
     ConfirmingPort.t()

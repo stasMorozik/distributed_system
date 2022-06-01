@@ -17,6 +17,14 @@ config :user_http_registration_service, UserHttpRegistrationServiceWeb.Endpoint,
   secret_key_base: "Majb2twlC+F61MFhgKnWeUHpBcOEQ/gm0croPhTqYFONK9A69V8wabf2PCw5g6/h",
   watchers: []
 
+config :user_http_registration_service,
+  remote_password_controller_node: :password_controller@localhost,
+  remote_user_controller_node: :user_controller@localhost,
+  remote_password_controller_super: {PasswordController.TaskSupervisor, :password_controller@localhost},
+  remote_user_controller_super: {UserController.TaskSupervisor, :user_controller@localhost},
+  remote_password_controller_module: PasswordController,
+  remote_user_controller_module: UserController
+
 # ## SSL Support
 #
 # In order to use HTTPS in development, a self-signed

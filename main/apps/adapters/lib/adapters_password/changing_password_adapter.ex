@@ -25,7 +25,7 @@ defmodule Adapters.AdaptersPassword.ChangingPasswordAdapter do
     case UUID.info(id) do
       {:error, _} -> {:error, IdIsInvalidError.new()}
       {:ok, _} ->
-        case Node.connect(:password_postgres_service@localhost) do
+        case Node.connect(Application.get_env(:adapters_password, :remote_node)) do
           :false -> {:error, ImpossibleChangeError.new("Postgres password service unavailable")}
           :ignored -> {:error, ImpossibleChangeError.new("Postgres password service unavailable")}
           :true ->
@@ -50,8 +50,8 @@ defmodule Adapters.AdaptersPassword.ChangingPasswordAdapter do
 
   defp generate_task(id, password) do
     Task.Supervisor.async(
-      {Passwords.Repo.TaskSupervisor, :password_postgres_service@localhost},
-      PasswordPostgresService,
+      Application.get_env(:adapters_password, :remote_supervisor),
+      Application.get_env(:adapters_password, :remote_module),
       :change_password,
       [id, password]
     )

@@ -17,6 +17,11 @@ config :password_http_changing_service, PasswordHttpChangingServiceWeb.Endpoint,
   secret_key_base: "HnA8vbJFTIsgSMZ8+rdsHhTWNqboiMZjrcB/y3ChR7c//9Ud7p38oi2E04PtdV3E",
   watchers: []
 
+config :password_http_changing_service,
+  remote_password_controller_node: :password_controller@localhost,
+  remote_password_controller_super: {PasswordController.TaskSupervisor, :password_controller@localhost},
+  remote_password_controller_module: PasswordController
+
 # ## SSL Support
 #
 # In order to use HTTPS in development, a self-signed

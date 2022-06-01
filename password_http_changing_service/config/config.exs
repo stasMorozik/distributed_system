@@ -13,7 +13,15 @@ config :password_http_changing_service, PasswordHttpChangingServiceWeb.Endpoint,
   debug_errors: false,
   render_errors: [view: PasswordHttpChangingServiceWeb.ErrorView, accepts: ~w(json)],
   pubsub_server: PasswordHttpChangingService.PubSub,
-  live_view: [signing_salt: "Z4AO24qc"]
+  live_view: [signing_salt: "Z4AO24qc"],
+  remote_password_controller_node: :password_controller@localhost,
+  remote_password_controller_super: {PasswordController.TaskSupervisor, :password_controller@localhost},
+  remote_password_controller_module: PasswordController
+
+config :password_http_changing_service,
+  remote_password_controller_node: :password_controller@localhost,
+  remote_password_controller_super: {PasswordController.TaskSupervisor, :password_controller@localhost},
+  remote_password_controller_module: PasswordController
 
 # Configures Elixir's Logger
 config :logger, :console,

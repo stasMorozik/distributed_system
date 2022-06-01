@@ -10,7 +10,7 @@ defmodule Adapters.AdaptersPassword.GettingByEmailAdapter do
 
   @spec get(binary) :: GettingPort.ok() | GettingPort.error()
   def get(email) when is_binary(email) do
-    case Node.connect(:password_postgres_service@localhost) do
+    case Node.connect(Application.get_env(:adapters_password, :remote_node)) do
       :false -> {:error, ImpossibleGetError.new("Postgres password service unavailable")}
       :ignored -> {:error, ImpossibleGetError.new("Postgres password service unavailable")}
       :true ->
@@ -28,9 +28,8 @@ defmodule Adapters.AdaptersPassword.GettingByEmailAdapter do
 
   defp generate_task(email) do
     Task.Supervisor.async(
-      {Passwords.Repo.TaskSupervisor,
-      :password_postgres_service@localhost},
-      PasswordPostgresService,
+      Application.get_env(:adapters_password, :remote_supervisor),
+      Application.get_env(:adapters_password, :remote_module),
       :get_by_email,
       [email]
     )
