@@ -1,4 +1,6 @@
 defmodule Core.CoreApplications.Password.LoggingChangingEmailService do
+  alias Jason, as: JSON
+
   alias Core.CoreApplications.Password.Logger
 
   alias Core.CoreDomains.Domains.Password.UseCases.ChangingEmail, as: ChangingEmailUseCase
@@ -12,7 +14,7 @@ defmodule Core.CoreApplications.Password.LoggingChangingEmailService do
   alias Core.CoreDomains.Common.Ports.Notifying
 
   alias Core.CoreDomains.Domains.Password.Dtos.ImpossibleChangeEmailError
-  alias alias Core.CoreDomains.Domains.Password.Dtos.ImpossibleGetError
+  alias Core.CoreDomains.Domains.Password.Dtos.ImpossibleGetError
 
   @spec change(
     ChangeEmailCommand.t(),

@@ -26,7 +26,8 @@ defmodule Core.MixProject do
   defp deps do
     [
       { :uuid, "~> 1.1" },
-      {:json, "~> 1.4"},
+      {:joken, "~> 2.4"},
+      {:jason, "~> 1.2"},
       {:bcrypt_elixir, "~> 3.0"}
     ]
   end

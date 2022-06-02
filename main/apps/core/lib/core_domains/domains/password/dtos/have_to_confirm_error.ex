@@ -7,6 +7,6 @@ defmodule Core.CoreDomains.Domains.Password.Dtos.HaveToConfirmError do
 
   @spec new :: HaveToConfirmError.t()
   def new() do
-    %HaveToConfirmError{message: "You have to confirm the password"}
+    %HaveToConfirmError{message: "You have to confirm the email"}
   end
 end

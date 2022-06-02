@@ -1,4 +1,6 @@
 defmodule Core.CoreApplications.Password.LoggingConfirmingService do
+  alias Jason, as: JSON
+
   alias Core.CoreApplications.Password.Logger
 
   alias Core.CoreApplications.Password.ConfirmingService
@@ -12,7 +14,7 @@ defmodule Core.CoreApplications.Password.LoggingConfirmingService do
   alias Core.CoreDomains.Common.Ports.Notifying
 
   alias Core.CoreDomains.Domains.Password.Dtos.ImpossibleConfirmError
-  alias alias Core.CoreDomains.Domains.Password.Dtos.ImpossibleGetError
+  alias Core.CoreDomains.Domains.Password.Dtos.ImpossibleGetError
 
   @spec confirm(
     ConfirmCommand.t(),

@@ -36,3 +36,5 @@ config :logger_user_service,
   remote_supervisor: {UserLoggerService.TaskSupervisor, :user_logger_service@localhost},
   remote_node: :user_logger_service@localhost,
   remote_module: UserLoggerService
+
+config :joken, default_signer: "secret"

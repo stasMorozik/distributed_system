@@ -1,4 +1,6 @@
 defmodule Core.CoreApplications.Password.LoggingChangingPasswordService do
+  alias Jason, as: JSON
+
   alias Core.CoreApplications.Password.Logger
 
   alias Core.CoreDomains.Domains.Password.UseCases.ChanginPassword, as: ChanginPasswordUseCase
@@ -11,8 +13,8 @@ defmodule Core.CoreApplications.Password.LoggingChangingPasswordService do
   alias Core.CoreDomains.Domains.Password.Ports.ChangingPasswordPort
   alias Core.CoreDomains.Common.Ports.Notifying
 
-  alias alias Core.CoreDomains.Domains.Password.Dtos.ImpossibleChangeError
-  alias alias Core.CoreDomains.Domains.Password.Dtos.ImpossibleGetError
+  alias Core.CoreDomains.Domains.Password.Dtos.ImpossibleChangeError
+  alias Core.CoreDomains.Domains.Password.Dtos.ImpossibleGetError
 
   @spec change(
     ChangePasswordCommand.t(),

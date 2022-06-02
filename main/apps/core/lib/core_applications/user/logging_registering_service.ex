@@ -1,4 +1,6 @@
 defmodule Core.CoreApplications.User.LoggingRegisteringService do
+  alias Jason, as: JSON
+
   alias Core.CoreApplications.User.Logger
 
   alias Core.CoreApplications.User.RegisteringService
