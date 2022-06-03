@@ -6,23 +6,18 @@ import Config
 # The watchers configuration can be used to run external
 # watchers to your application. For example, we use it
 # with esbuild to bundle .js and .css sources.
-config :user_http_registration_service, UserHttpRegistrationServiceWeb.Endpoint,
+config :user_http_authentication_service, UserHttpAuthenticationServiceWeb.Endpoint,
   # Binding to loopback ipv4 address prevents access from other machines.
   # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
-  http: [ip: {127, 0, 0, 1}, port: 4001],
+  http: [ip: {127, 0, 0, 1}, port: 4002],
   check_origin: false,
   code_reloader: true,
   debug_errors: false,
-  render_errors: [view: UserHttpRegistrationServiceWeb.ErrorView, accepts: ~w(json)],
-  secret_key_base: "Majb2twlC+F61MFhgKnWeUHpBcOEQ/gm0croPhTqYFONK9A69V8wabf2PCw5g6/h",
+  render_errors: [view: UserHttpAuthenticationServiceWeb.ErrorView, accepts: ~w(json)],
+  secret_key_base: "3qqkOszQuN+n8CoD954ZDjrp7R5+rQqSd+nm4xEdzCMfV/7bfRe2GF/3WmkZNkKM",
   watchers: []
 
-config :user_http_registration_service, :password_controller,
-  remote_node: :password_controller@localhost,
-  remote_supervisor: {PasswordController.TaskSupervisor, :password_controller@localhost},
-  remote_module: PasswordController
-
-config :user_http_registration_service, :user_controller,
+config :user_http_authentication_service, :user_controller,
   remote_node: :user_controller@localhost,
   remote_supervisor: {UserController.TaskSupervisor, :user_controller@localhost},
   remote_module: UserController

@@ -1,14 +1,14 @@
-defmodule UserHttpRegistrationServiceWeb.UserController do
+defmodule UserHttpRegistrationServiceWeb.RegistrationController do
   use UserHttpRegistrationServiceWeb, :controller
 
-  def confirm_password(conn, params) do
-    case Node.connect(Application.get_env(:user_http_registration_service, :remote_password_controller_node)) do
+  def confirm_email(conn, params) do
+    case Node.connect(Application.get_env(:user_http_registration_service, :password_controller)[:remote_node]) do
       :false -> conn |> put_status(:service_unavailable) |> json(%{message: "Password Controller Service Unavailable"})
       :ignored -> conn |> put_status(:service_unavailable) |> json(%{message: "Password Controller Service Unavailable"})
       :true ->
         task = Task.Supervisor.async(
-          Application.get_env(:user_http_registration_service, :remote_password_controller_super),
-          Application.get_env(:user_http_registration_service, :remote_password_controller_module),
+          Application.get_env(:user_http_registration_service, :password_controller)[:remote_supervisor],
+          Application.get_env(:user_http_registration_service, :password_controller)[:remote_module],
           :confirm,
           [ params["id"], params["password"], params["code"] ]
         )
@@ -20,13 +20,13 @@ defmodule UserHttpRegistrationServiceWeb.UserController do
   end
 
   def register(conn, params) do
-    case Node.connect(Application.get_env(:user_http_registration_service, :remote_user_controller_node)) do
+    case Node.connect(Application.get_env(:user_http_registration_service, :user_controller)[:remote_node]) do
       :false -> conn |> put_status(:service_unavailable) |> json(%{message: "User Controller Service Unavailable"})
       :ignored -> conn |> put_status(:service_unavailable) |> json(%{message: "User Controller Service Unavailable"})
       :true ->
         task = Task.Supervisor.async(
-          Application.get_env(:user_http_registration_service, :remote_user_controller_super),
-          Application.get_env(:user_http_registration_service, :remote_user_controller_module),
+          Application.get_env(:user_http_registration_service, :user_controller)[:remote_supervisor],
+          Application.get_env(:user_http_registration_service, :user_controller)[:remote_module],
           :register,
           [ params["email"], params["password"], params["name"] ]
         )

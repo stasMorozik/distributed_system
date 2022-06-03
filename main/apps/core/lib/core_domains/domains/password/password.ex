@@ -378,9 +378,7 @@ defmodule Core.CoreDomains.Domains.Password do
     {:error, ImpossibleValidateError.new("Impossible validate password for invalid data")}
   end
 
-  @doc """
-   Function checking password
-  """
+  #Function checking password
   @spec check_password(binary, binary) :: boolean
   defp check_password(own_password, maybe_own_password) when is_binary(own_password) when is_binary(maybe_own_password) do
     Bcrypt.verify_pass(maybe_own_password, own_password)

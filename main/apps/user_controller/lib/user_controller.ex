@@ -15,7 +15,7 @@ defmodule UserController do
   alias Adapters.AdaptersPassword.CreatingAdapter, as: CreatingPasswordAdapter
   alias Adapters.AdaptersCommon.NotifyingMailerAdapter
   alias Adapters.AdaptersCommon.NotifyingTelegramAdapter
-  alias Adapters.AdaptersPassword.GettingAdapter, as: GettingPasswordAdapter
+  alias Adapters.AdaptersPassword.GettingByEmailAdapter, as: GettingPasswordByEmailAdapter
 
   def register(email, password, name) do
     case LoggingRegisteringService.register(
@@ -32,9 +32,9 @@ defmodule UserController do
   end
 
   def authenticate(email, password) do
-    case LoggingAuthenticatingService(
+    case LoggingAuthenticatingService.authenticate(
       AuthenticatingCommand.new(email, password),
-      GettingPasswordAdapter,
+      GettingPasswordByEmailAdapter,
       NotifyingTelegramAdapter
     ) do
       {:ok, token} -> {:ok, token}

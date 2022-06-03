@@ -17,22 +17,22 @@ import Config
 #       metadata: [:user_id]
 #
 
-config :adapters_user,
+config :adapters, :user_postgres_service,
   remote_supervisor: {Persons.Repo.TaskSupervisor, :user_postgres_service@localhost},
   remote_node: :user_postgres_service@localhost,
   remote_module: UserPostgresService
 
-config :adapters_password,
+config :adapters, :password_postgres_service,
   remote_supervisor: {Passwords.Repo.TaskSupervisor, :password_postgres_service@localhost},
   remote_node: :password_postgres_service@localhost,
   remote_module: PasswordPostgresService
 
-config :logger_password_service,
+config :core, :logger_password_service,
   remote_supervisor: {PasswordLoggerService.TaskSupervisor, :password_logger_service@localhost},
   remote_node: :password_logger_service@localhost,
   remote_module: PasswordLoggerService
 
-config :logger_user_service,
+config :core, :logger_user_service,
   remote_supervisor: {UserLoggerService.TaskSupervisor, :user_logger_service@localhost},
   remote_node: :user_logger_service@localhost,
   remote_module: UserLoggerService

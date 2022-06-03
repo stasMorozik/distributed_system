@@ -16,13 +16,13 @@ defmodule Core.CoreApplications.Password.Logger do
   end
 
   defp connect_to_remote_node do
-    Node.connect(Application.get_env(:logger_password_service, :remote_node))
+    Node.connect(Application.get_env(:core, :logger_password_service)[:remote_node])
   end
 
   defp send_to_loger_service(type, from_node, message) do
     Task.Supervisor.async(
-      Application.get_env(:logger_password_service, :remote_supervisor),
-      Application.get_env(:logger_password_service, :remote_module),
+      Application.get_env(:core, :logger_password_service)[:remote_supervisor],
+      Application.get_env(:core, :logger_password_service)[:remote_module],
       :log,
       [ type, from_node, message ]
     )

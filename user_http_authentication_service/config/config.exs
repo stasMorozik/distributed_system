@@ -8,17 +8,17 @@
 import Config
 
 # Configures the endpoint
-config :password_http_changing_service, PasswordHttpChangingServiceWeb.Endpoint,
+config :user_http_authentication_service, UserHttpAuthenticationServiceWeb.Endpoint,
   url: [host: "localhost"],
-  debug_errors: false,
-  render_errors: [view: PasswordHttpChangingServiceWeb.ErrorView, accepts: ~w(json)],
-  pubsub_server: PasswordHttpChangingService.PubSub,
-  live_view: [signing_salt: "Z4AO24qc"]
+  render_errors: [view: UserHttpAuthenticationServiceWeb.ErrorView, accepts: ~w(json), layout: false],
+  pubsub_server: UserHttpAuthenticationService.PubSub,
+  live_view: [signing_salt: "3RaFetzM"]
 
-config :password_http_changing_service, :password_controller,
-  remote_node: :password_controller@localhost,
-  remote_supervisor: {PasswordController.TaskSupervisor, :password_controller@localhost},
-  remote_module: PasswordController
+
+config :user_http_authentication_service, :user_controller,
+  remote_node: :user_controller@localhost,
+  remote_supervisor: {UserController.TaskSupervisor, :user_controller@localhost},
+  remote_module: UserController
 
 # Configures Elixir's Logger
 config :logger, :console,

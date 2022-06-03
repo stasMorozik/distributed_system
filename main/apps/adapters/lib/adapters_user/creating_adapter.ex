@@ -24,7 +24,7 @@ defmodule Adapters.AdaptersUser.CreatingAdapter do
       case UUID.info(id) do
         {:error, _} -> {:error, IdIsInvalidError.new()}
         {:ok, _} ->
-          case Node.connect(Application.get_env(:adapters_user, :remote_node)) do
+          case Node.connect(Application.get_env(:adapters, :user_postgres_service)[:remote_node]) do
             :false -> {:error, ImpossibleCreateError.new("User service postgres unavailable")}
             :ignored -> {:error, ImpossibleCreateError.new("User service postgres unavailable")}
             :true ->
@@ -46,8 +46,8 @@ defmodule Adapters.AdaptersUser.CreatingAdapter do
 
   defp generate_task(id, name, created) do
     Task.Supervisor.async(
-      Application.get_env(:adapters_user, :remote_supervisor),
-      Application.get_env(:adapters_user, :remote_module),
+      Application.get_env(:adapters, :user_postgres_service)[:remote_supervisor],
+      Application.get_env(:adapters, :user_postgres_service)[:remote_module],
       :create,
       [id, name, created]
     )

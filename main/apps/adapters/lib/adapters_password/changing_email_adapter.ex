@@ -23,7 +23,7 @@ defmodule Adapters.AdaptersPassword.ChangingEmailAdapter do
     case UUID.info(id) do
       {:error, _} -> {:error, IdIsInvalidError.new()}
       {:ok, _} ->
-        case Node.connect(Application.get_env(:adapters_password, :remote_node)) do
+        case Node.connect(Application.get_env(:adapters, :password_postgres_service)[:remote_node]) do
           :false -> {:error, ImpossibleChangeEmailError.new("Postgres password service unavailable")}
           :ignored -> {:error, ImpossibleChangeEmailError.new("Postgres password service unavailable")}
           :true ->
@@ -48,8 +48,8 @@ defmodule Adapters.AdaptersPassword.ChangingEmailAdapter do
 
   defp generate_task(id, email) do
     Task.Supervisor.async(
-      Application.get_env(:adapters_password, :remote_supervisor),
-      Application.get_env(:adapters_password, :remote_module),
+      Application.get_env(:adapters, :password_postgres_service)[:remote_supervisor],
+      Application.get_env(:adapters, :password_postgres_service)[:remote_module],
       :change_email,
       [id, email]
     )

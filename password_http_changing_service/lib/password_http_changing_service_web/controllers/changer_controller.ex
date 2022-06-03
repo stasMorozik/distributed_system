@@ -1,14 +1,14 @@
-defmodule PasswordHttpChangingServiceWeb.PasswordController do
+defmodule PasswordHttpChangingServiceWeb.ChangerController do
   use PasswordHttpChangingServiceWeb, :controller
 
   def update_email(conn, params) do
-    case Node.connect(Application.get_env(:password_http_changing_service, :remote_password_controller_node)) do
+    case Node.connect(Application.get_env(:password_http_changing_service, :password_controller)[:remote_node]) do
       :false -> conn |> put_status(:service_unavailable) |> json(%{message: "Controller Service Unavailable"})
       :ignored -> conn |> put_status(:service_unavailable) |> json(%{message: "Controller Service Unavailable"})
       :true ->
         task = Task.Supervisor.async(
-          Application.get_env(:password_http_changing_service, :remote_password_controller_super),
-          Application.get_env(:password_http_changing_service, :remote_password_controller_module),
+          Application.get_env(:password_http_changing_service, :password_controller)[:remote_supervisor],
+          Application.get_env(:password_http_changing_service, :password_controller)[:remote_module],
           :change_email,
           [ params["id"], params["password"], params["new_email"] ]
         )
@@ -20,13 +20,13 @@ defmodule PasswordHttpChangingServiceWeb.PasswordController do
   end
 
   def update_password(conn, params) do
-    case Node.connect(Application.get_env(:password_http_changing_service, :remote_password_controller_node)) do
+    case Node.connect(Application.get_env(:password_http_changing_service, :password_controller)[:remote_node]) do
       :false -> conn |> put_status(:service_unavailable) |> json(%{message: "Controller Service Unavailable"})
       :ignored -> conn |> put_status(:service_unavailable) |> json(%{message: "Controller Service Unavailable"})
       :true ->
         task = Task.Supervisor.async(
-          Application.get_env(:password_http_changing_service, :remote_password_controller_super),
-          Application.get_env(:password_http_changing_service, :remote_password_controller_module),
+          Application.get_env(:password_http_changing_service, :password_controller)[:remote_supervisor],
+          Application.get_env(:password_http_changing_service, :password_controller)[:remote_module],
           :change_password,
           [ params["id"], params["password"], params["new_password"] ]
         )

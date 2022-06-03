@@ -13,21 +13,18 @@ config :user_http_registration_service, UserHttpRegistrationServiceWeb.Endpoint,
   debug_errors: false,
   render_errors: [view: UserHttpRegistrationServiceWeb.ErrorView, accepts: ~w(json), layout: false],
   pubsub_server: UserHttpRegistrationService.PubSub,
-  live_view: [signing_salt: "IDw861vE"],
-  remote_password_controller_node: :password_controller@localhost,
-  remote_user_controller_node: :user_controller@localhost,
-  remote_password_controller_super: {PasswordController.TaskSupervisor, :password_controller@localhost},
-  remote_user_controller_super: {UserController.TaskSupervisor, :user_controller@localhost},
-  remote_password_controller_module: PasswordController,
-  remote_user_controller_module: UserController
+  live_view: [signing_salt: "IDw861vE"]
 
-config :user_http_registration_service,
-  remote_password_controller_node: :password_controller@localhost,
-  remote_user_controller_node: :user_controller@localhost,
-  remote_password_controller_super: {PasswordController.TaskSupervisor, :password_controller@localhost},
-  remote_user_controller_super: {UserController.TaskSupervisor, :user_controller@localhost},
-  remote_password_controller_module: PasswordController,
-  remote_user_controller_module: UserController
+
+config :user_http_registration_service, :password_controller,
+  remote_node: :password_controller@localhost,
+  remote_supervisor: {PasswordController.TaskSupervisor, :password_controller@localhost},
+  remote_module: PasswordController
+
+config :user_http_registration_service, :user_controller,
+  remote_node: :user_controller@localhost,
+  remote_supervisor: {UserController.TaskSupervisor, :user_controller@localhost},
+  remote_module: UserController
 
 # Configures Elixir's Logger
 config :logger, :console,

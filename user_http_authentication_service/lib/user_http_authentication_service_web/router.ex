@@ -1,15 +1,14 @@
-defmodule UserHttpRegistrationServiceWeb.Router do
-  use UserHttpRegistrationServiceWeb, :router
+defmodule UserHttpAuthenticationServiceWeb.Router do
+  use UserHttpAuthenticationServiceWeb, :router
 
   pipeline :api do
     plug :accepts, ["json"]
   end
 
-  scope "/", UserHttpRegistrationServiceWeb do
+  scope "/", UserHttpAuthenticationServiceWeb do
     pipe_through :api
 
-    put "/:id", RegistrationController, :confirm_email
-    post "/", RegistrationController, :register
+    post "/", AuthenticationController, :authenticate
   end
 
   # Enables LiveDashboard only for development
@@ -25,7 +24,7 @@ defmodule UserHttpRegistrationServiceWeb.Router do
     scope "/" do
       pipe_through [:fetch_session, :protect_from_forgery]
 
-      live_dashboard "/dashboard", metrics: UserHttpRegistrationServiceWeb.Telemetry
+      live_dashboard "/dashboard", metrics: UserHttpAuthenticationServiceWeb.Telemetry
     end
   end
 end
