@@ -3,8 +3,8 @@ defmodule Adapters.AdaptersCommon.NotifyingTelegramAdapter do
 
   @behaviour Notifying
 
-  @spec notify(binary, binary) :: any()
-  def notify(address, message) do
+  @spec notify(binary, binary, binary) :: any()
+  def notify(address, subject, message) do
     IO.inspect("For #{address}")
     IO.inspect("#{message}")
   end

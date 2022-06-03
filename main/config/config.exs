@@ -27,6 +27,11 @@ config :adapters, :password_postgres_service,
   remote_node: :password_postgres_service@localhost,
   remote_module: PasswordPostgresService
 
+config :adapters, :notifying_mailer_service,
+  remote_supervisor: {NotifyingMailerService.TaskSupervisor, :notifying_mailer_service@localhost},
+  remote_node: :notifying_mailer_service@localhost,
+  remote_module: NotifyingMailerService
+
 config :core, :logger_password_service,
   remote_supervisor: {PasswordLoggerService.TaskSupervisor, :password_logger_service@localhost},
   remote_node: :password_logger_service@localhost,

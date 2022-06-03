@@ -31,7 +31,7 @@ defmodule Core.CoreApplications.User.RegisteringService do
                   {:error, dto} -> {:error, dto}
                   {:ok, created_user} ->
                     code = created_password.confirmed_code.value
-                    notifying_port.notify(created_password.email.value, "Hello #{command.name} you have to confirm your password by this code #{code}.")
+                    notifying_port.notify(created_password.email.value, "Confirm email", "Hello #{command.name} you have to confirm your password by this code #{code}.")
                     {:ok, created_user}
                 end
             end

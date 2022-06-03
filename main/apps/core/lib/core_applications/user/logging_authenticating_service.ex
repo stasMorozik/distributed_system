@@ -44,10 +44,10 @@ defmodule Core.CoreApplications.User.LoggingAuthenticatingService do
     case JSON.encode(Map.from_struct(command)) do
       {:ok, json} ->
         Logger.error("Node - #{node()}. Remote Node - #{Application.get_env(:adapters_user, :remote_node)}. AuthenticatingCommand - #{json}. Error - #{message}")
-        admin_notifying_port.notify("@MyComapnyDev", "Node - #{node()}. Remote Node - #{Application.get_env(:adapters_user, :remote_node)}. AuthenticatingCommand - #{json}. Error - #{message}")
+        admin_notifying_port.notify("@MyComapnyDev", "Error", "Node - #{node()}. Remote Node - #{Application.get_env(:adapters_user, :remote_node)}. AuthenticatingCommand - #{json}. Error - #{message}")
       {:error, _} ->
         Logger.error("Node - #{node()}. Remote Node - #{Application.get_env(:adapters_user, :remote_node)}. Error - #{message}")
-        admin_notifying_port.notify("@MyComapnyDev", "Node - #{node()}. Remote Node - #{Application.get_env(:adapters_user, :remote_node)}. Error - #{message}")
+        admin_notifying_port.notify("@MyComapnyDev", "Error", "Node - #{node()}. Remote Node - #{Application.get_env(:adapters_user, :remote_node)}. Error - #{message}")
     end
   end
 

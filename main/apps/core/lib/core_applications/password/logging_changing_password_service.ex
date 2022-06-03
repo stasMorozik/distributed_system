@@ -53,10 +53,10 @@ defmodule Core.CoreApplications.Password.LoggingChangingPasswordService do
     case JSON.encode(Map.from_struct(command)) do
       {:ok, json} ->
         Logger.error("Node - #{node()}. Remote Node - #{Application.get_env(:adapters_password, :remote_node)}. ChangePasswordCommand - #{json}. Error - #{message}")
-        admin_notifying_port.notify("@MyComapnyDev", "Node - #{node()}. Remote Node - #{Application.get_env(:adapters_password, :remote_node)}. ChangePasswordCommand - #{json}. Error - #{message}")
+        admin_notifying_port.notify("@MyComapnyDev", "Error", "Node - #{node()}. Remote Node - #{Application.get_env(:adapters_password, :remote_node)}. ChangePasswordCommand - #{json}. Error - #{message}")
       {:error, _} ->
         Logger.error("Node - #{node()}. Remote Node - #{Application.get_env(:adapters_password, :remote_node)}. Error - #{message}")
-        admin_notifying_port.notify("@MyComapnyDev", "Node - #{node()}. Remote Node - #{Application.get_env(:adapters_password, :remote_node)}. Error - #{message}")
+        admin_notifying_port.notify("@MyComapnyDev", "Error", "Node - #{node()}. Remote Node - #{Application.get_env(:adapters_password, :remote_node)}. Error - #{message}")
     end
   end
 
@@ -64,10 +64,10 @@ defmodule Core.CoreApplications.Password.LoggingChangingPasswordService do
     case JSON.encode(Map.from_struct(command)) do
       {:ok, json} ->
         Logger.error("Node - #{node()}. Remote Node - #{Application.get_env(:adapters_password, :remote_node)}. ChangePasswordCommand - #{json}. Error - #{message}")
-        admin_notifying_port.notify("@MyComapnyDev", "Node - #{node()}. Remote Node - #{Application.get_env(:adapters_password, :remote_node)}. ChangePasswordCommand - #{json}. Error - #{message}")
+        admin_notifying_port.notify("@MyComapnyDev", "Error", "Node - #{node()}. Remote Node - #{Application.get_env(:adapters_password, :remote_node)}. ChangePasswordCommand - #{json}. Error - #{message}")
       {:error, _} ->
         Logger.error("Node - #{node()}. Remote Node - #{Application.get_env(:adapters_password, :remote_node)}. Error - #{message}")
-        admin_notifying_port.notify("@MyComapnyDev", "Node - #{node()}. Remote Node - #{Application.get_env(:adapters_password, :remote_node)}. Error - #{message}")
+        admin_notifying_port.notify("@MyComapnyDev", "Error", "Node - #{node()}. Remote Node - #{Application.get_env(:adapters_password, :remote_node)}. Error - #{message}")
     end
   end
 
