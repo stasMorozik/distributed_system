@@ -1,4 +1,5 @@
 # Main
 
-**TODO: Add description**
+Kernel(Domains and Application services), Adapters, and Application Entry Points
+
 
