@@ -14,7 +14,9 @@ defmodule UserHttpAuthenticationServiceWeb.AuthenticationController do
         )
         case Task.await task do
           {:error, dto} -> conn |> put_status(:bad_request) |> json(dto)
-          {:ok, password} -> conn |> put_status(:ok) |> json(password)
+          {:ok, token} ->
+            conn = conn |> put_resp_cookie("token", token)
+            conn |> put_status(:ok) |> json(token)
         end
     end
   end
