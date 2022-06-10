@@ -8,6 +8,7 @@ defmodule Adapters.AdaptersPassword.ChangingEmailAdapter do
   alias Core.CoreDomains.Domains.Password.Dtos.AlreadyExistsError
   alias Core.CoreDomains.Domains.Password.Dtos.ImpossibleChangeEmailError
   alias Core.CoreDomains.Common.Dtos.IdIsInvalidError
+  alias Core.CoreDomains.Common.Dtos.ImpossibleCallError
 
   @behaviour ChangingEmailPort
 
@@ -24,8 +25,8 @@ defmodule Adapters.AdaptersPassword.ChangingEmailAdapter do
       {:error, _} -> {:error, IdIsInvalidError.new()}
       {:ok, _} ->
         case Node.connect(Application.get_env(:adapters, :password_postgres_service)[:remote_node]) do
-          :false -> {:error, ImpossibleChangeEmailError.new("Postgres password service unavailable")}
-          :ignored -> {:error, ImpossibleChangeEmailError.new("Postgres password service unavailable")}
+          :false -> {:error, ImpossibleCallError.new("Postgres password service unavailable. Remote node - #{Application.get_env(:adapters, :password_postgres_service)[:remote_node]}")}
+          :ignored -> {:error, ImpossibleCallError.new("Postgres password service unavailable. Remote node - #{Application.get_env(:adapters, :password_postgres_service)[:remote_node]}")}
           :true ->
             case generate_task(id, email) |> Task.await() do
               {:ok, _} -> {:ok, %Password{

@@ -10,7 +10,7 @@ defmodule Core.CoreDomains.Domains.User.UseCases.Authenticating do
 
   @type error :: Password.error() | Token.error() | GettingPort.error()
 
-  @type ok :: {:ok, binary}
+  @type ok :: {:ok, nil}
 
   @callback authenticate(AuthenticatingCommand.t(), GettingPort.t()) :: error | ok
 end

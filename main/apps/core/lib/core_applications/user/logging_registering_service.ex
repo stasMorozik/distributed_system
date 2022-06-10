@@ -1,7 +1,5 @@
 defmodule Core.CoreApplications.User.LoggingRegisteringService do
-  alias Jason, as: JSON
-
-  alias Core.CoreApplications.User.Logger
+  require Logger
 
   alias Core.CoreApplications.User.RegisteringService
 
@@ -12,8 +10,13 @@ defmodule Core.CoreApplications.User.LoggingRegisteringService do
 
   alias Core.CoreDomains.Domains.User.Commands.RegisteringCommand
 
-  alias Core.CoreDomains.Domains.Password.Dtos.ImpossibleCreateError, as: ImpossibleCreatePasswordError
-  alias Core.CoreDomains.Domains.User.Dtos.ImpossibleCreateError, as: ImpossibleCreateUserError
+  alias Core.CoreApplications.LoggingHandler
+
+  use LoggingHandler,
+    command: "RegisteringCommand",
+    remote_node: Application.get_env(:core, :logger_user_service)[:remote_node],
+    remote_supervisor: Application.get_env(:core, :logger_user_service)[:remote_supervisor],
+    remote_module: Application.get_env(:core, :logger_user_service)[:remote_module]
 
   @spec register(
     RegisteringCommand.t(),
@@ -26,7 +29,7 @@ defmodule Core.CoreApplications.User.LoggingRegisteringService do
     case RegisteringService.register(command, creating_user_port, creating_password_port, notifying_port) do
       {:error, dto} ->
         command = hidden_values(command)
-        handler_error(admin_notifying_port, command, dto)
+        handler_error(command, dto, admin_notifying_port)
         {:error, dto}
       {:ok, created_user} ->
         hidden_values(command) |> handle_success()
@@ -39,43 +42,5 @@ defmodule Core.CoreApplications.User.LoggingRegisteringService do
       email: command.email,
       name: command.name
     }
-  end
-
-  defp handle_success(command) do
-    case JSON.encode(Map.from_struct(command)) do
-      {:ok, json} -> Logger.info("Node - #{node()}. RegisteringCommand - #{json}. Ok.")
-      {:error, e} -> Logger.error("#{node()} #{e}. Ok.")
-    end
-  end
-
-  defp handler_error(admin_notifying_port, command, %ImpossibleCreateUserError{message: message}) do
-    case JSON.encode(Map.from_struct(command)) do
-      {:ok, json} ->
-        Logger.error("Node - #{node()}. Remote Node - #{Application.get_env(:adapters_user, :remote_node)}. RegisteringCommand - #{json}. Error - #{message}")
-        admin_notifying_port.notify("@MyComapnyDev", "Error", "Node - #{node()}. Remote Node - #{Application.get_env(:adapters_user, :remote_node)}. RegisteringCommand - #{json}. Error - #{message}")
-      {:error, _} ->
-        Logger.error("Node - #{node()}. Remote Node - #{Application.get_env(:adapters_user, :remote_node)}. Error - #{message}")
-        admin_notifying_port.notify("@MyComapnyDev", "Error", "Node - #{node()}. Remote Node - #{Application.get_env(:adapters_user, :remote_node)}. Error - #{message}")
-    end
-  end
-
-  defp handler_error(admin_notifying_port, command, %ImpossibleCreatePasswordError{message: message}) do
-    case JSON.encode(Map.from_struct(command)) do
-      {:ok, json} ->
-        Logger.error("Node - #{node()}. Remote Node - #{Application.get_env(:adapters_user, :remote_node)}. RegisteringCommand - #{json}. Error - #{message}")
-        admin_notifying_port.notify("@MyComapnyDev", "Error", "Node - #{node()}. Remote Node - #{Application.get_env(:adapters_user, :remote_node)}. RegisteringCommand - #{json}. Error - #{message}")
-      {:error, _} ->
-        Logger.error("Node - #{node()}. Remote Node - #{Application.get_env(:adapters_user, :remote_node)}. Error - #{message}")
-        admin_notifying_port.notify("@MyComapnyDev", "Error", "Node - #{node()}. Remote Node - #{Application.get_env(:adapters_user, :remote_node)}. Error - #{message}")
-    end
-  end
-
-  defp handler_error(_, command, some_error_dto) do
-    case JSON.encode(Map.from_struct(command)) do
-      {:ok, json} ->
-        Logger.info("Node - #{node()}. RegisteringCommand - #{json}. Error - #{some_error_dto.message}")
-      {:error, _} ->
-        Logger.error("Node - #{node()}. Error - #{some_error_dto.message}")
-    end
   end
 end

@@ -1,9 +1,9 @@
 defmodule Adapters.AdaptersPassword.GettingAdapter do
   alias Core.CoreDomains.Domains.Password.Ports.GettingPort
 
-  alias Core.CoreDomains.Domains.Password.Dtos.ImpossibleGetError
   alias Core.CoreDomains.Domains.Password.Dtos.NotFoundError
   alias Core.CoreDomains.Common.Dtos.IdIsInvalidError
+  alias Core.CoreDomains.Common.Dtos.ImpossibleCallError
 
   alias Adapters.AdaptersPassword.Mapper
 
@@ -15,8 +15,8 @@ defmodule Adapters.AdaptersPassword.GettingAdapter do
       {:error, _}-> {:error, IdIsInvalidError.new()}
       {:ok, _} ->
         case Node.connect(Application.get_env(:adapters, :password_postgres_service)[:remote_node]) do
-          :false -> {:error, ImpossibleGetError.new("Postgres password service unavailable")}
-          :ignored -> {:error, ImpossibleGetError.new("Postgres password service unavailable")}
+          :false -> {:error, ImpossibleCallError.new("Postgres password service unavailable. Remote node - #{Application.get_env(:adapters, :password_postgres_service)[:remote_node]}")}
+          :ignored -> {:error, ImpossibleCallError.new("Postgres password service unavailable. Remote node - #{Application.get_env(:adapters, :password_postgres_service)[:remote_node]}")}
           :true ->
             case generate_task(id) |> Task.await() do
               {:ok, password} -> Mapper.map_to_domain(password)
@@ -28,7 +28,7 @@ defmodule Adapters.AdaptersPassword.GettingAdapter do
   end
 
   def get(_) do
-    {:error, ImpossibleGetError.new("Impossible get password from database for invalid data")}
+    {:error, IdIsInvalidError.new()}
   end
 
   defp generate_task(id) do

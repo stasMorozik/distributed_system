@@ -18,7 +18,7 @@ defmodule Core.CoreApplications.User.AuthenticatingService do
         case Password.validate_password(password, command.password) do
           {:error, dto} -> {:error, dto}
           {:ok, validated_password} ->
-            case Token.create(validated_password, Application.get_env(:joken, :default_signer)) do
+            case Token.create(validated_password, Application.get_env(:joken, :user_signer)) do
               {:error, dto} -> {:error, dto}
               {:ok, token} -> {:ok, token}
             end

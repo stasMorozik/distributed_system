@@ -3,6 +3,7 @@ defmodule Adapters.AdaptersPassword.GettingByEmailAdapter do
 
   alias Core.CoreDomains.Domains.Password.Dtos.ImpossibleGetError
   alias Core.CoreDomains.Domains.Password.Dtos.NotFoundError
+  alias Core.CoreDomains.Common.Dtos.ImpossibleCallError
 
   alias Adapters.AdaptersPassword.Mapper
 
@@ -11,8 +12,8 @@ defmodule Adapters.AdaptersPassword.GettingByEmailAdapter do
   @spec get(binary) :: GettingPort.ok() | GettingPort.error()
   def get(email) when is_binary(email) do
     case Node.connect(Application.get_env(:adapters, :password_postgres_service)[:remote_node]) do
-      :false -> {:error, ImpossibleGetError.new("Postgres password service unavailable")}
-      :ignored -> {:error, ImpossibleGetError.new("Postgres password service unavailable")}
+      :false -> {:error, ImpossibleCallError.new("Postgres password service unavailable. Remote node - #{Application.get_env(:adapters, :password_postgres_service)[:remote_node]}")}
+      :ignored -> {:error, ImpossibleCallError.new("Postgres password service unavailable. Remote node - #{Application.get_env(:adapters, :password_postgres_service)[:remote_node]}")}
       :true ->
         case generate_task(email) |> Task.await() do
           {:ok, password} -> Mapper.map_to_domain(password)

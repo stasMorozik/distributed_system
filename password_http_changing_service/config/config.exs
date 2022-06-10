@@ -16,8 +16,8 @@ config :password_http_changing_service, PasswordHttpChangingServiceWeb.Endpoint,
   live_view: [signing_salt: "Z4AO24qc"]
 
 config :password_http_changing_service, :password_controller,
-  remote_node: :password_controller@localhost,
-  remote_supervisor: {PasswordController.TaskSupervisor, :password_controller@localhost},
+  remote_node: :password_controller@dev,
+  remote_supervisor: {PasswordController.TaskSupervisor, :password_controller@dev},
   remote_module: PasswordController
 
 # Configures Elixir's Logger

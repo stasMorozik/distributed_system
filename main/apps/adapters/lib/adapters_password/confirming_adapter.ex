@@ -10,6 +10,7 @@ defmodule Adapters.AdaptersPassword.ConfirmingAdapter do
   alias Core.CoreDomains.Domains.Password.Dtos.NotFoundError
   alias Core.CoreDomains.Domains.Password.Dtos.ImpossibleConfirmError
   alias Core.CoreDomains.Common.Dtos.IdIsInvalidError
+  alias Core.CoreDomains.Common.Dtos.ImpossibleCallError
 
   @behaviour ConfirmingPort
 
@@ -26,8 +27,8 @@ defmodule Adapters.AdaptersPassword.ConfirmingAdapter do
       {:error, _}-> {:error, IdIsInvalidError.new()}
       {:ok, _} ->
         case Node.connect(Application.get_env(:adapters, :password_postgres_service)[:remote_node]) do
-          :false -> {:error, ImpossibleConfirmError.new("Postgres password service unavailable")}
-          :ignored -> {:error, ImpossibleConfirmError.new("Postgres password service unavailable")}
+          :false -> {:error, ImpossibleCallError.new("Postgres password service unavailable. Remote node - #{Application.get_env(:adapters, :password_postgres_service)[:remote_node]}")}
+          :ignored -> {:error, ImpossibleCallError.new("Postgres password service unavailable. Remote node - #{Application.get_env(:adapters, :password_postgres_service)[:remote_node]}")}
           :true ->
             case generate_task(id, email, confirmed_code) |> Task.await() do
               {:ok, _} -> {:ok, %Password{

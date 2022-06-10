@@ -10,6 +10,7 @@ defmodule Adapters.AdaptersPassword.ChangingPasswordAdapter do
   alias Core.CoreDomains.Domains.Password.Dtos.NotFoundError
   alias Core.CoreDomains.Domains.Password.Dtos.ImpossibleChangeError
   alias Core.CoreDomains.Common.Dtos.IdIsInvalidError
+  alias Core.CoreDomains.Common.Dtos.ImpossibleCallError
 
   @behaviour ChangingPasswordPort
 
@@ -26,8 +27,8 @@ defmodule Adapters.AdaptersPassword.ChangingPasswordAdapter do
       {:error, _} -> {:error, IdIsInvalidError.new()}
       {:ok, _} ->
         case Node.connect(Application.get_env(:adapters, :password_postgres_service)[:remote_node]) do
-          :false -> {:error, ImpossibleChangeError.new("Postgres password service unavailable")}
-          :ignored -> {:error, ImpossibleChangeError.new("Postgres password service unavailable")}
+          :false -> {:error, ImpossibleCallError.new("Postgres password service unavailable. Remote node - #{Application.get_env(:adapters, :password_postgres_service)[:remote_node]}")}
+          :ignored -> {:error, ImpossibleCallError.new("Postgres password service unavailable. Remote node - #{Application.get_env(:adapters, :password_postgres_service)[:remote_node]}")}
           :true ->
             case generate_task(id, password) |> Task.await() do
               {:ok, _} -> {:ok, %Password{

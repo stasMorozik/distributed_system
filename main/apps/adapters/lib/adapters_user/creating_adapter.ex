@@ -6,6 +6,7 @@ defmodule Adapters.AdaptersUser.CreatingAdapter do
   alias Core.CoreDomains.Domains.User.Dtos.ImpossibleCreateError
   alias Core.CoreDomains.Domains.User.Dtos.AlreadyExistsError
   alias Core.CoreDomains.Common.Dtos.IdIsInvalidError
+  alias Core.CoreDomains.Common.Dtos.ImpossibleCallError
 
   alias Core.CoreDomains.Common.ValueObjects.Id
   alias Core.CoreDomains.Common.ValueObjects.Created
@@ -25,8 +26,8 @@ defmodule Adapters.AdaptersUser.CreatingAdapter do
         {:error, _} -> {:error, IdIsInvalidError.new()}
         {:ok, _} ->
           case Node.connect(Application.get_env(:adapters, :user_postgres_service)[:remote_node]) do
-            :false -> {:error, ImpossibleCreateError.new("User service postgres unavailable")}
-            :ignored -> {:error, ImpossibleCreateError.new("User service postgres unavailable")}
+            :false -> {:error, ImpossibleCallError.new("User service postgres unavailable. Remote node - #{Application.get_env(:adapters, :user_postgres_service)[:remote_node]}")}
+            :ignored -> {:error, ImpossibleCallError.new("User service postgres unavailable. Remote node - #{Application.get_env(:adapters, :user_postgres_service)[:remote_node]}")}
             :true ->
               case generate_task(id, name, created) |> Task.await() do
                 {:ok, _} -> {:ok, %User{

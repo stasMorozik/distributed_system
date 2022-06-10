@@ -4,10 +4,11 @@ defmodule Core.CoreDomains.Domains.Password.Ports.DeletingPort do
   alias Core.CoreDomains.Domains.Password.Dtos.NotFoundError
   alias Core.CoreDomains.Domains.Password.Dtos.ImpossibleDeleteError
   alias Core.CoreDomains.Common.Dtos.IdIsInvalidError
+  alias Core.CoreDomains.Common.Dtos.ImpossibleCallError
 
   @type t :: module
 
-  @type error :: {:error, NotFoundError.t() | ImpossibleDeleteError.t() | IdIsInvalidError.t()}
+  @type error :: {:error, NotFoundError.t() | ImpossibleDeleteError.t() | ImpossibleCallError.t() | IdIsInvalidError.t()}
 
   @type ok :: {:ok, Password.t()}
 

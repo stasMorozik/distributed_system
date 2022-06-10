@@ -42,4 +42,6 @@ config :core, :logger_user_service,
   remote_node: :user_logger_service@localhost,
   remote_module: UserLoggerService
 
-config :joken, default_signer: "secret"
+config :joken, user_signer: "user_secret"
+
+config :joken, password_signer: "password_secret"

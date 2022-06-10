@@ -71,15 +71,15 @@ defmodule Core.CoreDomains.Domains.Token do
     {:error, ImpossibleCreateError.new("Data for creating token is invalid")}
   end
 
-  def verify_token(token) when is_binary(token) do
-    signer = Joken.Signer.create("HS256", Application.get_env(:joken, :default_signer))
+  def verify_token(token, signer) when is_binary(token) and is_binary(signer) do
+    signer = Joken.Signer.create("HS256", signer)
     case Token.verify_and_validate(token, signer) do
       {:error, _} -> {:error, TokenIsInvalidError.new()}
       {:ok, claims} -> {:ok, claims["id"]}
     end
   end
 
-  def verify_token(_) do
+  def verify_token(_, _) do
     {:error, TokenIsInvalidError.new()}
   end
 end

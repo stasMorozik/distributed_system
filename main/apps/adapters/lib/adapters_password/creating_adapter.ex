@@ -13,6 +13,7 @@ defmodule Adapters.AdaptersPassword.CreatingAdapter do
   alias Core.CoreDomains.Domains.Password.ValueObjects.Password, as: ValuePassword
   alias Core.CoreDomains.Common.ValueObjects.Id
   alias Core.CoreDomains.Common.ValueObjects.Created
+  alias Core.CoreDomains.Common.Dtos.ImpossibleCallError
 
   @behaviour CreatingPort
 
@@ -34,8 +35,8 @@ defmodule Adapters.AdaptersPassword.CreatingAdapter do
         {:error, _} -> {:error, IdIsInvalidError.new()}
         {:ok, _} ->
           case Node.connect(Application.get_env(:adapters, :password_postgres_service)[:remote_node]) do
-            :false -> {:error, ImpossibleCreateError.new("Postgres password service unavailable")}
-            :ignored -> {:error, ImpossibleCreateError.new("Postgres password service unavailable")}
+            :false -> {:error, ImpossibleCallError.new("Postgres password service unavailable. Remote node - #{Application.get_env(:adapters, :password_postgres_service)[:remote_node]}")}
+            :ignored -> {:error, ImpossibleCallError.new("Postgres password service unavailable. Remote node - #{Application.get_env(:adapters, :password_postgres_service)[:remote_node]}")}
             :true ->
               pswd_map = %{
                 id: id,

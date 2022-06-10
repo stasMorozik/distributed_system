@@ -1,11 +1,13 @@
 defmodule UserController do
   alias Core.CoreApplications.User.LoggingRegisteringService
   alias Core.CoreApplications.User.LoggingAuthenticatingService
+  alias Core.CoreApplications.User.LoggingLogoutingService
 
   alias Core.CoreDomains.Domains.User
 
   alias Core.CoreDomains.Domains.User.Commands.RegisteringCommand
   alias Core.CoreDomains.Domains.User.Commands.AuthenticatingCommand
+  alias alias Core.CoreDomains.Domains.User.Commands.LogoutCommand
 
   alias Core.CoreDomains.Common.ValueObjects.Id
   alias Core.CoreDomains.Common.ValueObjects.Created
@@ -40,6 +42,15 @@ defmodule UserController do
       {:ok, token} -> {:ok, token}
       {:error, error} -> map_error_from_domain(error)
       _ -> {:error, %{message: "Error mapping user from domain"}}
+    end
+  end
+
+  def logout(token) do
+    case LoggingLogoutingService.logout(
+      LogoutCommand.new(token)
+    ) do
+      {:error, error} -> map_error_from_domain(error)
+      {:ok, some} -> {:ok, some}
     end
   end
 
