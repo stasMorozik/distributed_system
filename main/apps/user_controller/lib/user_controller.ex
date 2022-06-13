@@ -18,10 +18,12 @@ defmodule UserController do
   alias Adapters.AdaptersCommon.NotifyingMailerAdapter
   alias Adapters.AdaptersCommon.NotifyingTelegramAdapter
   alias Adapters.AdaptersPassword.GettingByEmailAdapter, as: GettingPasswordByEmailAdapter
+  alias Adapters.AdaptersUserPassword.GettingConfirmingCodeAdapter
 
-  def register(email, password, name) do
+  def register(email, password, name, code) do
     case LoggingRegisteringService.register(
-      RegisteringCommand.new(email, password, name),
+      RegisteringCommand.new(email, password, name, code),
+      GettingConfirmingCodeAdapter,
       CreatingUserAdapter,
       CreatingPasswordAdapter,
       NotifyingMailerAdapter,

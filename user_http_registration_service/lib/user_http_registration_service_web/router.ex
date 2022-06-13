@@ -8,7 +8,7 @@ defmodule UserHttpRegistrationServiceWeb.Router do
   scope "/", UserHttpRegistrationServiceWeb do
     pipe_through :api
 
-    put "/:id", RegistrationController, :confirm_email
+    #put "/:id", RegistrationController, :confirm_email
     post "/", RegistrationController, :register
   end
 

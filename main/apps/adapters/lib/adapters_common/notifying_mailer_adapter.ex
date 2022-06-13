@@ -9,12 +9,12 @@ defmodule Adapters.AdaptersCommon.NotifyingMailerAdapter do
   is_binary(subject) and
   is_binary(message) do
     case Node.connect(Application.get_env(:adapters, :notifying_mailer_service)[:remote_node]) do
-      _ -> {:error, nil}
       :true ->
         case generate_task(address, subject, message) |> Task.await() do
           {:ok, _} -> {:ok, nil}
           {:error, _} -> {:error, nil}
         end
+      _ -> {:error, nil}
     end
   end
 

@@ -2,6 +2,7 @@ defmodule Core.CoreApplications.User.RegisteringService do
   alias Core.CoreDomains.Domains.User.UseCases.Registering, as: RegisteringUseCase
   alias Core.CoreDomains.Domains.User.Ports.CreatingPort, as: CreatingUserPort
   alias Core.CoreDomains.Domains.Password.Ports.CreatingPort, as: CreatingPasswordPort
+  alias Core.CoreDomains.Domains.Password.Ports.GettingConfirmingCodePort
   alias Core.CoreDomains.Common.Ports.Notifying
 
   alias Core.CoreDomains.Domains.User.Commands.RegisteringCommand
@@ -13,26 +14,30 @@ defmodule Core.CoreApplications.User.RegisteringService do
 
   @spec register(
     RegisteringCommand.t(),
+    GettingConfirmingCodePort.t(),
     CreatingUserPort.t(),
     CreatingPasswordPort.t(),
     Notifying.t()
   ) :: RegisteringUseCase.ok() | RegisteringUseCase.error()
-  def register(command, creating_user_port, creating_password_port, notifying_port) do
-    case Password.create(command.email, command.password) do
+  def register(command, getting_confirming_port, creating_user_port, creating_password_port, notifying_port) do
+    case getting_confirming_port.get(command.email) do
       {:error, dto} -> {:error, dto}
-      {:ok, password} ->
-        case User.create(password, command.name) do
+      {:ok, confirming_code} ->
+        case Password.create(command.email, command.password, command.code, confirming_code) do
           {:error, dto} -> {:error, dto}
-          {:ok, user} ->
-            case creating_password_port.create(password) do
+          {:ok, created_password} ->
+            case User.create(created_password, command.name) do
               {:error, dto} -> {:error, dto}
-              {:ok, created_password} ->
-                case creating_user_port.create(user) do
+              {:ok, created_user} ->
+                case creating_password_port.create(created_password) do
                   {:error, dto} -> {:error, dto}
-                  {:ok, created_user} ->
-                    code = created_password.confirmed_code.value
-                    notifying_port.notify(created_password.email.value, "Confirm email", "Hello #{command.name} you have to confirm your password by this code #{code}.")
-                    {:ok, created_user}
+                  {:ok, _} ->
+                    case creating_user_port.create(created_user) do
+                      {:error, dto} -> {:error, dto}
+                      {:ok, inserted_user} ->
+                        notifying_port.notify(command.email, "Greetings", "Hello #{command.name} enjoying joining!")
+                        {:ok, inserted_user}
+                    end
                 end
             end
         end

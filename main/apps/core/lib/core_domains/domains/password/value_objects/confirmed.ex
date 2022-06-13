@@ -7,6 +7,6 @@ defmodule Core.CoreDomains.Domains.Password.ValueObjects.Confirmed do
 
   @spec new :: Confirmed.t()
   def new() do
-    %Confirmed{value: :false}
+    %Confirmed{value: :true}
   end
 end

@@ -1,10 +1,10 @@
 defmodule Core.CoreDomains.Domains.Password.Ports.CreatingPort do
   alias Core.CoreDomains.Domains.Password
 
-  alias Core.CoreDomains.Domains.Password.Dtos.AlreadyExistsError
-  alias Core.CoreDomains.Domains.Password.Dtos.ImpossibleCreateError
+  alias Core.CoreDomains.Common.Dtos.AlreadyExistsError
   alias Core.CoreDomains.Common.Dtos.IdIsInvalidError
   alias Core.CoreDomains.Common.Dtos.ImpossibleCallError
+  alias Core.CoreDomains.Common.Dtos.ImpossibleCreateError
 
   @type t :: module
 

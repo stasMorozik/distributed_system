@@ -1,10 +1,11 @@
 defmodule Core.CoreDomains.Domains.Password.Ports.DeletingPort do
   alias Core.CoreDomains.Domains.Password
 
-  alias Core.CoreDomains.Domains.Password.Dtos.NotFoundError
-  alias Core.CoreDomains.Domains.Password.Dtos.ImpossibleDeleteError
+  alias Core.CoreDomains.Common.Dtos.NotFoundError
   alias Core.CoreDomains.Common.Dtos.IdIsInvalidError
   alias Core.CoreDomains.Common.Dtos.ImpossibleCallError
+
+  alias Core.CoreDomains.Common.Dtos.ImpossibleDeleteError
 
   @type t :: module
 

@@ -10,7 +10,7 @@ defmodule Core.CoreDomains.Domains.User do
 
   alias Core.CoreDomains.Common.Dtos.NameIsInvalidError
   alias Core.CoreDomains.Common.Dtos.IdIsInvalidError
-  alias Core.CoreDomains.Domains.User.Dtos.ImpossibleCreateError
+  alias Core.CoreDomains.Common.Dtos.ImpossibleCreateError
 
   defstruct id: nil, name: nil, created: nil
 
@@ -41,7 +41,6 @@ defmodule Core.CoreDomains.Domains.User do
   @spec create(Password.t(), binary) :: ok | error
   def create(%Password{
     confirmed: %Confirmed{value: false},
-    confirmed_code: _,
     email: _,
     id: %Id{value: id},
     password: _,
@@ -59,7 +58,6 @@ defmodule Core.CoreDomains.Domains.User do
 
   def create(%Password{
     confirmed: %Confirmed{value: false},
-    confirmed_code: _,
     email: _,
     id: %Id{value: id},
     password: _,
@@ -70,7 +68,6 @@ defmodule Core.CoreDomains.Domains.User do
 
   def create(%Password{
     confirmed: %Confirmed{value: false},
-    confirmed_code: _,
     email: _,
     id: _,
     password: _,

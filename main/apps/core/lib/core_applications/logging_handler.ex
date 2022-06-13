@@ -2,8 +2,6 @@ defmodule Core.CoreApplications.LoggingHandler do
   alias Jason, as: JSON
   alias Core.CoreDomains.Common.Dtos.ImpossibleCallError
 
-  alias Core.CoreDomains.Common.Ports.Notifying
-
   defmacro __using__(opts) do
     some_command = Keyword.get(opts, :command, "SomeCommand")
     remote_node = Keyword.get(opts, :remote_node, :remote_node)

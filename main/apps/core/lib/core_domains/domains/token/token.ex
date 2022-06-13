@@ -7,12 +7,12 @@ defmodule Core.CoreDomains.Domains.Token do
 
   alias Core.CoreDomains.Domains.Password.ValueObjects.Confirmed
 
-  alias Core.CoreDomains.Common.ValueObjects.Id
-
-  alias Core.CoreDomains.Domains.Token.Dtos.ImpossibleCreateError
-  alias Core.CoreDomains.Common.Dtos.IdIsInvalidError
   alias Core.CoreDomains.Domains.Password.Dtos.HaveToConfirmError
   alias Core.CoreDomains.Domains.Token.Dtos.TokenIsInvalidError
+
+  alias Core.CoreDomains.Common.ValueObjects.Id
+  alias Core.CoreDomains.Common.Dtos.ImpossibleCreateError
+  alias Core.CoreDomains.Common.Dtos.IdIsInvalidError
 
   @type ok ::
   {
@@ -31,7 +31,6 @@ defmodule Core.CoreDomains.Domains.Token do
 
   def create(%Password{
     confirmed: %Confirmed{value: true},
-    confirmed_code: _,
     email: _,
     id: %Id{value: id},
     password: _,
@@ -47,7 +46,6 @@ defmodule Core.CoreDomains.Domains.Token do
 
   def create(%Password{
     confirmed: %Confirmed{value: false},
-    confirmed_code: _,
     email: _,
     id: %Id{value: id},
     password: _,
@@ -58,7 +56,6 @@ defmodule Core.CoreDomains.Domains.Token do
 
   def create(%Password{
     confirmed: _,
-    confirmed_code: _,
     email: _,
     id: _,
     password: _,

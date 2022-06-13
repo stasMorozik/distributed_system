@@ -3,14 +3,14 @@ defmodule Adapters.AdaptersUser.CreatingAdapter do
 
   alias alias Core.CoreDomains.Domains.User
 
-  alias Core.CoreDomains.Domains.User.Dtos.ImpossibleCreateError
-  alias Core.CoreDomains.Domains.User.Dtos.AlreadyExistsError
-  alias Core.CoreDomains.Common.Dtos.IdIsInvalidError
-  alias Core.CoreDomains.Common.Dtos.ImpossibleCallError
-
   alias Core.CoreDomains.Common.ValueObjects.Id
   alias Core.CoreDomains.Common.ValueObjects.Created
   alias Core.CoreDomains.Common.ValueObjects.Name
+
+  alias Core.CoreDomains.Common.Dtos.AlreadyExistsError
+  alias Core.CoreDomains.Common.Dtos.IdIsInvalidError
+  alias Core.CoreDomains.Common.Dtos.ImpossibleCallError
+  alias Core.CoreDomains.Common.Dtos.ImpossibleCreateError
 
   @behaviour CreatingPort
 
@@ -35,7 +35,7 @@ defmodule Adapters.AdaptersUser.CreatingAdapter do
                   name: %Name{value: name},
                   created: %Created{value: created}
                 }}
-                {:error, _} -> {:error, AlreadyExistsError.new()}
+                {:error, _} -> {:error, AlreadyExistsError.new("User with this UID already exists")}
               end
           end
       end
