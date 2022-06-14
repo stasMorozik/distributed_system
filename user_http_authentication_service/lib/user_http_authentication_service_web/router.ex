@@ -9,6 +9,7 @@ defmodule UserHttpAuthenticationServiceWeb.Router do
     pipe_through :api
 
     post "/", AuthenticationController, :authenticate
+    delete "/", AuthenticationController, :logout
   end
 
   # Enables LiveDashboard only for development
