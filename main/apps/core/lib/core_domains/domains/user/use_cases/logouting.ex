@@ -1,5 +1,5 @@
 defmodule Core.CoreDomains.Domains.User.UseCases.Logouting do
-  alias alias Core.CoreDomains.Domains.User.Commands.Logouting
+  alias alias Core.CoreDomains.Domains.User.Commands.LogoutingCommand
 
   alias alias Core.CoreDomains.Domains.Token
 

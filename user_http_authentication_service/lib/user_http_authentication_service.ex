@@ -1,3 +1,0 @@
-defmodule UserHttpAuthenticationService do
-
-end

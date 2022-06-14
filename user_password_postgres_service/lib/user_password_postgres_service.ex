@@ -58,7 +58,7 @@ defmodule UserPasswordPostgresService do
           multi_struct = Multi.new()
             |> Multi.insert(:passwords, pswd)
 
-          case Passwords.Repo.transaction(multi_struct) do
+          case Repo.transaction(multi_struct) do
             {:ok, _} -> {:ok, nil}
             _ -> {:error, nil}
           end
@@ -66,6 +66,42 @@ defmodule UserPasswordPostgresService do
   end
 
   def create(_) do
+    {:error, nil}
+  end
+
+  def change_email(id, email) when is_binary(id) and is_binary(email) do
+    case UUID.info(id) do
+      {:error, _} -> {:error, nil}
+      {:ok, _} ->
+        change_set = PasswordScheme.update_email_changeset(%PasswordScheme{uid: id}, %{email: email})
+        case Repo.transaction(Multi.new() |> Multi.update(:passwords, change_set)) do
+          {:ok, _} -> {:ok, nil}
+          _ -> {:error, nil}
+        end
+    end
+  end
+
+  def change_email(_, _) do
+    {:error, nil}
+  end
+
+  def change_password(id, password) when is_binary(id) and is_binary(password) do
+    case UUID.info(id) do
+      {:error, _} -> {:error, nil}
+      {:ok, _} ->
+        update_q = from(p in PasswordScheme, where: p.uid == ^id)
+
+        multi_struct = Multi.new()
+          |> Multi.update_all(:passwords, update_q, set: [password: password])
+
+        case Passwords.Repo.transaction(multi_struct) do
+          {:ok, _} -> {:ok, nil}
+          _ -> {:error, nil}
+        end
+    end
+  end
+
+  def change_password(_, _) do
     {:error, nil}
   end
 
@@ -114,7 +150,7 @@ defmodule UserPasswordPostgresService do
       :ok,
       %{
         code: confirming_code.code,
-        email: confirming_code.code
+        email: confirming_code.email
       }
     }
   end

@@ -5,7 +5,7 @@ defmodule Core.CoreDomains.Domains.User.Commands.UpdatingAvatarCommand do
 
   @type t :: %UpdatingAvatarCommand{token: binary(), avatar: binary()}
 
-  @spec new(binary) :: UpdatingAvatarCommand.t()
+  @spec new(binary(), binary()) :: UpdatingAvatarCommand.t()
   def new(token, avatar) do
     %UpdatingAvatarCommand{token: token, avatar: avatar}
   end

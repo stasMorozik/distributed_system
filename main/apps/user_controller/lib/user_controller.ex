@@ -3,13 +3,15 @@ defmodule UserController do
   alias Core.CoreApplications.User.LoggingAuthenticatingService
   alias Core.CoreApplications.User.LoggingLogoutingService
   alias Core.CoreApplications.Password.LoggingConfirmingEmailService
+  alias Core.CoreApplications.User.LoggingChangingEmailService
 
   alias Core.CoreDomains.Domains.User
 
   alias Core.CoreDomains.Domains.User.Commands.RegisteringCommand
   alias Core.CoreDomains.Domains.User.Commands.AuthenticatingCommand
-  alias Core.CoreDomains.Domains.User.Commands.LogoutCommand
+  alias Core.CoreDomains.Domains.User.Commands.LogoutingCommand
   alias Core.CoreDomains.Domains.Password.Commands.ConfirmingEmailCommand
+  alias Core.CoreDomains.Domains.User.Commands.ChangingEmailCommand
 
   alias Core.CoreDomains.Common.ValueObjects.Id
   alias Core.CoreDomains.Common.ValueObjects.Created
@@ -24,6 +26,8 @@ defmodule UserController do
   alias Adapters.AdaptersUserPassword.GettingByEmailAdapter, as: GettingPasswordByEmailAdapter
   alias Adapters.AdaptersUserPassword.GettingConfirmingCodeAdapter
   alias Adapters.AdaptersUserPassword.CreatingConfirmingCodeAdapter
+  alias Adapters.AdaptersUserPassword.GettingAdapter
+  alias Adapters.AdaptersUserPassword.ChangingEmailAdapter
 
   def confrim_email(email) do
     case LoggingConfirmingEmailService.confirm(
@@ -67,10 +71,23 @@ defmodule UserController do
 
   def logout(token) do
     case LoggingLogoutingService.logout(
-      LogoutCommand.new(token)
+      LogoutingCommand.new(token)
     ) do
       {:error, error} -> map_error_from_domain(error)
-      {:ok, some} -> {:ok, some}
+      {:ok, _} -> {:ok, true}
+    end
+  end
+
+  def change_email(token, new_email, code) do
+    case LoggingChangingEmailService.change(
+      ChangingEmailCommand.new(token, new_email, code),
+      GettingAdapter,
+      GettingConfirmingCodeAdapter,
+      ChangingEmailAdapter,
+      NotifyingTelegramAdapter
+    ) do
+      {:error, error} -> map_error_from_domain(error)
+      {:ok, _} -> {:ok, true}
     end
   end
 

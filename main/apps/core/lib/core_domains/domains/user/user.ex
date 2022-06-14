@@ -35,7 +35,7 @@ defmodule Core.CoreDomains.Domains.User do
     NameIsInvalidError.t()    |
     IdIsInvalidError.t()      |
     ImpossibleCreateError.t() |
-    ImpossibleUpdateError.t() |
+    ImpossibleUpdateError.t()
   }
 
   @doc """

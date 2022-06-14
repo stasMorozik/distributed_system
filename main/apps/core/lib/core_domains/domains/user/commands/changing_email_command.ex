@@ -3,9 +3,9 @@ defmodule Core.CoreDomains.Domains.User.Commands.ChangingEmailCommand do
 
   defstruct token: nil, new_email: nil, code: nil
 
-  @type t :: %ChangingEmailCommand{token: binary, new_email: binary, code: integer}
+  @type t :: %ChangingEmailCommand{token: binary(), new_email: binary(), code: integer()}
 
-  @spec new(binary) :: ChangingEmailCommand.t()
+  @spec new(binary(), binary(), integer()) :: ChangingEmailCommand.t()
   def new(token, new_email, code) do
     %ChangingEmailCommand{token: token, new_email: new_email, code: code}
   end

@@ -1,3 +1,0 @@
-defmodule UserHttpRegistrationService do
-
-end

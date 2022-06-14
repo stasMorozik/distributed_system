@@ -1,0 +1,3 @@
+defmodule UserHttpConfirmingEmailService do
+
+end
