@@ -1,5 +1,5 @@
 defmodule Core.CoreDomains.Domains.User.UseCases.Logouting do
-  alias alias Core.CoreDomains.Domains.User.Commands.LogoutCommand
+  alias alias Core.CoreDomains.Domains.User.Commands.Logouting
 
   alias alias Core.CoreDomains.Domains.Token
 
@@ -9,5 +9,5 @@ defmodule Core.CoreDomains.Domains.User.UseCases.Logouting do
 
   @type ok :: {:ok, true}
 
-  @callback logout(LogoutCommand.t()) :: error | ok
+  @callback logout(LogoutingCommand.t()) :: error | ok
 end

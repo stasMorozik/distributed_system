@@ -14,6 +14,7 @@ defmodule UserController do
   alias Core.CoreDomains.Common.ValueObjects.Id
   alias Core.CoreDomains.Common.ValueObjects.Created
   alias Core.CoreDomains.Common.ValueObjects.Name
+  alias Core.CoreDomains.Common.ValueObjects.Avatar
   alias Core.CoreDomains.Domains.Password.ValueObjects.ConfirmingCode
 
   alias Adapters.AdaptersUser.CreatingAdapter, as: CreatingUserAdapter
@@ -32,7 +33,7 @@ defmodule UserController do
       NotifyingTelegramAdapter
     ) do
       {:error, error} -> map_error_from_domain(error)
-      {:ok, code} -> map_ok_from_domain(code)
+      {:ok, _} -> {:ok, true}
       _ -> {:error, %{message: "Error mapping confirming code from domain"}}
     end
   end
@@ -47,7 +48,7 @@ defmodule UserController do
       NotifyingTelegramAdapter
     ) do
       {:error, error} -> map_error_from_domain(error)
-      {:ok, password} -> map_ok_from_domain(password)
+      {:ok, _} -> {:ok, true}
       _ -> {:error, %{message: "Error mapping user from domain"}}
     end
   end
@@ -77,11 +78,27 @@ defmodule UserController do
     id: %Id{value: id},
     created: %Created{value: created},
     name: %Name{value: name},
+    avatar: nil
   }) do
     {:ok, %{
       id: id,
       name: name,
-      created: created
+      created: created,
+      avatar: nil
+    }}
+  end
+
+  defp map_ok_from_domain(%User{
+    id: %Id{value: id},
+    created: %Created{value: created},
+    name: %Name{value: name},
+    avatar: %Avatar{value: image}
+  }) do
+    {:ok, %{
+      id: id,
+      name: name,
+      created: created,
+      avatar: image
     }}
   end
 
