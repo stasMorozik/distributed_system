@@ -17,11 +17,6 @@ config :user_http_registration_service, UserHttpRegistrationServiceWeb.Endpoint,
   secret_key_base: "Majb2twlC+F61MFhgKnWeUHpBcOEQ/gm0croPhTqYFONK9A69V8wabf2PCw5g6/h",
   watchers: []
 
-config :user_http_registration_service, :password_controller,
-  remote_node: :password_controller@localhost,
-  remote_supervisor: {PasswordController.TaskSupervisor, :password_controller@localhost},
-  remote_module: PasswordController
-
 config :user_http_registration_service, :user_controller,
   remote_node: :user_controller@localhost,
   remote_supervisor: {UserController.TaskSupervisor, :user_controller@localhost},

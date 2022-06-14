@@ -3,8 +3,8 @@ defmodule Adapters.AdaptersUserPassword.GettingAdapter do
 
   alias Core.CoreDomains.Common.Dtos.IdIsInvalidError
   alias Core.CoreDomains.Common.Dtos.NotFoundError
-
-  alias Adapters.AdaptersPassword.Mapper
+  alias Core.CoreDomains.Common.Dtos.ImpossibleCallError
+  alias Adapters.AdaptersUserPassword.Mapper
 
   @behaviour GettingPort
 
@@ -13,9 +13,9 @@ defmodule Adapters.AdaptersUserPassword.GettingAdapter do
     case UUID.info(id) do
       {:error, _}-> {:error, IdIsInvalidError.new()}
       {:ok, _} ->
-        case Node.connect(Application.get_env(:adapters, :password_postgres_service)[:remote_node]) do
-          :false -> {:error, ImpossibleCallError.new("Postgres user password service unavailable. Remote node - #{Application.get_env(:adapters, :password_postgres_service)[:remote_node]}")}
-          :ignored -> {:error, ImpossibleCallError.new("Postgres user password service unavailable. Remote node - #{Application.get_env(:adapters, :password_postgres_service)[:remote_node]}")}
+        case Node.connect(Application.get_env(:adapters, :user_password_postgres_service)[:remote_node]) do
+          :false -> {:error, ImpossibleCallError.new("Postgres user password service unavailable. Remote node - #{Application.get_env(:adapters, :user_password_postgres_service)[:remote_node]}")}
+          :ignored -> {:error, ImpossibleCallError.new("Postgres user password service unavailable. Remote node - #{Application.get_env(:adapters, :user_password_postgres_service)[:remote_node]}")}
           :true ->
             case generate_task(id) |> Task.await() do
               {:ok, password} -> Mapper.map_to_domain(password)
@@ -31,8 +31,8 @@ defmodule Adapters.AdaptersUserPassword.GettingAdapter do
 
   defp generate_task(id) do
     Task.Supervisor.async(
-      Application.get_env(:adapters, :password_postgres_service)[:remote_supervisor],
-      Application.get_env(:adapters, :password_postgres_service)[:remote_module],
+      Application.get_env(:adapters, :user_password_postgres_service)[:remote_supervisor],
+      Application.get_env(:adapters, :user_password_postgres_service)[:remote_module],
       :get,
       [id]
     )

@@ -25,9 +25,9 @@ defmodule Adapters.AdaptersUserPassword.ChangingPasswordAdapter do
     case UUID.info(id) do
       {:error, _} -> {:error, IdIsInvalidError.new()}
       {:ok, _} ->
-        case Node.connect(Application.get_env(:adapters, :password_postgres_service)[:remote_node]) do
-          :false -> {:error, ImpossibleCallError.new("Postgres user password service unavailable. Remote node - #{Application.get_env(:adapters, :password_postgres_service)[:remote_node]}")}
-          :ignored -> {:error, ImpossibleCallError.new("Postgres user password service unavailable. Remote node - #{Application.get_env(:adapters, :password_postgres_service)[:remote_node]}")}
+        case Node.connect(Application.get_env(:adapters, :user_password_postgres_service)[:remote_node]) do
+          :false -> {:error, ImpossibleCallError.new("Postgres user password service unavailable. Remote node - #{Application.get_env(:adapters, :user_password_postgres_service)[:remote_node]}")}
+          :ignored -> {:error, ImpossibleCallError.new("Postgres user password service unavailable. Remote node - #{Application.get_env(:adapters, :user_password_postgres_service)[:remote_node]}")}
           :true ->
             case generate_task(id, password) |> Task.await() do
               {:ok, _} -> {:ok, %Password{
@@ -49,8 +49,8 @@ defmodule Adapters.AdaptersUserPassword.ChangingPasswordAdapter do
 
   defp generate_task(id, password) do
     Task.Supervisor.async(
-      Application.get_env(:adapters, :password_postgres_service)[:remote_supervisor],
-      Application.get_env(:adapters, :password_postgres_service)[:remote_module],
+      Application.get_env(:adapters, :user_password_postgres_service)[:remote_supervisor],
+      Application.get_env(:adapters, :user_password_postgres_service)[:remote_module],
       :change_password,
       [id, password]
     )

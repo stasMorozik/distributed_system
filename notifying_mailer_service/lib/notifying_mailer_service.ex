@@ -8,10 +8,11 @@ defmodule NotifyingMailerService do
     is_binary(message) do
 
     Email.create_email(to, subject, message) |> Mailer.deliver_now!()
+    {:ok, nil}
   end
 
   def notify(_, _, _) do
-
+    {:error, nil}
   end
 
 end

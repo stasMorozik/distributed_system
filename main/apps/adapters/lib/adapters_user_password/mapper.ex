@@ -28,16 +28,12 @@ defmodule Adapters.AdaptersUserPassword.Mapper do
     }
   end
 
-  def map_to_domain(_) do
-    {:error, MapToDomainError.new("Error mapping password to domain")}
-  end
-
-  def map_to_domain_confirming_code(%{code: code, email: email}) do
+  def map_to_domain(%{code: code, email: email}) do
     {:ok, %ConfirmingCode{code: code, email: email}}
   end
 
-  def map_to_domain_confirming_code(_) do
-    {:error, MapToDomainError.new("Error mapping confirming code to domain")}
+  def map_to_domain(_) do
+    {:error, MapToDomainError.new("Error mapping password to domain")}
   end
 
 end

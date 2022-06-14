@@ -23,9 +23,9 @@ config :adapters, :user_postgres_service,
   remote_module: UserPostgresService
 
 config :adapters, :user_password_postgres_service,
-  remote_supervisor: {Passwords.Repo.TaskSupervisor, :user_password_postgres_service@localhost},
+  remote_supervisor: {UserPasswordPostgresService.TaskSupervisor, :user_password_postgres_service@localhost},
   remote_node: :user_password_postgres_service@localhost,
-  remote_module: PasswordPostgresService
+  remote_module: UserPasswordPostgresService
 
 config :adapters, :notifying_mailer_service,
   remote_supervisor: {NotifyingMailerService.TaskSupervisor, :notifying_mailer_service@localhost},

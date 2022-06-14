@@ -5,7 +5,7 @@ defmodule Adapters.AdaptersUserPassword.GettingConfirmingCodeAdapter do
   alias Core.CoreDomains.Common.Dtos.ImpossibleGetError
   alias Core.CoreDomains.Common.Dtos.NotFoundError
 
-  alias Adapters.AdaptersPassword.Mapper
+  alias Adapters.AdaptersUserPassword.Mapper
 
   @behaviour GettingConfirmingCodePort
 
@@ -17,7 +17,7 @@ defmodule Adapters.AdaptersUserPassword.GettingConfirmingCodeAdapter do
       :true ->
         case generate_task(email) |> Task.await() do
           {:error, _} -> {:error, NotFoundError.new("Confirming code not found")}
-          {:ok, confirming_code} -> Mapper.map_to_domain_confirming_code(confirming_code)
+          {:ok, confirming_code} -> Mapper.map_to_domain(confirming_code)
         end
     end
   end

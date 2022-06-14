@@ -3,16 +3,16 @@ defmodule Adapters.AdaptersUserPassword.GettingByEmailAdapter do
 
   alias Core.CoreDomains.Common.Dtos.ImpossibleGetError
   alias Core.CoreDomains.Common.Dtos.NotFoundError
-
-  alias Adapters.AdaptersPassword.Mapper
+  alias Core.CoreDomains.Common.Dtos.ImpossibleCallError
+  alias Adapters.AdaptersUserPassword.Mapper
 
   @behaviour GettingPort
 
   @spec get(binary) :: GettingPort.ok() | GettingPort.error()
   def get(email) when is_binary(email) do
-    case Node.connect(Application.get_env(:adapters, :password_postgres_service)[:remote_node]) do
-      :false -> {:error, ImpossibleCallError.new("Postgres user password service unavailable. Remote node - #{Application.get_env(:adapters, :password_postgres_service)[:remote_node]}")}
-      :ignored -> {:error, ImpossibleCallError.new("Postgres user password service unavailable. Remote node - #{Application.get_env(:adapters, :password_postgres_service)[:remote_node]}")}
+    case Node.connect(Application.get_env(:adapters, :user_password_postgres_service)[:remote_node]) do
+      :false -> {:error, ImpossibleCallError.new("Postgres user password service unavailable. Remote node - #{Application.get_env(:adapters, :user_password_postgres_service)[:remote_node]}")}
+      :ignored -> {:error, ImpossibleCallError.new("Postgres user password service unavailable. Remote node - #{Application.get_env(:adapters, :user_password_postgres_service)[:remote_node]}")}
       :true ->
         case generate_task(email) |> Task.await() do
           {:ok, password} -> Mapper.map_to_domain(password)
@@ -27,8 +27,8 @@ defmodule Adapters.AdaptersUserPassword.GettingByEmailAdapter do
 
   defp generate_task(email) do
     Task.Supervisor.async(
-      Application.get_env(:adapters, :password_postgres_service)[:remote_supervisor],
-      Application.get_env(:adapters, :password_postgres_service)[:remote_module],
+      Application.get_env(:adapters, :user_password_postgres_service)[:remote_supervisor],
+      Application.get_env(:adapters, :user_password_postgres_service)[:remote_module],
       :get_by_email,
       [email]
     )

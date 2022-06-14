@@ -2,23 +2,40 @@ defmodule UserController do
   alias Core.CoreApplications.User.LoggingRegisteringService
   alias Core.CoreApplications.User.LoggingAuthenticatingService
   alias Core.CoreApplications.User.LoggingLogoutingService
+  alias Core.CoreApplications.Password.LoggingConfirmingEmailService
 
   alias Core.CoreDomains.Domains.User
 
   alias Core.CoreDomains.Domains.User.Commands.RegisteringCommand
   alias Core.CoreDomains.Domains.User.Commands.AuthenticatingCommand
-  alias alias Core.CoreDomains.Domains.User.Commands.LogoutCommand
+  alias Core.CoreDomains.Domains.User.Commands.LogoutCommand
+  alias Core.CoreDomains.Domains.Password.Commands.ConfirmingEmailCommand
 
   alias Core.CoreDomains.Common.ValueObjects.Id
   alias Core.CoreDomains.Common.ValueObjects.Created
   alias Core.CoreDomains.Common.ValueObjects.Name
+  alias Core.CoreDomains.Domains.Password.ValueObjects.ConfirmingCode
 
   alias Adapters.AdaptersUser.CreatingAdapter, as: CreatingUserAdapter
-  alias Adapters.AdaptersPassword.CreatingAdapter, as: CreatingPasswordAdapter
+  alias Adapters.AdaptersUserPassword.CreatingAdapter, as: CreatingPasswordAdapter
   alias Adapters.AdaptersCommon.NotifyingMailerAdapter
   alias Adapters.AdaptersCommon.NotifyingTelegramAdapter
-  alias Adapters.AdaptersPassword.GettingByEmailAdapter, as: GettingPasswordByEmailAdapter
+  alias Adapters.AdaptersUserPassword.GettingByEmailAdapter, as: GettingPasswordByEmailAdapter
   alias Adapters.AdaptersUserPassword.GettingConfirmingCodeAdapter
+  alias Adapters.AdaptersUserPassword.CreatingConfirmingCodeAdapter
+
+  def confrim_email(email) do
+    case LoggingConfirmingEmailService.confirm(
+      ConfirmingEmailCommand.new(email),
+      CreatingConfirmingCodeAdapter,
+      NotifyingMailerAdapter,
+      NotifyingTelegramAdapter
+    ) do
+      {:error, error} -> map_error_from_domain(error)
+      {:ok, code} -> map_ok_from_domain(code)
+      _ -> {:error, %{message: "Error mapping confirming code from domain"}}
+    end
+  end
 
   def register(email, password, name, code) do
     case LoggingRegisteringService.register(
@@ -29,8 +46,8 @@ defmodule UserController do
       NotifyingMailerAdapter,
       NotifyingTelegramAdapter
     ) do
-      {:ok, password} -> map_ok_from_domain(password)
       {:error, error} -> map_error_from_domain(error)
+      {:ok, password} -> map_ok_from_domain(password)
       _ -> {:error, %{message: "Error mapping user from domain"}}
     end
   end
@@ -65,6 +82,13 @@ defmodule UserController do
       id: id,
       name: name,
       created: created
+    }}
+  end
+
+  defp map_ok_from_domain(%ConfirmingCode{code: code, email: email}) do
+    {:ok, %{
+      code: code,
+      email: email
     }}
   end
 

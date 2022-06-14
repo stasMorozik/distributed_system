@@ -5,6 +5,7 @@ defmodule Adapters.AdaptersUserPassword.CreatingConfirmingCodeAdapter do
 
   alias Core.CoreDomains.Common.Dtos.ImpossibleCallError
   alias Core.CoreDomains.Common.Dtos.ImpossibleCreateError
+  alias Core.CoreDomains.Common.Dtos.AlreadyExistsError
 
   @behaviour CreatingConfirmingCodePort
 
@@ -20,6 +21,7 @@ defmodule Adapters.AdaptersUserPassword.CreatingConfirmingCodeAdapter do
         }
         case generate_task(code_map) |> Task.await() do
           {:ok, _} -> {:ok, %ConfirmingCode{code: code, email: email}}
+          {:error, _} -> {:error, AlreadyExistsError.new("Email already exists")}
         end
     end
   end

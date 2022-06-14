@@ -15,12 +15,6 @@ config :user_http_registration_service, UserHttpRegistrationServiceWeb.Endpoint,
   pubsub_server: UserHttpRegistrationService.PubSub,
   live_view: [signing_salt: "IDw861vE"]
 
-
-config :user_http_registration_service, :password_controller,
-  remote_node: :password_controller@localhost,
-  remote_supervisor: {PasswordController.TaskSupervisor, :password_controller@localhost},
-  remote_module: PasswordController
-
 config :user_http_registration_service, :user_controller,
   remote_node: :user_controller@localhost,
   remote_supervisor: {UserController.TaskSupervisor, :user_controller@localhost},

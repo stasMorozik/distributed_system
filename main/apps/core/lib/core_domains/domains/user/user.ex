@@ -40,7 +40,7 @@ defmodule Core.CoreDomains.Domains.User do
   """
   @spec create(Password.t(), binary) :: ok | error
   def create(%Password{
-    confirmed: %Confirmed{value: false},
+    confirmed: %Confirmed{value: true},
     email: _,
     id: %Id{value: id},
     password: _,
@@ -57,7 +57,7 @@ defmodule Core.CoreDomains.Domains.User do
   end
 
   def create(%Password{
-    confirmed: %Confirmed{value: false},
+    confirmed: %Confirmed{value: true},
     email: _,
     id: %Id{value: id},
     password: _,
@@ -67,7 +67,7 @@ defmodule Core.CoreDomains.Domains.User do
   end
 
   def create(%Password{
-    confirmed: %Confirmed{value: false},
+    confirmed: %Confirmed{value: true},
     email: _,
     id: _,
     password: _,
@@ -77,6 +77,6 @@ defmodule Core.CoreDomains.Domains.User do
   end
 
   def create(_, _) do
-    {:error, ImpossibleCreateError.new("Data for creating user is invalid")}
+    {:error, ImpossibleCreateError.new("Impossible create user for invalid data")}
   end
 end
