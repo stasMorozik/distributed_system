@@ -24,8 +24,7 @@ defmodule UserController.MixProject do
 
   defp deps do
     [
-      {:core, in_umbrella: true},
-      {:adapters, in_umbrella: true}
+      {:core, in_umbrella: true}
     ]
   end
 end

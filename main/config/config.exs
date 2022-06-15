@@ -38,5 +38,3 @@ config :core, :user_logger_service,
   remote_module: UserLoggerService
 
 config :joken, user_signer: "user_secret"
-
-config :joken, password_signer: "password_secret"
