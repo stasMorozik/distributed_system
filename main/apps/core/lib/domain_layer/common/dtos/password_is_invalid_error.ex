@@ -1,4 +1,6 @@
 defmodule Core.DomainLayer.Common.Dtos.PasswordIsInvalidError do
+  @moduledoc false
+
   alias Core.DomainLayer.Common.Dtos.PasswordIsInvalidError
 
   defstruct message: nil
@@ -7,6 +9,8 @@ defmodule Core.DomainLayer.Common.Dtos.PasswordIsInvalidError do
 
   @spec new :: PasswordIsInvalidError.t()
   def new() do
-    %PasswordIsInvalidError{message: "Password is not valid"}
+    %PasswordIsInvalidError{
+      message: "Password is not valid"
+    }
   end
 end

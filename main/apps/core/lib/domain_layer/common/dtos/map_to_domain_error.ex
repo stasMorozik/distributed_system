@@ -1,4 +1,6 @@
 defmodule Core.DomainLayer.Common.Dtos.MapToDomainError do
+  @moduledoc false
+
   alias Core.DomainLayer.Common.Dtos.MapToDomainError
 
   defstruct message: nil
@@ -6,7 +8,7 @@ defmodule Core.DomainLayer.Common.Dtos.MapToDomainError do
   @type t :: %MapToDomainError{message: binary}
 
   @spec new(binary) :: MapToDomainError.t()
-  def new(mess) when is_binary(mess)  do
+  def new(mess) when is_binary(mess) do
     %MapToDomainError{message: mess}
   end
 

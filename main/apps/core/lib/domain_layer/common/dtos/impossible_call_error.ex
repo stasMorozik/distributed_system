@@ -1,4 +1,6 @@
 defmodule Core.DomainLayer.Common.Dtos.ImpossibleCallError do
+  @moduledoc false
+
   alias Core.DomainLayer.Common.Dtos.ImpossibleCallError
 
   defstruct message: nil

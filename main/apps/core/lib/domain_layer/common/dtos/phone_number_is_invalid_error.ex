@@ -1,4 +1,6 @@
 defmodule Core.DomainLayer.Common.Dtos.PhoneNumberIsInvalidError do
+  @moduledoc false
+
   alias Core.DomainLayer.Common.Dtos.PhoneNumberIsInvalidError
 
   defstruct message: nil
@@ -7,6 +9,8 @@ defmodule Core.DomainLayer.Common.Dtos.PhoneNumberIsInvalidError do
 
   @spec new() :: PhoneNumberIsInvalidError.t()
   def new do
-    %PhoneNumberIsInvalidError{message: "Phone number is not valid"}
+    %PhoneNumberIsInvalidError{
+      message: "Phone number is not valid"
+    }
   end
 end

@@ -25,10 +25,11 @@ defmodule Core.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      { :uuid, "~> 1.1" },
+      {:uuid, "~> 1.1"},
       {:joken, "~> 2.4"},
       {:jason, "~> 1.2"},
-      {:bcrypt_elixir, "~> 3.0"}
+      {:bcrypt_elixir, "~> 3.0"},
+      {:credo, "~> 1.6", only: [:dev, :test], runtime: false}
     ]
   end
 end

@@ -1,4 +1,6 @@
 defmodule Core.DomainLayer.Common.Dtos.EmailIsInvalidError do
+  @moduledoc false
+
   alias Core.DomainLayer.Common.Dtos.EmailIsInvalidError
 
   defstruct message: nil

@@ -1,4 +1,6 @@
 defmodule Core.DomainLayer.Common.Ports.StoragingFile do
+  @moduledoc false
+
   alias Core.DomainLayer.Common.Dtos.ImpossibleCreateError
 
   @type t :: module

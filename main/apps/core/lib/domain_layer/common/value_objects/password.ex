@@ -1,4 +1,6 @@
 defmodule Core.DomainLayer.Common.ValueObjects.Password do
+  @moduledoc false
+
   alias Core.DomainLayer.Common.ValueObjects.Password
   alias Core.DomainLayer.Common.Dtos.PasswordIsInvalidError
 
@@ -6,22 +8,21 @@ defmodule Core.DomainLayer.Common.ValueObjects.Password do
 
   @type t :: %Password{value: binary}
 
-  @type ok ::
-  {
-    :ok,
-    Password.t()
-  }
+  @type ok :: {:ok, Password.t()}
 
-  @type error ::
-  {
-    :error,
-    PasswordIsInvalidError.t()
-  }
+  @type error :: {:error, PasswordIsInvalidError.t()}
 
   @spec new(binary) :: ok | error
   def new(password) when is_binary(password) do
     if String.length(password) >= 5 && String.length(password) <= 10 do
-      {:ok, %Password{value: Bcrypt.Base.hash_password(password, Bcrypt.Base.gen_salt(12))}}
+      {:ok,
+       %Password{
+         value:
+           Bcrypt.Base.hash_password(
+             password,
+             Bcrypt.Base.gen_salt(12)
+           )
+       }}
     else
       {:error, PasswordIsInvalidError.new()}
     end

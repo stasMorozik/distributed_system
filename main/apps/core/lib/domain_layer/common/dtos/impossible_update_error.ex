@@ -1,4 +1,6 @@
 defmodule Core.DomainLayer.Common.Dtos.ImpossibleUpdateError do
+  @moduledoc false
+
   alias Core.DomainLayer.Common.Dtos.ImpossibleUpdateError
 
   defstruct message: nil
@@ -11,6 +13,8 @@ defmodule Core.DomainLayer.Common.Dtos.ImpossibleUpdateError do
   end
 
   def new(_) do
-    %ImpossibleUpdateError{message: "Impossible update entity"}
+    %ImpossibleUpdateError{
+      message: "Impossible update entity"
+    }
   end
 end

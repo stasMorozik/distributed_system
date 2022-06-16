@@ -1,4 +1,6 @@
 defmodule Core.DomainLayer.Common.Dtos.AlreadyExistsError do
+  @moduledoc false
+
   alias Core.DomainLayer.Common.Dtos.AlreadyExistsError
 
   defstruct message: nil

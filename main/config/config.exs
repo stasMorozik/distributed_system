@@ -18,23 +18,28 @@ import Config
 #
 
 config :adapters, :user_postgres_service,
-  remote_supervisor: {Persons.Repo.TaskSupervisor, :user_postgres_service@localhost},
+  remote_supervisor:
+    {Persons.Repo.TaskSupervisor, :user_postgres_service@localhost},
   remote_node: :user_postgres_service@localhost,
   remote_module: UserPostgresService
 
 config :adapters, :user_password_postgres_service,
-  remote_supervisor: {UserPasswordPostgresService.TaskSupervisor, :user_password_postgres_service@localhost},
+  remote_supervisor:
+    {UserPasswordPostgresService.TaskSupervisor,
+     :user_password_postgres_service@localhost},
   remote_node: :user_password_postgres_service@localhost,
   remote_module: UserPasswordPostgresService
 
 config :adapters, :notifying_mailer_service,
-  remote_supervisor: {NotifyingMailerService.TaskSupervisor, :notifying_mailer_service@localhost},
+  remote_supervisor:
+    {NotifyingMailerService.TaskSupervisor, :notifying_mailer_service@localhost},
   remote_node: :notifying_mailer_service@localhost,
   remote_module: NotifyingMailerService
 
-config :core, :user_logger_service,
-  remote_supervisor: {UserLoggerService.TaskSupervisor, :user_logger_service@localhost},
-  remote_node: :user_logger_service@localhost,
-  remote_module: UserLoggerService
+# config :core, :user_logger_service,
+#   remote_supervisor:
+#     {UserLoggerService.TaskSupervisor, :user_logger_service@localhost},
+#   remote_node: :user_logger_service@localhost,
+#   remote_module: UserLoggerService
 
 config :joken, user_signer: "user_secret"

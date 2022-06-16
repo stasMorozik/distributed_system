@@ -1,4 +1,6 @@
 defmodule Core.DomainLayer.Common.ValueObjects.Id do
+  @moduledoc false
+
   alias Core.DomainLayer.Common.ValueObjects.Id
 
   defstruct value: nil

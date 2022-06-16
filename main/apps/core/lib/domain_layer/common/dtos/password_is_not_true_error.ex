@@ -1,4 +1,6 @@
 defmodule Core.DomainLayer.Common.Dtos.PasswordIsNotTrueError do
+  @moduledoc false
+
   alias Core.DomainLayer.Common.Dtos.PasswordIsNotTrueError
 
   defstruct message: nil

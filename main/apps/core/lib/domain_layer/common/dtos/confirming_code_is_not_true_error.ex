@@ -1,4 +1,6 @@
 defmodule Core.DomainLayer.Common.Dtos.ConfirmingCodeIsNotTrueError do
+  @moduledoc false
+
   alias Core.DomainLayer.Common.Dtos.ConfirmingCodeIsNotTrueError
 
   defstruct message: nil
@@ -7,6 +9,8 @@ defmodule Core.DomainLayer.Common.Dtos.ConfirmingCodeIsNotTrueError do
 
   @spec new :: ConfirmingCodeIsNotTrueError.t()
   def new() do
-    %ConfirmingCodeIsNotTrueError{message: "Wrong confirming code"}
+    %ConfirmingCodeIsNotTrueError{
+      message: "Wrong confirming code"
+    }
   end
 end

@@ -1,4 +1,6 @@
 defmodule Core.DomainLayer.Common.Dtos.ImpossibleGetError do
+  @moduledoc false
+
   alias Core.DomainLayer.Common.Dtos.ImpossibleGetError
 
   defstruct message: nil

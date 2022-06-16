@@ -1,4 +1,6 @@
 defmodule Core.DomainLayer.Common.Ports.GettingPathFile do
+  @moduledoc false
+
   alias Core.DomainLayer.Common.Dtos.NotFoundError
 
   @type t :: module

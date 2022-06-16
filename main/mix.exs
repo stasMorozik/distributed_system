@@ -17,8 +17,8 @@ defmodule Main.MixProject do
   # Run "mix help deps" for examples and options.
   defp deps do
     [
-      {:core, in_umbrella: true},
-      {:adapters, in_umbrella: true}
+      {:core, in_umbrella: true}
+      # {:adapters, in_umbrella: true}
     ]
   end
 end

@@ -1,4 +1,6 @@
 defmodule Core.DomainLayer.Common.Dtos.ImpossibleAuthenticateError do
+  @moduledoc false
+
   alias Core.DomainLayer.Common.Dtos.ImpossibleAuthenticateError
 
   defstruct message: nil
@@ -11,6 +13,8 @@ defmodule Core.DomainLayer.Common.Dtos.ImpossibleAuthenticateError do
   end
 
   def new(_) do
-    %ImpossibleAuthenticateError{message: "Error creating authentication token"}
+    %ImpossibleAuthenticateError{
+      message: "Error creating authentication token"
+    }
   end
 end

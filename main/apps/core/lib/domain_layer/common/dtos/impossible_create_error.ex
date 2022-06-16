@@ -1,4 +1,6 @@
 defmodule Core.DomainLayer.Common.Dtos.ImpossibleCreateError do
+  @moduledoc false
+
   alias Core.DomainLayer.Common.Dtos.ImpossibleCreateError
 
   defstruct message: nil
@@ -11,6 +13,8 @@ defmodule Core.DomainLayer.Common.Dtos.ImpossibleCreateError do
   end
 
   def new(_) do
-    %ImpossibleCreateError{message: "Impossible create entity"}
+    %ImpossibleCreateError{
+      message: "Impossible create entity"
+    }
   end
 end

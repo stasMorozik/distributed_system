@@ -1,4 +1,6 @@
 defmodule Core.DomainLayer.Common.Dtos.ImpossibleDeleteError do
+  @moduledoc false
+
   alias Core.DomainLayer.Common.Dtos.ImpossibleDeleteError
 
   defstruct message: nil
@@ -11,6 +13,8 @@ defmodule Core.DomainLayer.Common.Dtos.ImpossibleDeleteError do
   end
 
   def new(_) do
-    %ImpossibleDeleteError{message: "Impossible delete entity"}
+    %ImpossibleDeleteError{
+      message: "Impossible delete entity"
+    }
   end
 end

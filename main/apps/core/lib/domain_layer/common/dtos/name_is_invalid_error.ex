@@ -1,4 +1,6 @@
 defmodule Core.DomainLayer.Common.Dtos.NameIsInvalidError do
+  @moduledoc false
+
   alias Core.DomainLayer.Common.Dtos.NameIsInvalidError
 
   defstruct message: nil

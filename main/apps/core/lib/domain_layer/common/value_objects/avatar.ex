@@ -1,14 +1,14 @@
 defmodule Core.DomainLayer.Common.ValueObjects.Avatar do
+  @moduledoc false
+
   alias Core.DomainLayer.Common.ValueObjects.Avatar
 
   defstruct value: nil
 
-  @type t :: %Avatar {
-    value: binary
-  }
+  @type t :: %Avatar{value: binary()}
 
   @spec new(binary) :: Avatar.t()
   def new(image) do
-    %Avatar { value: image }
+    %Avatar{value: image}
   end
 end

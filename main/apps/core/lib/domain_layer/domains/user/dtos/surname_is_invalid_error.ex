@@ -1,4 +1,6 @@
 defmodule Core.DomainLayer.Domains.User.Dtos.SurnameIsInvalidError do
+  @moduledoc false
+
   alias Core.DomainLayer.Domains.User.Dtos.SurnameIsInvalidError
 
   defstruct message: nil

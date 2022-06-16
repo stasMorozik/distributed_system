@@ -1,4 +1,6 @@
 defmodule Core.DomainLayer.Common.Dtos.NotFoundError do
+  @moduledoc false
+
   alias Core.DomainLayer.Common.Dtos.NotFoundError
 
   defstruct message: nil

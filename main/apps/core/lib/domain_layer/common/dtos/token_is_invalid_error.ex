@@ -1,4 +1,6 @@
 defmodule Core.DomainLayer.Common.Dtos.TokenIsInvalidError do
+  @moduledoc false
+
   alias Core.DomainLayer.Common.Dtos.TokenIsInvalidError
 
   defstruct message: nil
