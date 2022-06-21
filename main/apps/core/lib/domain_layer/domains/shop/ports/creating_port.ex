@@ -1,4 +1,4 @@
-defmodule Core.DomainLayer.Domains.User.Ports.CreatingPort do
+defmodule Core.DomainLayer.Domains.Shop.Ports.CreatingPort do
   @moduledoc false
 
   alias Core.DomainLayer.Common.Dtos.ImpossibleCreateError
@@ -6,11 +6,11 @@ defmodule Core.DomainLayer.Domains.User.Ports.CreatingPort do
   alias Core.DomainLayer.Common.Dtos.ImpossibleCallError
   alias Core.DomainLayer.Common.Dtos.AlreadyExistsError
 
-  alias Core.DomainLayer.Domains.User.UserEntity
+  alias Core.DomainLayer.Domains.Shop.ShopEntity
 
   @type t :: Module
 
-  @type ok :: {:ok, UserEntity.t()}
+  @type ok :: {:ok, ShopEntity.t()}
 
   @type error :: {
           :error,
@@ -20,5 +20,5 @@ defmodule Core.DomainLayer.Domains.User.Ports.CreatingPort do
           | AlreadyExistsError.t()
         }
 
-  @callback create(UserEntity.t()) :: ok() | error()
+  @callback create(ShopEntity.t()) :: ok() | error()
 end

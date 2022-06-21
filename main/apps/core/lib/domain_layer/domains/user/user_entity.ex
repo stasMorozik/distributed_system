@@ -69,7 +69,6 @@ defmodule Core.DomainLayer.Domains.User.UserEntity do
           | NameIsInvalidError.t()
           | SurnameIsInvalidError.t()
           | PhoneNumberIsInvalidError.t()
-          | NameIsInvalidError.t()
           | PasswordIsInvalidError.t()
         }
 
