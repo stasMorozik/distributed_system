@@ -1,4 +1,4 @@
-defmodule Core.DomainLayer.Domains.Buyer.Ports.UpdatingPort do
+defmodule Core.DomainLayer.Domains.Shop.Ports.UpdatingPort do
   @moduledoc false
 
   alias Core.DomainLayer.Common.Dtos.ImpossibleUpdateError
@@ -6,11 +6,11 @@ defmodule Core.DomainLayer.Domains.Buyer.Ports.UpdatingPort do
   alias Core.DomainLayer.Common.Dtos.ImpossibleCallError
   alias Core.DomainLayer.Common.Dtos.AlreadyExistsError
 
-  alias Core.DomainLayer.Domains.Buyer.BuyerEntity
+  alias Core.DomainLayer.Domains.Shop.ShopEntity
 
   @type t :: Module
 
-  @type ok :: {:ok, BuyerEntity.t()}
+  @type ok :: {:ok, ShopEntity.t()}
 
   @type error :: {
           :error,
@@ -20,5 +20,5 @@ defmodule Core.DomainLayer.Domains.Buyer.Ports.UpdatingPort do
           | AlreadyExistsError.t()
         }
 
-  @callback create(BuyerEntity.t()) :: ok() | error()
+  @callback create(ShopEntity.t()) :: ok() | error()
 end
