@@ -18,5 +18,5 @@ defmodule Core.DomainLayer.Common.Ports.CreatingConfirmingCodePort do
           | ImpossibleCreateError.t()
         }
 
-  @callback create(ConfirmingCode.t())
+  @callback create(ConfirmingCode.t()) :: ok() | error()
 end

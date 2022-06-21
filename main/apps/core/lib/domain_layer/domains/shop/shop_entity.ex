@@ -10,18 +10,12 @@ defmodule Core.DomainLayer.Domains.Shop.ShopEntity do
   alias Core.DomainLayer.Common.ValueObjects.Id
   alias Core.DomainLayer.Common.ValueObjects.Created
   alias Core.DomainLayer.Common.ValueObjects.Name
-  alias Core.DomainLayer.Common.ValueObjects.Email
-  alias Core.DomainLayer.Common.ValueObjects.PhoneNumber
   alias Core.DomainLayer.Common.ValueObjects.Avatar
   alias Core.DomainLayer.Common.ValueObjects.Likes
 
   alias Core.DomainLayer.Common.Dtos.ImpossibleUpdateError
   alias Core.DomainLayer.Common.Dtos.ImpossibleCreateError
-  alias Core.DomainLayer.Common.Dtos.EmailIsInvalidError
   alias Core.DomainLayer.Common.Dtos.NameIsInvalidError
-  alias Core.DomainLayer.Common.Dtos.PhoneNumberIsInvalidError
-  alias Core.DomainLayer.Common.Dtos.TokenIsInvalidError
-  alias Core.DomainLayer.Common.Dtos.AuthorizatingData
 
   alias Core.DomainLayer.Domains.Shop.Dtos.CreatingData
   alias Core.DomainLayer.Domains.Shop.Dtos.ChangingNameData

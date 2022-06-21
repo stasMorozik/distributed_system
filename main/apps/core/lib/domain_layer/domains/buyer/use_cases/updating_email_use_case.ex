@@ -3,8 +3,6 @@ defmodule Core.DomainLayer.Domains.Buyer.UseCases.UpdatingEmailUseCase do
 
   alias Core.DomainLayer.Domains.Buyer.BuyerEntity
 
-  alias Core.DomainLayer.Domains.Buyer.Ports.CreatingPort
-
   alias Core.DomainLayer.Common.Dtos.ChangingEmailData
 
   alias Core.DomainLayer.Common.Ports.GettingConfirmingCodePort
