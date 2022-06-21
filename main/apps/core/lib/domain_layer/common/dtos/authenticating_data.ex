@@ -3,12 +3,12 @@ defmodule Core.DomainLayer.Common.Dtos.AuthenticatingData do
 
   alias Core.DomainLayer.Common.Dtos.AuthenticatingData
 
-  defstruct password: nil
+  defstruct password: nil, email: nil
 
-  @type t :: %AuthenticatingData{password: binary()}
+  @type t :: %AuthenticatingData{password: binary(), email: binary()}
 
-  @spec new(binary()) :: AuthenticatingData.t()
-  def new(password) do
-    %AuthenticatingData{password: password}
+  @spec new(binary(), binary()) :: AuthenticatingData.t()
+  def new(password, email) do
+    %AuthenticatingData{password: password, email: email}
   end
 end

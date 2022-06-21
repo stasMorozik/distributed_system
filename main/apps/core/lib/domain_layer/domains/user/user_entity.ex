@@ -56,15 +56,6 @@ defmodule Core.DomainLayer.Domains.User.UserEntity do
           created: Created.t()
         }
 
-  @type creating_map :: %{
-          name: binary(),
-          surname: binary(),
-          email: binary(),
-          phone: binary(),
-          password: binary(),
-          confirming_code: integer()
-        }
-
   @type ok :: {
           :ok,
           UserEntity.t()

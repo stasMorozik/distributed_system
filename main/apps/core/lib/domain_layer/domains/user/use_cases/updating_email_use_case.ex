@@ -5,7 +5,7 @@ defmodule Core.DomainLayer.Domains.User.UseCases.UpdatingEmailUseCase do
 
   alias Core.DomainLayer.Common.Dtos.ChangingEmailData
 
-  alias Core.DomainLayer.Domains.User.Ports.GettingConfirmingCodePort
+  alias Core.DomainLayer.Common.Ports.GettingConfirmingCodePort
   alias Core.DomainLayer.Domains.User.Ports.UpdatingPort
 
   @type t :: Module
@@ -19,7 +19,7 @@ defmodule Core.DomainLayer.Domains.User.UseCases.UpdatingEmailUseCase do
           | UpdatingPort.error()
         }
 
-  @callback create(
+  @callback update(
               ChangingEmailData.t(),
               GettingConfirmingCodePort.t(),
               UpdatingPort.t()

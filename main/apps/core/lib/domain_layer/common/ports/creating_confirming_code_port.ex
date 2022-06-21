@@ -1,8 +1,7 @@
-defmodule Core.DomainLayer.Domains.User.Ports.GettingConfirmingCodePort do
+defmodule Core.DomainLayer.Common.Ports.CreatingConfirmingCodePort do
   @moduledoc false
 
-  alias Core.DomainLayer.Common.Dtos.NotFoundError
-  alias Core.DomainLayer.Common.Dtos.ImpossibleGetError
+  alias Core.DomainLayer.Common.Dtos.ImpossibleCreateError
   alias Core.DomainLayer.Common.Dtos.ImpossibleCallError
   alias Core.DomainLayer.Common.Dtos.IdIsInvalidError
   alias Core.DomainLayer.Common.ValueObjects.ConfirmingCode
@@ -13,11 +12,11 @@ defmodule Core.DomainLayer.Domains.User.Ports.GettingConfirmingCodePort do
 
   @type error :: {
           :error,
-          NotFoundError.t()
-          | ImpossibleGetError.t()
+          ImpossibleCreateError .t()
           | ImpossibleCallError.t()
           | IdIsInvalidError.t()
+          | ImpossibleCreateError.t()
         }
 
-  @callback get(binary()) :: ok() | error()
+  @callback create(ConfirmingCode.t())
 end

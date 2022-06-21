@@ -5,7 +5,7 @@ defmodule Core.DomainLayer.Domains.User.UseCases.CreatingUseCase do
 
   alias Core.DomainLayer.Domains.User.Dtos.CreatingData
 
-  alias Core.DomainLayer.Domains.User.Ports.GettingConfirmingCodePort
+  alias Core.DomainLayer.Common.Ports.GettingConfirmingCodePort
   alias Core.DomainLayer.Domains.User.Ports.CreatingPort
   alias Core.DomainLayer.Common.Ports.Notifying
 

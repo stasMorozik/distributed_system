@@ -17,8 +17,8 @@ defmodule Core.DomainLayer.Domains.User.UseCases.UpdatingPasswordUseCase do
           | UpdatingPort.error()
         }
 
-  @callback create(
-              ChangingEmailData.t(),
+  @callback update(
+              ChangingPasswordData.t(),
               UpdatingPort.t()
             ) :: ok() | error()
 end

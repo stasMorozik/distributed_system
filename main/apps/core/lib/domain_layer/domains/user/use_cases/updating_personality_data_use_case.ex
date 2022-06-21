@@ -17,7 +17,7 @@ defmodule Core.DomainLayer.Domains.User.UseCases.UpdatingPersonalityDataUseCase 
           | UpdatingPort.error()
         }
 
-  @callback create(
+  @callback update(
               ChangingPersonalityData.t(),
               UpdatingPort.t()
             ) :: ok() | error()
