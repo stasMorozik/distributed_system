@@ -11,11 +11,9 @@ defmodule Core.DomainLayer.Domains.Buyer.UseCases.UpdatingPasswordUseCase do
 
   @type ok :: {:ok, BuyerEntity.t()}
 
-  @type error :: {
-          :error,
+  @type error ::
           BuyerEntity.error_change_password()
           | UpdatingPort.error()
-        }
 
   @callback update(
               ChangingPasswordData.t(),

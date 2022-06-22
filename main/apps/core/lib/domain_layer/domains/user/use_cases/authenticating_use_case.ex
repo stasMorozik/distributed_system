@@ -10,10 +10,9 @@ defmodule Core.DomainLayer.Domains.User.UseCases.AuhenticatingUseCase do
 
   @type ok :: {:ok, binary()}
 
-  @type error :: {
+  @type error ::
           GettingPort.error()
           | UserEntity.error_authenticating()
-        }
 
   @callback authenticate(AuthenticatingData.t(), GettingPort.t()) :: ok() | error()
 end

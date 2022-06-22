@@ -3,8 +3,6 @@ defmodule Core.DomainLayer.Domains.Shop.ShopEntity do
     User Entity
   """
 
-  use Joken.Config
-
   alias Core.DomainLayer.Domains.Shop.ShopEntity
 
   alias Core.DomainLayer.Common.ValueObjects.Id

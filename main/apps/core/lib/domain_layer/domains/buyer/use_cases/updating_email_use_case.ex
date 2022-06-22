@@ -12,12 +12,10 @@ defmodule Core.DomainLayer.Domains.Buyer.UseCases.UpdatingEmailUseCase do
 
   @type ok :: {:ok, BuyerEntity.t()}
 
-  @type error :: {
-          :error,
+  @type error ::
           BuyerEntity.error_change_email()
           | GettingConfirmingCodePort.error()
           | UpdatingPort.error()
-        }
 
   @callback update(
               ChangingEmailData.t(),

@@ -11,11 +11,9 @@ defmodule Core.DomainLayer.Domains.User.UseCases.UpdatingPersonalityDataUseCase 
 
   @type ok :: {:ok, UserEntity.t()}
 
-  @type error :: {
-          :error,
+  @type error ::
           UserEntity.error_change_personality()
           | UpdatingPort.error()
-        }
 
   @callback update(
               ChangingPersonalityData.t(),

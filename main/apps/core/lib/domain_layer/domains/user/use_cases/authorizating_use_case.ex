@@ -10,11 +10,9 @@ defmodule Core.DomainLayer.Domains.User.UseCases.AuthorizatingUseCase do
 
   @type ok :: {:ok, UserEntity.t()}
 
-  @type error :: {
-          :error,
+  @type error ::
           GettingPort.error()
           | UserEntity.error_authorizating()
-        }
 
   @callback authorizate(AuthorizatingData.t(), GettingPort.t()) :: ok() | error()
 end

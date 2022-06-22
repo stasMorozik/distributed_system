@@ -11,11 +11,9 @@ defmodule Core.DomainLayer.Domains.User.UseCases.UpdatingPasswordUseCase do
 
   @type ok :: {:ok, UserEntity.t()}
 
-  @type error :: {
-          :error,
+  @type error ::
           UserEntity.error_change_password()
           | UpdatingPort.error()
-        }
 
   @callback update(
               ChangingPasswordData.t(),

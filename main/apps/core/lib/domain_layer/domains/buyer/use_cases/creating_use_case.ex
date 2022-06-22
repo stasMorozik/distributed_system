@@ -14,13 +14,10 @@ defmodule Core.DomainLayer.Domains.User.UseCases.CreatingUseCase do
 
   @type ok :: {:ok, BuyerEntity.t()}
 
-  @type error :: {
-          :error,
+  @type error ::
           BuyerEntity.error_creating()
           | GettingConfirmingCodePort.error()
           | CreatingPort.error()
-          | Notifying.error()
-        }
 
   @callback create(
               CreatingData.t(),

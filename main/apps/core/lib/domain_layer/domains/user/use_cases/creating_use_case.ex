@@ -7,19 +7,15 @@ defmodule Core.DomainLayer.Domains.User.UseCases.CreatingUseCase do
 
   alias Core.DomainLayer.Common.Ports.GettingConfirmingCodePort
   alias Core.DomainLayer.Domains.User.Ports.CreatingPort
-  alias Core.DomainLayer.Common.Ports.Notifying
 
   @type t :: Module
 
   @type ok :: {:ok, UserEntity.t()}
 
-  @type error :: {
-          :error,
+  @type error ::
           UserEntity.error_creating()
           | GettingConfirmingCodePort.error()
           | CreatingPort.error()
-          | Notifying.error()
-        }
 
   @callback create(
               CreatingData.t(),
