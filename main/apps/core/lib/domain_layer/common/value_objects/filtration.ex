@@ -12,37 +12,30 @@ defmodule Core.DomainLayer.Common.ValueObjects.Filtration do
           value: binary()
         }
 
-  @type ok :: {
-          :ok,
-          Filtration.t()
+  @type param :: %{
+          type: binary(),
+          value: binary()
         }
 
-  @type error :: {
-          :error,
-          ImpossibleCreateError.t()
-        }
+  @spec new(nonempty_list(param())) :: nonempty_list(Filtration.t())
+  def new(params) when is_list(params) do
+    Enum.filter(params, &condition(&1))
+    |> Enum.map(fn %{type: t, value: v} -> %Filtration{type: t, value: v} end)
+  end
 
-  @spec new(binary(), binary()) :: ok() | error()
-  def new(type, value) when is_binary(type) and is_binary(value) do
+  def new(_) do
+    ImpossibleCreateError.new("Impossible create object of filtration for invalid data")
+  end
+
+  @spec condition(param()) :: boolean()
+  defp condition(%{type: t, value: _}) do
     cond do
-      type == "name" ->
-        {
-          :ok,
-          %Filtration{
-            type: type,
-            value: value
-          }
-        }
-
-      true ->
-        {
-          :error,
-          ImpossibleCreateError.new("Impossible create object of filtration for invalid data")
-        }
+      t == "name" -> true
+      true -> false
     end
   end
 
-  def new(_, _) do
-    ImpossibleCreateError.new("Impossible create object of filtration for invalid data")
+  defp condition(_) do
+    false
   end
 end

@@ -19,5 +19,5 @@ defmodule Core.DomainLayer.Domains.Shop.Ports.GettingListPort do
           | ImpossibleGetError.t()
         }
 
-  @callback get(Pagination.t(), Sorting.t(), Filtration.t())
+  @callback get(Pagination.t(), Sorting.t(), Filtration.t()) :: ok() | error()
 end
