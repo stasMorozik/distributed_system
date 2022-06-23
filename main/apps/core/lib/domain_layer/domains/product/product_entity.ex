@@ -10,6 +10,7 @@ defmodule Core.DomainLayer.Domains.Product.ProductEntity do
   alias Core.DomainLayer.Common.ValueObjects.Name
   alias Core.DomainLayer.Common.ValueObjects.Image
   alias Core.DomainLayer.Common.ValueObjects.Like
+  alias Core.DomainLayer.Common.ValueObjects.Dislike
   alias Core.DomainLayer.Common.ValueObjects.Amount
 
   alias Core.DomainLayer.Common.Dtos.ImpossibleUpdateError
@@ -24,6 +25,7 @@ defmodule Core.DomainLayer.Domains.Product.ProductEntity do
   defstruct name: nil,
             images: nil,
             likes: nil,
+            dislikes: nil,
             id: nil,
             amount: nil,
             owner: nil,
@@ -32,7 +34,8 @@ defmodule Core.DomainLayer.Domains.Product.ProductEntity do
   @type t :: %ProductEntity{
           name: binary(),
           images: list(Image.t()),
-          likes: Like.t(),
+          likes: list(Like.t()),
+          dislikes: list(Dislike.t())
           id: Id.t(),
           amount: Amount.t(),
           owner: ShopEntity.t(),
@@ -65,6 +68,7 @@ defmodule Core.DomainLayer.Domains.Product.ProductEntity do
             name: value_name,
             images: Enum.map(dto.images, fn image -> %Image{value: image} end),
             likes: [],
+            dislikes: [],
             id: Id.new(),
             amount: Amount.new(0),
             owner: shop_entity,
