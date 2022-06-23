@@ -1,21 +1,24 @@
-defmodule Core.DomainLayer.Common.ValueObjects.Likes do
+defmodule Core.DomainLayer.Common.ValueObjects.Like do
   @moduledoc false
 
-  alias Core.DomainLayer.Common.ValueObjects.Likes
+  alias Core.DomainLayer.Common.ValueObjects.Like
+
+  alias Core.DomainLayer.Common.Dtos.ImpossibleCreateError
 
   defstruct value: nil
 
-  @type t :: %Likes{value: integer()}
+  @type t :: %Like{value: binary()}
 
-  @spec new(integer()) :: Likes.t()
-  def new(amount) when is_integer(amount) do
-    case amount < 0 do
-      :true -> %Likes{value: 0}
-      :false -> %Likes{value: amount}
-    end
+  @type ok :: {:ok, Like.t()}
+
+  @type error :: {:error, ImpossibleCreateError.t()}
+
+  @spec new(binary()) :: Like.t()
+  def new(id_buyer) when is_binary(id_buyer) do
+    {:ok, %Like{value: id_buyer}}
   end
 
   def new(_) do
-    %Likes{value: 0}
+    {:error, ImpossibleCreateError.new("Impossible like for invalud data")}
   end
 end

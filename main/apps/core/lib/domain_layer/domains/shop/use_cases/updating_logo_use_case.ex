@@ -1,11 +1,11 @@
-defmodule Core.DomainLayer.Domains.Shop.UseCases.UpdatingAvatarUseCase do
+defmodule Core.DomainLayer.Domains.Shop.UseCases.UpdatingLogoUseCase do
   @moduledoc false
 
   alias Core.DomainLayer.Domains.Shop.ShopEntity
 
   alias Core.DomainLayer.Domains.Shop.Ports.UpdatingPort
 
-  alias Core.DomainLayer.Domains.Shop.Dtos.ChangingAvatarData
+  alias Core.DomainLayer.Domains.Shop.Dtos.ChangingLogoData
 
   @type t :: Module
 
@@ -13,5 +13,5 @@ defmodule Core.DomainLayer.Domains.Shop.UseCases.UpdatingAvatarUseCase do
 
   @type error :: UpdatingPort.error()
 
-  @callback update(ChangingAvatarData.t(), UpdatingPort.t()) :: ok() | error()
+  @callback update(ChangingLogoData.t(), UpdatingPort.t()) :: ok() | error()
 end

@@ -4,18 +4,18 @@ defmodule Core.DomainLayer.Domains.Shop.Dtos.CreatingData do
   alias Core.DomainLayer.Domains.Shop.Dtos.CreatingData
 
   defstruct name: nil,
-            avatar: nil
+            logo: nil
 
   @type t :: %CreatingData{
           name: binary(),
-          avatar: binary()
+          logo: binary()
         }
 
   @spec new(binary(), binary()) :: CreatingData.t()
-  def new(name, avatar) do
+  def new(name, logo) do
     %CreatingData{
       name: name,
-      avatar: avatar
+      logo: logo
     }
   end
 end

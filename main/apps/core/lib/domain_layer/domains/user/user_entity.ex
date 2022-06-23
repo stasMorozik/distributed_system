@@ -10,7 +10,7 @@ defmodule Core.DomainLayer.Domains.User.UserEntity do
   alias Core.DomainLayer.Common.ValueObjects.Id
   alias Core.DomainLayer.Common.ValueObjects.Created
   alias Core.DomainLayer.Common.ValueObjects.Email
-  alias Core.DomainLayer.Common.ValueObjects.Avatar
+  alias Core.DomainLayer.Common.ValueObjects.Image
   alias Core.DomainLayer.Common.ValueObjects.Name
   alias Core.DomainLayer.Common.ValueObjects.Password
   alias Core.DomainLayer.Common.ValueObjects.PhoneNumber
@@ -51,7 +51,7 @@ defmodule Core.DomainLayer.Domains.User.UserEntity do
           email: Email.t(),
           phone: PhoneNumber.t(),
           password: Password.t(),
-          avatar: Avatar.t(),
+          avatar: Image.t(),
           id: Id.t(),
           created: Created.t()
         }
