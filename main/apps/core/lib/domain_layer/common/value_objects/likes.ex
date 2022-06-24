@@ -19,6 +19,6 @@ defmodule Core.DomainLayer.Common.ValueObjects.Like do
   end
 
   def new(_) do
-    {:error, ImpossibleCreateError.new("Impossible like for invalud data")}
+    {:error, ImpossibleCreateError.new("Impossible like for invalid data")}
   end
 end

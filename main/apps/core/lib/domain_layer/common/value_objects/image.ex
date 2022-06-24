@@ -3,12 +3,25 @@ defmodule Core.DomainLayer.Common.ValueObjects.Image do
 
   alias Core.DomainLayer.Common.ValueObjects.Image
 
-  defstruct value: nil
+  alias Core.DomainLayer.Common.Dtos.ImageIsInvalidError
 
-  @type t :: %Image{value: binary()}
+  defstruct value: nil, id: nil, created: nil
 
-  @spec new(binary) :: Image.t()
-  def new(image) do
-    %Image{value: image}
+  @type t :: %Image{value: binary(), id: binary(), created: NaiveDateTime.t()}
+
+  @type ok :: {:ok, Image.t()}
+
+  @type error :: {:error, ImageIsInvalidError.t()}
+
+  @spec new(binary) :: ok() | error
+  def new(image) when is_binary(image) do
+    {
+      :ok,
+      %Image{value: image, id: UUID.uuid4(), created: NaiveDateTime.utc_now()}
+    }
+  end
+
+  def new(_) do
+    {:error, ImageIsInvalidError.new()}
   end
 end

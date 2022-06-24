@@ -11,15 +11,20 @@ defmodule Core.DomainLayer.Domains.Shop.ShopEntity do
   alias Core.DomainLayer.Common.ValueObjects.Image
   alias Core.DomainLayer.Common.ValueObjects.Like
   alias Core.DomainLayer.Common.ValueObjects.Dislike
+  alias Core.DomainLayer.Common.ValueObjects.Description
 
   alias Core.DomainLayer.Common.Dtos.ImpossibleUpdateError
   alias Core.DomainLayer.Common.Dtos.ImpossibleCreateError
   alias Core.DomainLayer.Common.Dtos.NameIsInvalidError
   alias Core.DomainLayer.Common.Dtos.AlreadyExistsError
+  alias Core.DomainLayer.Common.Dtos.DescriptionIsInvalidError
+  alias Core.DomainLayer.Common.Dtos.ImageIsInvalidError
+
+  alias Core.DomainLayer.Common.Dtos.ChangingNameData
+  alias Core.DomainLayer.Common.Dtos.ChangingDescriptionData
+  alias Core.DomainLayer.Common.Dtos.ChangingLogoData
 
   alias Core.DomainLayer.Domains.Shop.Dtos.CreatingData
-  alias Core.DomainLayer.Domains.Shop.Dtos.ChangingNameData
-  alias Core.DomainLayer.Domains.Shop.Dtos.ChangingLogoData
 
   alias Core.DomainLayer.Domains.User.UserEntity
 
@@ -31,7 +36,8 @@ defmodule Core.DomainLayer.Domains.Shop.ShopEntity do
             dislikes: nil,
             owner: nil,
             id: nil,
-            created: nil
+            created: nil,
+            description: nil
 
   @type t :: %ShopEntity{
           name: Name.t(),
@@ -40,7 +46,8 @@ defmodule Core.DomainLayer.Domains.Shop.ShopEntity do
           dislikes: list(Dislike.t()),
           owner: UserEntity.t(),
           id: Id.t(),
-          created: Created.t()
+          created: Created.t(),
+          description: Description.t()
         }
 
   @type ok :: {
@@ -52,11 +59,25 @@ defmodule Core.DomainLayer.Domains.Shop.ShopEntity do
           :error,
           ImpossibleCreateError.t()
           | NameIsInvalidError.t()
+          | DescriptionIsInvalidError.t()
+          | ImageIsInvalidError.t()
         }
 
   @type error_changing_name :: {
           :error,
           NameIsInvalidError.t()
+          | ImpossibleUpdateError.t()
+        }
+
+  @type error_changing_logo :: {
+          :error,
+          ImageIsInvalidError.t()
+          | ImpossibleUpdateError.t()
+        }
+
+  @type error_changing_description :: {
+          :error,
+          DescriptionIsInvalidError.t()
           | ImpossibleUpdateError.t()
         }
 
@@ -68,24 +89,25 @@ defmodule Core.DomainLayer.Domains.Shop.ShopEntity do
 
   @spec new(CreatingData.t(), UserEntity.t()) :: ok() | error_creating()
   def new(%CreatingData{} = dto, %UserEntity{} = user_entity) do
-    case Name.new(dto.name) do
-      {:error, error_dto} ->
 
-        {:error, error_dto}
-      {:ok, value_name} ->
-
-        {
-          :ok,
-          %ShopEntity{
-            name: value_name,
-            owner: user_entity,
-            logo: Image.new(dto.logo),
-            likes: [],
-            dislikes: [],
-            id: Id.new(),
-            created: Created.new()
-          }
+    with {:ok, value_name} <- Name.new(dto.name),
+         {:ok, value_desc} <- Description.new(dto.description),
+         {:ok, value_image} <- Image.new(dto.logo) do
+      {
+        :ok,
+        %ShopEntity{
+          name: value_name,
+          owner: user_entity,
+          logo: value_image,
+          likes: [],
+          dislikes: [],
+          id: Id.new(),
+          created: Created.new(),
+          description: value_desc
         }
+      }
+    else
+      {:error, error_dto} -> {:error, error_dto}
     end
   end
 
@@ -110,7 +132,8 @@ defmodule Core.DomainLayer.Domains.Shop.ShopEntity do
             likes: entity.likes,
             dislikes: entity.dislikes,
             id: entity.id,
-            created: entity.created
+            created: entity.created,
+            description: entity.description
           }
         }
     end
@@ -120,20 +143,56 @@ defmodule Core.DomainLayer.Domains.Shop.ShopEntity do
     ImpossibleUpdateError.new("Impossible change name for invalid data")
   end
 
-  @spec change_logo(ChangingLogoData.t(), ShopEntity.t()) :: ok()
+  @spec change_description(ChangingDescriptionData.t(), ShopEntity.t()) :: ok() | error_changing_description()
+  def change_description(%ChangingDescriptionData{} = dto, %ShopEntity{} = entity) do
+    case Description.new(dto.description) do
+      {:error, error_dto} -> {:error, error_dto}
+      {:ok, value_desc} ->
+
+        {
+          :ok,
+          %ShopEntity{
+            name: entity.name,
+            owner: entity.owner,
+            logo: entity.logo,
+            likes: entity.likes,
+            dislikes: entity.dislikes,
+            id: entity.id,
+            created: entity.created,
+            description: value_desc
+          }
+        }
+    end
+  end
+
+  def change_description(_, _) do
+    ImpossibleUpdateError.new("Impossible change description for invalid data")
+  end
+
+  @spec change_logo(ChangingLogoData.t(), ShopEntity.t()) :: ok() | error_changing_logo()
   def change_logo(%ChangingLogoData{} = dto, %ShopEntity{} = entity) do
-    {
-      :ok,
-      %ShopEntity{
-        name: entity.name,
-        owner: entity.owner,
-        logo: Image.new(dto.logo),
-        likes: entity.likes,
-        dislikes: entity.dislikes,
-        id: entity.id,
-        created: entity.created
-      }
-    }
+    case Image.new(dto.logo) do
+      {:error, error_dto} -> {:error, error_dto}
+      {:ok, value_logo} ->
+
+        {
+          :ok,
+          %ShopEntity{
+            name: entity.name,
+            owner: entity.owner,
+            logo: value_logo,
+            likes: entity.likes,
+            dislikes: entity.dislikes,
+            id: entity.id,
+            created: entity.created,
+            description: entity.description
+          }
+        }
+    end
+  end
+
+  def change_logo(_, _) do
+    ImpossibleUpdateError.new("Impossible change logo for invalid data")
   end
 
   @spec like(ShopEntity.t(), BuyerEntity.t()) :: ok() | error_voting()
@@ -150,7 +209,8 @@ defmodule Core.DomainLayer.Domains.Shop.ShopEntity do
           likes: [value_like | entity.likes],
           dislikes: Enum.find(entity.dislikes, fn %Dislike{value: id} -> id != buyer_entity.id end),
           id: entity.id,
-          created: entity.created
+          created: entity.created,
+          description: entity.description
         }
       }
     else
@@ -177,7 +237,8 @@ defmodule Core.DomainLayer.Domains.Shop.ShopEntity do
           likes: Enum.find(entity.likes, fn %Like{value: id} -> id != buyer_entity.id end),
           dislikes: [value_dislike | entity.dislikes],
           id: entity.id,
-          created: entity.created
+          created: entity.created,
+          description: entity.description
         }
       }
     else
@@ -186,7 +247,7 @@ defmodule Core.DomainLayer.Domains.Shop.ShopEntity do
     end
   end
 
-  def like(_, _) do
+  def dislike(_, _) do
     ImpossibleUpdateError.new("Impossible disliking for invalid data")
   end
 end

@@ -1,7 +1,7 @@
-defmodule Core.DomainLayer.Domains.Shop.Dtos.ChangingNameData do
+defmodule Core.DomainLayer.Common.Dtos.ChangingNameData do
   @moduledoc false
 
-  alias Core.DomainLayer.Domains.Shop.Dtos.ChangingNameData
+  alias Core.DomainLayer.Common.Dtos.ChangingNameData
 
   defstruct name: nil
 

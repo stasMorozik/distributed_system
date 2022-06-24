@@ -19,6 +19,6 @@ defmodule Core.DomainLayer.Common.ValueObjects.Dislike do
   end
 
   def new(_) do
-    {:error, ImpossibleCreateError.new("Impossible dislike for invalud data")}
+    {:error, ImpossibleCreateError.new("Impossible dislike for invalid data")}
   end
 end

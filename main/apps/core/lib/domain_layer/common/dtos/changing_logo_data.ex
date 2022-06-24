@@ -1,7 +1,7 @@
-defmodule Core.DomainLayer.Domains.Shop.Dtos.ChangingLogoData do
+defmodule Core.DomainLayer.Common.Dtos.ChangingLogoData do
   @moduledoc false
 
-  alias Core.DomainLayer.Domains.Shop.Dtos.ChangingLogoData
+  alias Core.DomainLayer.Common.Dtos.ChangingLogoData
 
   defstruct logo: nil
 

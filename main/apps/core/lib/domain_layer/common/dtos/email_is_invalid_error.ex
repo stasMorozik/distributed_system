@@ -9,6 +9,6 @@ defmodule Core.DomainLayer.Common.Dtos.EmailIsInvalidError do
 
   @spec new :: EmailIsInvalidError.t()
   def new() do
-    %EmailIsInvalidError{message: "Email is not valid"}
+    %EmailIsInvalidError{message: "Email is invalid"}
   end
 end
