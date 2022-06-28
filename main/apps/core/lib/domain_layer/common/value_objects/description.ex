@@ -16,7 +16,7 @@ defmodule Core.DomainLayer.Common.ValueObjects.Description do
   @spec new(binary()) :: Description.t()
   def new(text) when is_binary(text) do
     case String.length(text) < 20 do
-      true -> {:error, ImpossibleCreateError.new("Text is too short for description")}
+      true -> {:error, DescriptionIsInvalidError.new("Text is too short for description")}
       false -> {:ok, %Description{value: text}}
     end
   end

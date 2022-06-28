@@ -11,8 +11,6 @@ defmodule Core.DomainLayer.Common.Dtos.ChangingLogoData do
 
   @spec new(binary()) :: ChangingLogoData.t()
   def new(logo) do
-    %ChangingLogoData{
-      logo: logo
-    }
+    %ChangingLogoData{logo: logo}
   end
 end

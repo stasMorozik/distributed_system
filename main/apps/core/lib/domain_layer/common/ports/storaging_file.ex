@@ -5,8 +5,14 @@ defmodule Core.DomainLayer.Common.Ports.StoragingFile do
 
   @type t :: module
 
+  @type data :: %{
+    operation_name: binary(),
+    id: binary(),
+    data: binary()
+  }
+
   @type ok :: {:ok, binary()}
   @type error :: {:error, ImpossibleCreateError.t()}
 
-  @callback storage(binary()) :: ok() | error()
+  @callback storage(list(data())) :: ok() | error()
 end

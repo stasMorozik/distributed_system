@@ -140,7 +140,7 @@ defmodule Core.DomainLayer.Domains.Buyer.BuyerEntity do
     ImpossibleAuthenticateError.new("Impossible authenticate Buyer for invalid data")
   end
 
-  @spec authorizate(AuthorizatingData.t()) :: ok | error_authorizating()
+  @spec authorizate(AuthorizatingData.t()) :: ok() | error_authorizating()
   def authorizate(%AuthorizatingData{} = dto) when is_binary(dto.token) do
     signer = Joken.Signer.create("HS256", Application.get_env(:joken, :buyer_signer))
     case BuyerEntity.verify_and_validate(dto.token, signer) do
