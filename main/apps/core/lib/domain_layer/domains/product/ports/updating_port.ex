@@ -10,6 +10,8 @@ defmodule Core.DomainLayer.Domains.Product.Ports.UpdatingPort do
   alias Core.DomainLayer.Common.ValueObjects.Id
 
   alias Core.DomainLayer.Domains.Product.Dtos.UpdatingData
+  alias Core.DomainLayer.Domains.Product.Dtos.AddingImageData
+  alias Core.DomainLayer.Domains.Product.Dtos.DeletingImageData
 
   @type t :: Module
 
@@ -22,5 +24,5 @@ defmodule Core.DomainLayer.Domains.Product.Ports.UpdatingPort do
           | ImpossibleCallError.t()
         }
 
-  @callback create(Id.t(), UpdatingData.t()) :: ok() | error()
+  @callback update(Id.t(), UpdatingData.t() | AddingImageData.t() | DeletingImageData.t()) :: ok() | error()
 end

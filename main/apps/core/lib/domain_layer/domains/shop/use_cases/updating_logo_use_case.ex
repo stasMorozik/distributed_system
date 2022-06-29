@@ -5,8 +5,6 @@ defmodule Core.DomainLayer.Domains.Shop.UseCases.UpdatingLogoUseCase do
 
   alias Core.DomainLayer.Common.Dtos.UpdatingLogoData
 
-  alias Core.DomainLayer.Common.Ports.StoragingFilePort
-
   alias Core.DomainLayer.Common.Dtos.AuthorizatingData
 
   alias Core.DomainLayer.Domains.Shop.Ports.GettingPort
@@ -19,8 +17,8 @@ defmodule Core.DomainLayer.Domains.Shop.UseCases.UpdatingLogoUseCase do
 
   @type error ::
           ShopEntity.error_changing_logo()
-          | StoragingFilePort.error()
+          | UpdatingPort.error()
           | GettingPort.error()
 
-  @callback update(AuthorizatingData.t(), GettingEntityData.t(), UpdatingLogoData.t(), GettingPort.t(), StoragingFilePort.t()) :: ok() | error()
+  @callback update(AuthorizatingData.t(), GettingEntityData.t(), UpdatingLogoData.t(), GettingPort.t(), UpdatingPort.t()) :: ok() | error()
 end

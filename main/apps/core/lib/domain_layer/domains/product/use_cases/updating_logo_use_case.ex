@@ -11,7 +11,7 @@ defmodule Core.DomainLayer.Domains.Product.UseCases.UpdatingLogoUseCase do
 
   alias Core.DomainLayer.Common.Dtos.AuthorizatingData
 
-  alias Core.DomainLayer.Common.Ports.StoragingFilePort
+  alias Core.DomainLayer.Domains.Product.Ports.UpdatingPort
 
   @type t :: Module
 
@@ -19,8 +19,8 @@ defmodule Core.DomainLayer.Domains.Product.UseCases.UpdatingLogoUseCase do
 
   @type error ::
           ProductEntity.error_adding_image()
-          | StoragingFilePort.error()
           | GettingPort.error()
+          | UpdatingPort.t()
 
-  @callback update(AuthorizatingData.t(), GettingEntityData.t(), UpdatingLogoData.t(), GettingPort.t(), StoragingFilePort.t()) :: ok() | error()
+  @callback update(AuthorizatingData.t(), GettingEntityData.t(), UpdatingLogoData.t(), GettingPort.t(), UpdatingPort.t()) :: ok() | error()
 end
