@@ -24,8 +24,8 @@ defmodule Core.DomainLayer.Domains.Buyer.BuyerEntity do
 
   alias Core.DomainLayer.Common.Dtos.AuthenticatingData
   alias Core.DomainLayer.Common.Dtos.AuthorizatingData
-  alias Core.DomainLayer.Common.Dtos.ChangingEmailData
-  alias Core.DomainLayer.Common.Dtos.ChangingPasswordData
+  alias Core.DomainLayer.Common.Dtos.UpdatingEmailData
+  alias Core.DomainLayer.Common.Dtos.UpdatingPasswordData
   alias Core.DomainLayer.Domains.Buyer.Dtos.CreatingData
 
   defstruct email: nil,
@@ -156,9 +156,9 @@ defmodule Core.DomainLayer.Domains.Buyer.BuyerEntity do
     {:error, TokenIsInvalidError.new()}
   end
 
-  @spec change_email(ConfirmingCode.t(), ChangingEmailData.t()) :: ok() | error_change_email()
-  def change_email(%ConfirmingCode{} = value_code, %ChangingEmailData{} = dto) do
-    with {:ok, user} <- authorizate(AuthorizatingData.new(dto.token)),
+  @spec change_email(AuthorizatingData.t(), ConfirmingCode.t(), UpdatingEmailData.t()) :: ok() | error_change_email()
+  def change_email(%AuthorizatingData{} = authorizating_data, %ConfirmingCode{} = value_code, %UpdatingEmailData{} = dto) do
+    with {:ok, user} <- authorizate(authorizating_data),
          true <- is_integer(dto.confirming_code),
          true <- dto.confirming_code == value_code.code,
          {:ok, value_email} <- Email.new(dto.email) do
@@ -175,13 +175,13 @@ defmodule Core.DomainLayer.Domains.Buyer.BuyerEntity do
     end
   end
 
-  def change_email(_, _) do
+  def change_email(_, _, _) do
     {:error, ImpossibleUpdateError.new("Impossible change email for invalid data")}
   end
 
-  @spec change_password(ChangingPasswordData.t()) :: ok() | error_change_password()
-  def change_password(%ChangingPasswordData{} = dto) do
-    with {:ok, user} <- authorizate(AuthorizatingData.new(dto.token)),
+  @spec change_password(AuthorizatingData.t(), UpdatingPasswordData.t()) :: ok() | error_change_password()
+  def change_password(%AuthorizatingData{} = authorizating_data, %UpdatingPasswordData{} = dto) do
+    with {:ok, user} <- authorizate(authorizating_data),
          {:ok, value_password} <- Password.new(dto.password) do
       {
         :ok,
@@ -195,7 +195,7 @@ defmodule Core.DomainLayer.Domains.Buyer.BuyerEntity do
     end
   end
 
-  def change_password(_) do
+  def change_password(_, _) do
     {:error, ImpossibleUpdateError.new("Impossible change password for invalid data")}
   end
 end

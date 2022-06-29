@@ -1,4 +1,4 @@
-defmodule Core.DomainLayer.Common.Ports.Notifying do
+defmodule Core.DomainLayer.Common.Ports.NotifyingPort do
   @moduledoc false
 
   @type t :: module

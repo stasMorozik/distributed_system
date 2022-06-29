@@ -8,6 +8,8 @@ defmodule Core.DomainLayer.Domains.Product.Ports.GettingPort do
 
   alias Core.DomainLayer.Domains.Product.ProductEntity
 
+  alias Core.DomainLayer.Common.ValueObjects.Id
+
   @type t :: Module
 
   @type ok :: {:ok, ProductEntity.t()}
@@ -20,5 +22,5 @@ defmodule Core.DomainLayer.Domains.Product.Ports.GettingPort do
           | ImpossibleCallError.t()
         }
 
-  @callback get(binary()) :: ok() | error()
+  @callback get(Id.t()) :: ok() | error()
 end

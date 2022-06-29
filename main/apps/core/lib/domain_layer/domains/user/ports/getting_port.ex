@@ -7,6 +7,8 @@ defmodule Core.DomainLayer.Domains.User.Ports.GettingPort do
   alias Core.DomainLayer.Common.Dtos.ImpossibleCallError
   alias Core.DomainLayer.Domains.User.UserEntity
 
+  alias Core.DomainLayer.Common.ValueObjects.Id
+
   @type t :: Module
 
   @type ok :: {:ok, UserEntity.t()}
@@ -19,5 +21,5 @@ defmodule Core.DomainLayer.Domains.User.Ports.GettingPort do
           | ImpossibleCallError.t()
         }
 
-  @callback get(binary()) :: ok() | error()
+  @callback get(Id.t()) :: ok() | error()
 end

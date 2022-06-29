@@ -10,7 +10,7 @@ defmodule Core.DomainLayer.Domains.Buyer.Ports.CreatingPort do
 
   @type t :: Module
 
-  @type ok :: {:ok, BuyerEntity.t()}
+  @type ok :: {:ok, true}
 
   @type error :: {
           :error,

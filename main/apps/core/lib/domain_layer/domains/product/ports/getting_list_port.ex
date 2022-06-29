@@ -11,7 +11,7 @@ defmodule Core.DomainLayer.Domains.Product.Ports.GettingListPort do
 
   @type t :: Module
 
-  @type ok :: {:ok, nonempty_list(ProductEntity.t())}
+  @type ok :: {:ok, list(ProductEntity.t())}
 
   @type error :: {
           :error,

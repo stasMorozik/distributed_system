@@ -23,13 +23,13 @@ defmodule Core.DomainLayer.Domains.Product.ProductEntity do
   alias Core.DomainLayer.Common.Dtos.ImageIsInvalidError
   alias Core.DomainLayer.Common.Dtos.ImpossibleDeleteError
 
-  alias Core.DomainLayer.Common.Dtos.ChangingLogoData
-  alias Core.DomainLayer.Common.Dtos.DeletingImageData
-  alias Core.DomainLayer.Common.Dtos.AddingImageData
+  alias Core.DomainLayer.Common.Dtos.UpdatingLogoData
   alias Core.DomainLayer.Common.Dtos.AuthorizatingData
 
   alias Core.DomainLayer.Domains.Product.Dtos.CreatingData
   alias Core.DomainLayer.Domains.Product.Dtos.UpdatingData
+  alias Core.DomainLayer.Domains.Product.Dtos.DeletingImageData
+  alias Core.DomainLayer.Domains.Product.Dtos.AddingImageData
 
   alias Core.DomainLayer.Domains.Shop.ShopEntity
 
@@ -49,7 +49,7 @@ defmodule Core.DomainLayer.Domains.Product.ProductEntity do
             description: nil
 
   @type t :: %ProductEntity{
-          name: binary(),
+          name: Name.t(),
           logo: Image.t(),
           images: list(Image.t()),
           likes: list(Like.t()),
@@ -71,45 +71,35 @@ defmodule Core.DomainLayer.Domains.Product.ProductEntity do
           ImpossibleCreateError.t()
           | NameIsInvalidError.t()
           | DescriptionIsInvalidError.t()
-        }
+        } | UserEntity.error_authorizating()
 
-  @type error_changing_name :: {
+  @type error_changing_data :: {
           :error,
           NameIsInvalidError.t()
+          | DescriptionIsInvalidError.t()
+          | AmountIsInvalidError.t()
           | ImpossibleUpdateError.t()
-        }
-
-  @type error_changing_description :: {
-          :error,
-          DescriptionIsInvalidError.t()
-          | ImpossibleUpdateError.t()
-        }
-
-  @type error_changing_amount :: {
-          :error,
-          AmountIsInvalidError.t()
-          | ImpossibleUpdateError.t()
-        }
+        } | UserEntity.error_authorizating()
 
   @type error_voting :: {
           :error,
           ImpossibleCreateError.t()
           | AlreadyExistsError.t()
-        }
+        } | BuyerEntity.error_authorizating()
 
   @type error_deleting_image :: {
           :error,
           ImpossibleDeleteError.t()
-        }
+        } | UserEntity.error_authorizating()
 
   @type error_adding_image :: {
           :error,
           ImageIsInvalidError.t()
           | ImpossibleUpdateError.t()
-        }
+        } | UserEntity.error_authorizating()
 
   @spec new(AuthorizatingData.t(), CreatingData.t(), ShopEntity.t()) ::
-          ok() | error_creating() | UserEntity.error_authorizating()
+          ok() | error_creating()
   def new(
         %AuthorizatingData{} = authorizating_dto,
         %CreatingData{} = dto,
@@ -119,6 +109,7 @@ defmodule Core.DomainLayer.Domains.Product.ProductEntity do
       Enum.map(dto.images, fn image -> Image.new(image) end)
       |> Enum.filter(fn {result, _} -> result == :ok end)
       |> Enum.map(fn {_, value_image} -> value_image end)
+      |> Enum.take(10)
 
     with {:ok, _} <- UserEntity.authorizate(authorizating_dto),
          {:ok, value_name} <- Name.new(dto.name),
@@ -150,7 +141,7 @@ defmodule Core.DomainLayer.Domains.Product.ProductEntity do
   end
 
   @spec change_data(AuthorizatingData.t(), UpdatingData.t(), ProductEntity.t()) ::
-          ok() | error_changing_name() | UserEntity.error_authorizating()
+          ok() | error_changing_data()
   def change_data(
         %AuthorizatingData{} = authorizating_dto,
         %UpdatingData{} = dto,
@@ -356,11 +347,11 @@ defmodule Core.DomainLayer.Domains.Product.ProductEntity do
     ImpossibleUpdateError.new("Impossible change data of product for invalid input data")
   end
 
-  @spec change_logo(AuthorizatingData.t(), ChangingLogoData.t(), ProductEntity.t()) ::
+  @spec change_logo(AuthorizatingData.t(), UpdatingLogoData.t(), ProductEntity.t()) ::
           ok() | error_adding_image()
   def change_logo(
         %AuthorizatingData{} = authorizating_dto,
-        %ChangingLogoData{} = dto,
+        %UpdatingLogoData{} = dto,
         %ProductEntity{} = entity
       ) do
     with {:ok, _} <- UserEntity.authorizate(authorizating_dto),
@@ -389,127 +380,143 @@ defmodule Core.DomainLayer.Domains.Product.ProductEntity do
     ImpossibleUpdateError.new("Impossible change logo for invalid data")
   end
 
-  # @spec delete_image(DeletingImageData.t(), ProductEntity.t()) :: ok() | error_deleting_image()
-  # def delete_image(%DeletingImageData{} = dto, %ProductEntity{} = entity) do
-  #   found = Enum.find(entity.images, fn %Image{value: _, created: _, id: id} -> id == dto.id end)
-  #   if found == nil do
-  #     {:error, ImpossibleDeleteError.new("Image not found")}
-  #   else
-  #     {
-  #       :ok,
-  #       %ProductEntity{
-  #         name: entity.name,
-  #         logo: entity.logo,
-  #         images:
-  #           Enum.filter(entity.dislikes, fn %Image{value: _, created: _, id: id} -> id != dto.id end),
-  #         likes: entity.likes,
-  #         dislikes: entity.dislikes,
-  #         id: entity.id,
-  #         amount: entity.amount,
-  #         owner: entity.owner,
-  #         created: entity.created,
-  #         description: entity.description
-  #       }
-  #     }
-  #   end
-  # end
+  @spec delete_image(AuthorizatingData.t(), DeletingImageData.t(), ProductEntity.t()) :: ok() | error_deleting_image()
+  def delete_image(%AuthorizatingData{} = authorizating_dto, %DeletingImageData{} = dto, %ProductEntity{} = entity) do
+    found = Enum.find(entity.images, fn %Image{value: _, created: _, id: id} -> id == dto.id end)
 
-  # def delete_image(_, _) do
-  #   {:error, ImpossibleDeleteError.new("Impossible delete image for invalid data")}
-  # end
+    with {:ok, _} <- UserEntity.authorizate(authorizating_dto),
+         true <- found != nil do
 
-  # @spec add_image(AddingImageData.t(), ProductEntity.t()) :: ok() | error_adding_image()
-  # def add_image(%AddingImageData{} = dto, %ProductEntity{} = entity) do
-  #   case Image.new(dto.image) do
-  #     {:error, error_dto} -> {:error, error_dto}
-  #     {:ok, value_image} ->
+      {
+        :ok,
+        %ProductEntity{
+          name: entity.name,
+          logo: entity.logo,
+          images:
+            Enum.filter(entity.dislikes, fn %Image{value: _, created: _, id: id} -> id != dto.id end),
+          likes: entity.likes,
+          dislikes: entity.dislikes,
+          id: entity.id,
+          amount: entity.amount,
+          owner: entity.owner,
+          created: entity.created,
+          description: entity.description
+        }
+      }
+    else
+      false -> {:error, ImpossibleDeleteError.new("Image not found")}
+      {:error, error_dto} -> {:error, error_dto}
+    end
+  end
 
-  #       {
-  #         :ok,
-  #         %ProductEntity{
-  #           name: entity.name,
-  #           logo: entity.logo,
-  #           images: [value_image | entity.images],
-  #           likes: entity.likes,
-  #           dislikes: entity.dislikes,
-  #           id: entity.id,
-  #           amount: entity.amount,
-  #           owner: entity.owner,
-  #           created: entity.created,
-  #           description: entity.description
-  #         }
-  #       }
-  #   end
-  # end
+  def delete_image(_, _, _) do
+    {:error, ImpossibleDeleteError.new("Impossible delete image for invalid data")}
+  end
 
-  # def add_image(_, _) do
-  #   ImpossibleUpdateError.new("Impossible add image for invalid data")
-  # end
+  @spec add_image(AuthorizatingData.t(), AddingImageData.t(), ProductEntity.t()) :: ok() | error_adding_image()
+  def add_image(%AuthorizatingData{} = authorizating_dto, %AddingImageData{} = dto, %ProductEntity{} = entity) do
+    images =
+      Enum.map(dto.images, fn image -> Image.new(image) end)
+      |> Enum.filter(fn {result, _} -> result == :ok end)
+      |> Enum.map(fn {_, value_image} -> value_image end)
+      |> Enum.take(10)
 
-  # @spec like(ProductEntity.t(), BuyerEntity.t()) :: ok() | error_voting()
-  # def like(%ProductEntity{} = entity, %BuyerEntity{} = buyer_entity) do
-  #   found = Enum.find(entity.likes, fn %Like{value: id} -> id == buyer_entity.id end)
+    with {:ok, _} <- UserEntity.authorizate(authorizating_dto),
+         true <- length(entity.images) < 10,
+         true <- length(entity.images) + length(images) < 10 do
+      {
+        :ok,
+        %ProductEntity{
+          name: entity.name,
+          logo: entity.logo,
+          images: Enum.concat(entity.images, images),
+          likes: entity.likes,
+          dislikes: entity.dislikes,
+          id: entity.id,
+          amount: entity.amount,
+          owner: entity.owner,
+          created: entity.created,
+          description: entity.description
+        }
+      }
+    else
+      {:error, error_dto} -> {:error, error_dto}
+      false -> ImpossibleUpdateError.new("Image list too long")
+    end
+  end
 
-  #   with true <- found != nil,
-  #        {:ok, value_like} <- Like.new(buyer_entity.id) do
-  #     {
-  #       :ok,
-  #       %ProductEntity{
-  #         name: entity.name,
-  #         logo: entity.logo,
-  #         images: entity.images,
-  #         likes: [value_like | entity.likes],
-  #         dislikes:
-  #           Enum.filter(entity.dislikes, fn %Dislike{value: id} -> id != buyer_entity.id end),
-  #         id: entity.id,
-  #         amount: entity.amount,
-  #         owner: entity.owner,
-  #         created: entity.created,
-  #         description: entity.description
-  #       }
-  #     }
-  #   else
-  #     {:error, error_dto} -> {:error, error_dto}
-  #     false -> {:error, AlreadyExistsError.new("Buyer with this id already have liked this Shop")}
-  #   end
-  # end
+  def add_image(_, _, _) do
+    ImpossibleUpdateError.new("Impossible add images for invalid data")
+  end
 
-  # def like(_, _) do
-  #   ImpossibleUpdateError.new("Impossible liking for invalid data")
-  # end
+  @spec like(AuthorizatingData.t(), ProductEntity.t()) :: ok() | error_voting()
+  def like(%AuthorizatingData{} = authorizating_dto, %ProductEntity{} = entity) do
+    case BuyerEntity.authorizate(authorizating_dto) do
+      {:error, error_dto} -> {:error, error_dto}
+      {:ok, buyer_entity} ->
+        found = Enum.find(entity.likes, fn %Like{value: id} -> id == buyer_entity.id end)
+        with true <- found == nil,
+             {:ok, value_like} <- Like.new(buyer_entity.id) do
 
-  # @spec dislike(ProductEntity.t(), BuyerEntity.t()) :: ok() | error_voting()
-  # def dislike(%ProductEntity{} = entity, %BuyerEntity{} = buyer_entity) do
-  #   found = Enum.find(entity.dislikes, fn %Dislike{value: id} -> id == buyer_entity.id end)
+          {
+            :ok,
+            %ProductEntity{
+              name: entity.name,
+              logo: entity.logo,
+              images: entity.images,
+              likes: [value_like | entity.likes],
+              dislikes:
+                Enum.filter(entity.dislikes, fn %Dislike{value: id} -> id != buyer_entity.id end),
+              id: entity.id,
+              amount: entity.amount,
+              owner: entity.owner,
+              created: entity.created,
+              description: entity.description
+            }
+          }
+        else
+          {:error, error_dto} -> {:error, error_dto}
+          false -> {:error, AlreadyExistsError.new("Buyer with this id already have liked this Shop")}
+        end
+    end
+  end
 
-  #   with true <- found != nil,
-  #        {:ok, value_dislike} <- Dislike.new(buyer_entity.id) do
-  #     {
-  #       :ok,
-  #       %ProductEntity{
-  #         name: entity.name,
-  #         logo: entity.logo,
-  #         images: entity.images,
-  #         likes:
-  #           Enum.filter(entity.likes, fn %Like{value: id} -> id != buyer_entity.id end),
-  #         dislikes: [value_dislike | entity.dislikes],
-  #         id: entity.id,
-  #         amount: entity.amount,
-  #         owner: entity.owner,
-  #         created: entity.created,
-  #         description: entity.description
-  #       }
-  #     }
-  #   else
-  #     {:error, error_dto} ->
-  #       {:error, error_dto}
+  def like(_, _) do
+    ImpossibleUpdateError.new("Impossible liking for invalid data")
+  end
 
-  #     false ->
-  #       {:error, AlreadyExistsError.new("Buyer with this id already have disliked this Shop")}
-  #   end
-  # end
+  @spec dislike(AuthorizatingData.t(), ProductEntity.t()) :: ok() | error_voting()
+  def dislike(%AuthorizatingData{} = authorizating_dto, %ProductEntity{} = entity) do
+    case BuyerEntity.authorizate(authorizating_dto) do
+      {:error, error_dto} -> {:error, error_dto}
+      {:ok, buyer_entity} ->
+        found = Enum.find(entity.dislikes, fn %Dislike{value: id} -> id == buyer_entity.id end)
+        with true <- found == nil,
+             {:ok, value_dislike} <- Dislike.new(buyer_entity.id) do
+          {
+            :ok,
+            %ProductEntity{
+              name: entity.name,
+              logo: entity.logo,
+              images: entity.images,
+              likes:
+                Enum.filter(entity.likes, fn %Like{value: id} -> id != buyer_entity.id end),
+              dislikes: [value_dislike | entity.dislikes],
+              id: entity.id,
+              amount: entity.amount,
+              owner: entity.owner,
+              created: entity.created,
+              description: entity.description
+            }
+          }
+        else
+          {:error, error_dto} -> {:error, error_dto}
+          false -> {:error, AlreadyExistsError.new("Buyer with this id already have disliked this Shop")}
+        end
+    end
+  end
 
-  # def dislike(_, _) do
-  #   ImpossibleUpdateError.new("Impossible disliking for invalid data")
-  # end
+  def dislike(_, _) do
+    ImpossibleUpdateError.new("Impossible disliking for invalid data")
+  end
 end

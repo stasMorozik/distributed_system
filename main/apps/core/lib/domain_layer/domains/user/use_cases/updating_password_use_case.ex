@@ -3,7 +3,8 @@ defmodule Core.DomainLayer.Domains.User.UseCases.UpdatingPasswordUseCase do
 
   alias Core.DomainLayer.Domains.User.UserEntity
 
-  alias Core.DomainLayer.Common.Dtos.ChangingPasswordData
+  alias Core.DomainLayer.Common.Dtos.UpdatingPasswordData
+  alias Core.DomainLayer.Common.Dtos.AuthorizatingData
 
   alias Core.DomainLayer.Domains.User.Ports.UpdatingPort
 
@@ -16,7 +17,8 @@ defmodule Core.DomainLayer.Domains.User.UseCases.UpdatingPasswordUseCase do
           | UpdatingPort.error()
 
   @callback update(
-              ChangingPasswordData.t(),
+              AuthorizatingData.t(),
+              UpdatingPasswordData.t(),
               UpdatingPort.t()
             ) :: ok() | error()
 end

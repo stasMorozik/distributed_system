@@ -4,6 +4,7 @@ defmodule Core.DomainLayer.Domains.User.UseCases.UpdatingPersonalityDataUseCase 
   alias Core.DomainLayer.Domains.User.UserEntity
 
   alias Core.DomainLayer.Domains.User.Dtos.ChangingPersonalityData
+  alias Core.DomainLayer.Common.Dtos.AuthorizatingData
 
   alias Core.DomainLayer.Domains.User.Ports.UpdatingPort
 
@@ -16,6 +17,7 @@ defmodule Core.DomainLayer.Domains.User.UseCases.UpdatingPersonalityDataUseCase 
           | UpdatingPort.error()
 
   @callback update(
+              AuthorizatingData.t(),
               ChangingPersonalityData.t(),
               UpdatingPort.t()
             ) :: ok() | error()

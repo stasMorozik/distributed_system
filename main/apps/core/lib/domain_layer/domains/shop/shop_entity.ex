@@ -20,7 +20,7 @@ defmodule Core.DomainLayer.Domains.Shop.ShopEntity do
   alias Core.DomainLayer.Common.Dtos.DescriptionIsInvalidError
   alias Core.DomainLayer.Common.Dtos.ImageIsInvalidError
   alias Core.DomainLayer.Common.Dtos.AuthorizatingData
-  alias Core.DomainLayer.Common.Dtos.ChangingLogoData
+  alias Core.DomainLayer.Common.Dtos.UpdatingLogoData
 
   alias Core.DomainLayer.Domains.Shop.Dtos.CreatingData
   alias Core.DomainLayer.Domains.Shop.Dtos.UpdatingData
@@ -60,29 +60,29 @@ defmodule Core.DomainLayer.Domains.Shop.ShopEntity do
           | NameIsInvalidError.t()
           | DescriptionIsInvalidError.t()
           | ImageIsInvalidError.t()
-        }
+        } | UserEntity.error_authorizating()
 
   @type error_changing_data :: {
           :error,
           NameIsInvalidError.t()
           | DescriptionIsInvalidError.t()
           | ImpossibleUpdateError.t()
-        }
+        } | UserEntity.error_authorizating()
 
   @type error_changing_logo :: {
           :error,
           ImageIsInvalidError.t()
           | ImpossibleUpdateError.t()
-        }
+        } | UserEntity.error_authorizating()
 
   @type error_voting :: {
           :error,
           ImpossibleCreateError.t()
           | AlreadyExistsError.t()
-        }
+        } | BuyerEntity.error_authorizating()
 
   @spec new(AuthorizatingData.t(), CreatingData.t()) ::
-          ok() | error_creating() | UserEntity.error_authorizating()
+          ok() | error_creating()
   def new(%AuthorizatingData{} = authorizating_dto, %CreatingData{} = dto) do
     with {:ok, user_entity} <-
            UserEntity.authorizate(authorizating_dto),
@@ -115,7 +115,7 @@ defmodule Core.DomainLayer.Domains.Shop.ShopEntity do
           AuthorizatingData.t(),
           UpdatingData.t(),
           ShopEntity.t()
-        ) :: ok() | error_changing_data() | UserEntity.error_authorizating()
+        ) :: ok() | error_changing_data()
   def change_data(
         %AuthorizatingData{} = authorizating_dto,
         %UpdatingData{} = dto,
@@ -201,12 +201,12 @@ defmodule Core.DomainLayer.Domains.Shop.ShopEntity do
 
   @spec change_logo(
           AuthorizatingData.t(),
-          ChangingLogoData.t(),
+          UpdatingLogoData.t(),
           ShopEntity.t()
-        ) :: ok() | error_changing_logo() | UserEntity.error_authorizating()
+        ) :: ok() | error_changing_logo()
   def change_logo(
         %AuthorizatingData{} = authorizating_dto,
-        %ChangingLogoData{} = dto,
+        %UpdatingLogoData{} = dto,
         %ShopEntity{} = entity
       ) do
     with {:ok, _} <- UserEntity.authorizate(authorizating_dto),
@@ -234,7 +234,7 @@ defmodule Core.DomainLayer.Domains.Shop.ShopEntity do
   end
 
   @spec like(AuthorizatingData.t(), ShopEntity.t()) ::
-          ok() | error_voting() | BuyerEntity.error_authorizating()
+          ok() | error_voting()
   def like(%AuthorizatingData{} = authorizating_dto, %ShopEntity{} = entity) do
     case BuyerEntity.authorizate(authorizating_dto) do
       {:ok, buyer_entity} ->
@@ -263,11 +263,11 @@ defmodule Core.DomainLayer.Domains.Shop.ShopEntity do
     end
   end
 
-  def like(_, _, _) do
+  def like(_, _) do
     ImpossibleUpdateError.new("Impossible liking for invalid data")
   end
 
-  @spec dislike(AuthorizatingData.t(), ShopEntity.t()) :: ok() | error_voting() | BuyerEntity.error_authorizating()
+  @spec dislike(AuthorizatingData.t(), ShopEntity.t()) :: ok() | error_voting()
   def dislike(%AuthorizatingData{} = authorizating_dto, %ShopEntity{} = entity) do
     case BuyerEntity.authorizate(authorizating_dto) do
       {:ok, buyer_entity} ->
@@ -296,7 +296,7 @@ defmodule Core.DomainLayer.Domains.Shop.ShopEntity do
     end
   end
 
-  def dislike(_, _, _) do
+  def dislike(_, _) do
     ImpossibleUpdateError.new("Impossible disliking for invalid data")
   end
 end

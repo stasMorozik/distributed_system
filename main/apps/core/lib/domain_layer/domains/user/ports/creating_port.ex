@@ -6,11 +6,9 @@ defmodule Core.DomainLayer.Domains.User.Ports.CreatingPort do
   alias Core.DomainLayer.Common.Dtos.ImpossibleCallError
   alias Core.DomainLayer.Common.Dtos.AlreadyExistsError
 
-  alias Core.DomainLayer.Domains.User.UserEntity
-
   @type t :: Module
 
-  @type ok :: {:ok, UserEntity.t()}
+  @type ok :: {:ok, true}
 
   @type error :: {
           :error,

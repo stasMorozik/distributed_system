@@ -7,7 +7,9 @@ defmodule Core.DomainLayer.Domains.Product.UseCases.CreatingUseCase do
 
   alias Core.DomainLayer.Domains.Product.Ports.CreatingPort
 
-  alias Core.DomainLayer.Common.Ports.StoragingFile
+  alias Core.DomainLayer.Common.Ports.StoragingFilePort
+
+  alias Core.DomainLayer.Common.Dtos.AuthorizatingData
 
   @type t :: Module
 
@@ -16,6 +18,7 @@ defmodule Core.DomainLayer.Domains.Product.UseCases.CreatingUseCase do
   @type error ::
           ProductEntity.error_creating()
           | CreatingPort.error()
+          | StoragingFilePort.error()
 
-  @callback create(CreatingData.t(), CreatingPort.t(), StoragingFile.t()) :: ok() | error()
+  @callback create(AuthorizatingData.t(), CreatingData.t(), CreatingPort.t(), StoragingFilePort.t()) :: ok() | error()
 end

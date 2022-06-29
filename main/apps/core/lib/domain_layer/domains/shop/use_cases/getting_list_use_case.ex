@@ -9,6 +9,8 @@ defmodule Core.DomainLayer.Domains.Shop.UseCases.GettignListUseCase do
 
   alias Core.DomainLayer.Domains.User.Dtos.GettingListData
 
+  alias Core.DomainLayer.Common.Dtos.AuthorizatingData
+
   @type t :: Module
 
   @type ok :: {:ok, nonempty_list(ShopEntity.t())}
@@ -17,5 +19,5 @@ defmodule Core.DomainLayer.Domains.Shop.UseCases.GettignListUseCase do
           GettingListPort.error()
           | Pagination.error()
 
-  @callback get(GettingListData.t(), GettingListPort.t()) :: ok() | error()
+  @callback get(AuthorizatingData.t(), GettingListData.t(), GettingListPort.t()) :: ok() | error()
 end

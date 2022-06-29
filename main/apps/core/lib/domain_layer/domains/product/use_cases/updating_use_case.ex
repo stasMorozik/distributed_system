@@ -7,7 +7,19 @@ defmodule Core.DomainLayer.Domains.Product.UseCases.UpdatingUseCase do
 
   alias Core.DomainLayer.Domains.Product.Ports.UpdatingPort
 
+  alias Core.DomainLayer.Common.Dtos.AuthorizatingData
+
+  alias Core.DomainLayer.Domains.Product.Ports.GettingPort
+
+  alias Core.DomainLayer.Common.Dtos.GettingEntityData
+
   @type t :: Module
 
-  @type ok :: {:ok, ProductEntity.t()}
+  @type ok :: {:ok, true}
+
+  @type error ::
+          ProductEntity.error_changing_data()
+          | UpdatingPort.error()
+
+  @callback update(AuthorizatingData.t(), GettingEntityData.t(), UpdatingData.t(), GettingPort.t(), UpdatingPort.t()) :: ok() | error()
 end
