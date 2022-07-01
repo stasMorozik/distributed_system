@@ -3,9 +3,27 @@ defmodule Core.DomainLayer.ValueObjects.Id do
 
   alias Core.DomainLayer.ValueObjects.Id
 
+  alias Core.DomainLayer.Dtos.IdIsInvalidError
+
   defstruct value: nil
 
   @type t :: %Id{value: binary}
+
+  @type ok :: {:ok, Id.t()}
+
+  @type error :: {:error, IdIsInvalidError.t()}
+
+  @spec form_origin(binary()) :: ok() | error()
+  def form_origin(id) when is_binary(id) do
+    case UUID.info(id) do
+      {:error, _} -> {:error, IdIsInvalidError.new()}
+      {:ok, _} -> {:ok, %Id{value: id}}
+    end
+  end
+
+  def form_origin(_) do
+    {:error, IdIsInvalidError.new()}
+  end
 
   @spec new :: Id.t()
   def new do

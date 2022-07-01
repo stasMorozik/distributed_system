@@ -218,24 +218,15 @@ defmodule Core.DomainLayer.UserEntity do
   end
 
   defp is_empty(%{} = dto) do
-    fun = fn k ->
-      cond do
-        k == :name -> true
-        k == :surname -> true
-        k == :email -> true
-        k == :phone -> true
-        k == :password -> true
-        k == :avatar -> true
-        true -> false
-      end
-    end
-
-    leng = Map.to_list(dto) |> Enum.filter(fn {k, _} -> fun.(k) end) |> length()
-
-    if leng > 0 do
-      false
-    else
-      true
+    cond do
+      Map.has_key?(dto, :name) == true -> false
+      Map.has_key?(dto, :surname) == true -> false
+      Map.has_key?(dto, :email) == true -> false
+      Map.has_key?(dto, :phone) == true -> false
+      Map.has_key?(dto, :password) == true -> false
+      Map.has_key?(dto, :avatar) == true -> false
+      true -> true
     end
   end
 end
+#{:ok, user} = UserEntity.new(%{name: "test", surname: "test", email: "test@gmail.com", phone: "12345678", password: "123456", avatar: "1sds345"})

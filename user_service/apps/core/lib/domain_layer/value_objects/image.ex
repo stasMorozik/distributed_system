@@ -14,10 +14,14 @@ defmodule Core.DomainLayer.ValueObjects.Image do
 
   @spec new(binary) :: ok() | error
   def new(image) when is_binary(image) do
-    {
-      :ok,
-      %Image{value: image, id: UUID.uuid4(), created: NaiveDateTime.utc_now()}
-    }
+    if byte_size(image) > 150000 do
+      {:error, ImageIsInvalidError.new()}
+    else
+      {
+        :ok,
+        %Image{value: image, id: UUID.uuid4(), created: NaiveDateTime.utc_now()}
+      }
+    end
   end
 
   def new(_) do

@@ -9,6 +9,6 @@ defmodule Core.DomainLayer.Dtos.ImageIsInvalidError do
 
   @spec new :: ImageIsInvalidError.t()
   def new do
-    %ImageIsInvalidError{message: "Image is not valid"}
+    %ImageIsInvalidError{message: "Image is invalid"}
   end
 end

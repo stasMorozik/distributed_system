@@ -7,7 +7,7 @@ defmodule Core.DomainLayer.Dtos.NameIsInvalidError do
 
   @type t :: %NameIsInvalidError{message: binary}
 
-  @spec new() :: NameIsInvalidError.t()
+  @spec new :: NameIsInvalidError.t()
   def new do
     %NameIsInvalidError{message: "Name is invalid"}
   end
