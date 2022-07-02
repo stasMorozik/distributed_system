@@ -11,5 +11,5 @@ defmodule Core.DomainLayer.Ports.GettingByEmailPort do
 
   @type error :: {:error, NotFoundError.t()}
 
-  @callback get(Email.t()) :: ok() | error()
+  @callback get_by_email(Email.t()) :: ok() | error()
 end
