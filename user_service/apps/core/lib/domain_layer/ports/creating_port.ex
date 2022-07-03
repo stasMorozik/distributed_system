@@ -5,9 +5,11 @@ defmodule Core.DomainLayer.Ports.CreatingPort do
 
   alias Core.DomainLayer.UserEntity
 
+  alias Core.DomainLayer.Dtos.ImpossibleCreateError
+
   @type ok :: {:ok, true}
 
-  @type error :: {:error, AlreadyExistsError.t()}
+  @type error :: {:error, AlreadyExistsError.t() | ImpossibleCreateError.t()}
 
   @callback create(UserEntity.t()) :: ok() | error()
 end

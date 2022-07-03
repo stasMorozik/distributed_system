@@ -18,4 +18,10 @@ defmodule Users.AvatarsSchema do
     |> validate_required([:image, :created, :id])
     |> unique_constraint(:id, name: :avatars_pkey)
   end
+
+  def update_changeset(data, params \\ %{}) do
+    data
+    |> cast(params, [:image, :created])
+    |> validate_required([:image, :created])
+  end
 end

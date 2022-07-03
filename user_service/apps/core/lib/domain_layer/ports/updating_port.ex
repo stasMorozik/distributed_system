@@ -3,11 +3,13 @@ defmodule Core.DomainLayer.Ports.UpdatingPort do
 
   alias Core.DomainLayer.Dtos.AlreadyExistsError
 
+  alias Core.DomainLayer.Dtos.ImpossibleUpdateError
+
   alias Core.DomainLayer.UserEntity
 
   @type ok :: {:ok, true}
 
-  @type error :: {:error, AlreadyExistsError.t()}
+  @type error :: {:error, AlreadyExistsError.t() | ImpossibleUpdateError.t()}
 
   @callback update(UserEntity.t()) :: ok() | error()
 end

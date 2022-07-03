@@ -24,4 +24,12 @@ defmodule Users.UsersSchema do
     |> unique_constraint(:phone, name: :users_phone_index)
     |> unique_constraint(:id, name: :users_pkey)
   end
+
+  def update_changeset(data, params \\ %{}) do
+    data
+    |> cast(params, [:name, :surname, :email, :phone, :password])
+    |> validate_required([:name, :surname, :email, :phone, :password])
+    |> unique_constraint(:email, name: :users_email_index)
+    |> unique_constraint(:phone, name: :users_phone_index)
+  end
 end

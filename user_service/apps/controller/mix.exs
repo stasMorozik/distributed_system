@@ -1,9 +1,9 @@
-defmodule PostgresAdapters.MixProject do
+defmodule Controller.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :postgres_adapters,
+      app: :controller,
       version: "0.1.0",
       build_path: "../../_build",
       config_path: "../../config/config.exs",
@@ -19,17 +19,15 @@ defmodule PostgresAdapters.MixProject do
   def application do
     [
       extra_applications: [:logger],
-      mod: {PostgresAdapters.Application, []}
+      mod: {Controller.Application, []}
     ]
   end
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:ecto_sql, "~> 3.0"},
-      {:postgrex, ">= 0.0.0"},
-      {:uuid, "~> 1.1"},
-      {:core, in_umbrella: true}
+      {:core, in_umbrella: true},
+      {:postgres_adapters, in_umbrella: true}
     ]
   end
 end

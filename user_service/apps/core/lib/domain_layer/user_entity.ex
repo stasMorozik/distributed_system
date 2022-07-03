@@ -134,7 +134,6 @@ defmodule Core.DomainLayer.UserEntity do
   @spec update(UserEntity.t(), updating_dto()) :: ok() | error_updating()
   def update(%UserEntity{} = entity, %{} = dto)
       when is_map(dto) and is_struct(dto) == false and map_size(dto) > 0 and is_struct(entity) do
-
     case is_empty(dto) do
       true -> {:error, ImpossibleUpdateError.new()}
       false ->
@@ -209,7 +208,7 @@ defmodule Core.DomainLayer.UserEntity do
   defp update_avatar({result, maybe_entity}, %{} = dto) do
     with true <- result == :ok,
          true <- dto[:avatar] != nil,
-         {:ok, value_avatar} <- Image.new(dto[:avatar]) do
+         {:ok, value_avatar} <- Image.from_origin(maybe_entity.avatar.id, dto[:avatar]) do
       {:ok, %UserEntity{maybe_entity | avatar: value_avatar}}
     else
       false -> {result, maybe_entity}
@@ -229,4 +228,3 @@ defmodule Core.DomainLayer.UserEntity do
     end
   end
 end
-#{:ok, user} = UserEntity.new(%{name: "test", surname: "test", email: "test@gmail.com", phone: "12345678", password: "123456", avatar: "1sds345"})

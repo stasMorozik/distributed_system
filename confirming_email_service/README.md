@@ -1,0 +1,4 @@
+# ConfirmingEmailService
+
+**TODO: Add description**
+

@@ -5,6 +5,8 @@ defmodule Core.DomainLayer.UseCases.CreatingUseCase do
 
   alias Core.DomainLayer.Ports.CreatingPort
 
+  alias Core.DomainLayer.Ports.CreatingPort
+
   @type ok :: {:ok, true}
 
   @type error :: CreatingPort.error() | UserEntity.error_creating()
