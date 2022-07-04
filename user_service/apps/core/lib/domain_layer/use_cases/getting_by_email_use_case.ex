@@ -11,5 +11,5 @@ defmodule Core.DomainLayer.UseCases.GettingByEmailUseCase do
 
   @type error :: GettingByEmailPort.t() | Email.error()
 
-  @callback get(binary(), GettingByEmailPort.t()) :: ok() | error()
+  @callback get(binary(), binary(), GettingByEmailPort.t()) :: ok() | error()
 end

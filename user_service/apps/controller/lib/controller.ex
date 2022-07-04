@@ -15,9 +15,9 @@ defmodule Controller do
     CreatingService.create(creating_dto, PostgresAdapters)
   end
 
-  @spec get_by_email(binary()) :: GettingByEmailService.ok() | GettingByEmailService.error()
-  def get_by_email(maybe_email) do
-    GettingByEmailService.get(maybe_email, PostgresAdapters)
+  @spec get_by_email(binary(), binary()) :: GettingByEmailService.ok() | GettingByEmailService.error()
+  def get_by_email(maybe_email, maybe_own_password) do
+    GettingByEmailService.get(maybe_email, maybe_own_password, PostgresAdapters)
   end
 
   @spec update(binary(), UserEntity.updating_dto()) :: UpdatingService.ok() | UpdatingService.error()
