@@ -4,7 +4,6 @@ defmodule PostgresAdapters do
   alias Ecto.Multi
   import Ecto.Query
   alias Users.Repo
-  alias Ecto.Changeset
 
   alias Core.DomainLayer.Ports.CreatingPort
   alias Core.DomainLayer.Ports.GettingByEmailPort
@@ -48,6 +47,23 @@ defmodule PostgresAdapters do
         id: %Id{value: id},
         created: %Created{value: created}
       }) do
+
+    IO.inspect(%UserEntity{
+      name: %Name{value: name},
+      surname: %Surname{value: surname},
+      email: %Email{value: email},
+      phone: %PhoneNumber{value: phone},
+      password: %Password{value: password},
+      avatar: %Image{value: avatar, id: id_ava, created: created_ava},
+      id: %Id{value: id},
+      created: %Created{value: created}
+    })
+
+    is_date_time = fn
+      %DateTime{} = _ -> true
+      _ -> false
+    end
+
     with true <- is_binary(name),
          true <- is_binary(surname),
          true <- is_binary(email),
@@ -58,6 +74,8 @@ defmodule PostgresAdapters do
          true <- is_binary(id),
          true <- is_struct(created),
          true <- is_struct(created_ava),
+         true <- is_date_time.(created),
+         true <- is_date_time.(created_ava),
          {:ok, _} <- UUID.info(id),
          {:ok, _} <- UUID.info(id_ava) do
       _create(%{
@@ -187,6 +205,12 @@ defmodule PostgresAdapters do
         id: %Id{value: id},
         created: %Created{value: created}
       }) do
+
+    is_date_time = fn
+      %DateTime{} = _ -> true
+      _ -> false
+    end
+
     with true <- is_binary(name),
          true <- is_binary(surname),
          true <- is_binary(email),
@@ -197,6 +221,8 @@ defmodule PostgresAdapters do
          true <- is_binary(id),
          true <- is_struct(created),
          true <- is_struct(created_ava),
+         true <- is_date_time.(created),
+         true <- is_date_time.(created_ava),
          {:ok, _} <- UUID.info(id),
          {:ok, _} <- UUID.info(id_ava) do
       _update(%{

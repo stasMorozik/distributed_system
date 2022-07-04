@@ -1,9 +1,9 @@
-defmodule CodesSchema do
+defmodule Codes.CodesSchema do
   use Ecto.Schema
   import Ecto.Changeset
 
   @primary_key {:id, :binary_id, autogenerate: false}
-  schema "users" do
+  schema "codes" do
     field :email, :string
     field :code, :integer
     field :created, :utc_datetime

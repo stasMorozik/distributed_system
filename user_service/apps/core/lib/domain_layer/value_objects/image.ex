@@ -6,7 +6,7 @@ defmodule Core.DomainLayer.ValueObjects.Image do
 
   defstruct value: nil, id: nil, created: nil
 
-  @type t :: %Image{value: binary(), id: binary(), created: NaiveDateTime.t()}
+  @type t :: %Image{value: binary(), id: binary(), created: DateTime.t()}
 
   @type ok :: {:ok, Image.t()}
 
@@ -19,7 +19,7 @@ defmodule Core.DomainLayer.ValueObjects.Image do
     else
       {
         :ok,
-        %Image{value: image, id: UUID.uuid4(), created: NaiveDateTime.utc_now()}
+        %Image{value: image, id: UUID.uuid4(), created: DateTime.utc_now()}
       }
     end
   end
@@ -34,7 +34,7 @@ defmodule Core.DomainLayer.ValueObjects.Image do
          true <- byte_size(image) <= 150000 do
       {
         :ok,
-        %Image{value: image, id: id, created: NaiveDateTime.utc_now()}
+        %Image{value: image, id: id, created: DateTime.utc_now()}
       }
     else
       {:error, error_dto} -> {:error, error_dto}

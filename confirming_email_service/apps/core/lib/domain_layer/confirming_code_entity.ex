@@ -16,7 +16,7 @@ defmodule Core.DomainLayer.ConfirmingCodeEntity do
 
   defstruct id: nil, email: nil, code: nil, created: nil
 
-  @type t:: %ConfirmingCodeEntity{
+  @type t :: %ConfirmingCodeEntity{
           id: Id.t(),
           email: Email.t(),
           code: Code.t(),
@@ -49,20 +49,27 @@ defmodule Core.DomainLayer.ConfirmingCodeEntity do
           | ImpossibleValidateError.t()
         }
 
-  @spec from_origin(ConfirmingCodeEntity.t()) :: ok() |error_from_origin()
+  @spec from_origin(ConfirmingCodeEntity.t()) :: ok() | error_from_origin()
   def from_origin(%ConfirmingCodeEntity{
-    id: %Id{value: id},
-    email: %Email{value: email},
-    code: _,
-    created: %Created{value: created}
-  }) when is_struct(created) and is_binary(id) and is_binary(email) do
+        id: %Id{value: id},
+        email: %Email{value: email},
+        code: _,
+        created: %Created{value: created}
+      })
+      when is_struct(created) and is_binary(id) and is_binary(email) do
+    is_date_time = fn
+      %DateTime{} = _ -> 1
+      _ -> 0
+    end
 
-    with  true <- is_date_time(created),
-          now <- DateTime.utc_now() |> DateTime.to_unix(),
-          past <- created |> DateTime.to_unix(),
-          false <- now - past > 300,
-          {:ok, value_email} <- Email.new(email),
-          {:ok, value_id} <- Id.from_origin(id) do
+    with 1 <- is_date_time.(created),
+         now <- DateTime.utc_now() |> DateTime.to_unix(),
+         past <- created |> DateTime.to_unix(),
+         true <- now - past > 300,
+         {:ok, value_email} <- Email.new(email),
+         {:ok, value_id} <- Id.from_origin(id) do
+
+
       {
         :ok,
         %ConfirmingCodeEntity{
@@ -73,9 +80,9 @@ defmodule Core.DomainLayer.ConfirmingCodeEntity do
         }
       }
     else
-      false -> {:error, ImpossibleCreateError.new()}
-      true -> {:error, AlreadyExistsError.new}
+      0 -> {:error, ImpossibleCreateError.new()}
       {:error, error_dto} -> {:error, error_dto}
+      true -> {:error, AlreadyExistsError.new()}
     end
   end
 
@@ -86,9 +93,10 @@ defmodule Core.DomainLayer.ConfirmingCodeEntity do
   @spec new(binary()) :: ok() | error_creating()
   def new(maybe_email) when is_binary(maybe_email) do
     case Email.new(maybe_email) do
-      {:error, error_dto} -> {:error, error_dto}
-      {:ok, value_email} ->
+      {:error, error_dto} ->
+        {:error, error_dto}
 
+      {:ok, value_email} ->
         {
           :ok,
           %ConfirmingCodeEntity{
@@ -106,7 +114,10 @@ defmodule Core.DomainLayer.ConfirmingCodeEntity do
   end
 
   @spec validate_code(integer(), ConfirmingCodeEntity.t()) :: {:ok, true} | error_validating()
-  def validate_code(%ConfirmingCodeEntity{id: _, email: _, created: _, code: %Code{value: code}}, maybe_own_code)
+  def validate_code(
+        %ConfirmingCodeEntity{id: _, email: _, created: _, code: %Code{value: code}},
+        maybe_own_code
+      )
       when is_integer(maybe_own_code) do
     with {:ok, value_coe} <- Code.from_origin(code),
          true <- maybe_own_code == value_coe.value do
@@ -119,13 +130,5 @@ defmodule Core.DomainLayer.ConfirmingCodeEntity do
 
   def validate_code(_, _) do
     {:error, ImpossibleValidateError.new()}
-  end
-
-  defp is_date_time(%DateTime{} = _) do
-    true
-  end
-
-  defp is_date_time(_) do
-    false
   end
 end

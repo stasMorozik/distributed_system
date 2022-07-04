@@ -9,6 +9,6 @@ defmodule Core.DomainLayer.Dtos.AlreadyExistsError do
 
   @spec new :: AlreadyExistsError.t()
   def new do
-    %AlreadyExistsError{message: "User with this email address already exists"}
+    %AlreadyExistsError{message: "A code with this email address already exists you can send it later in 5 minutes"}
   end
 end

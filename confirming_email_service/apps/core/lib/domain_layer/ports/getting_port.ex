@@ -7,6 +7,8 @@ defmodule Core.DomainLayer.Ports.GettingPort do
 
   alias Core.DomainLayer.ValueObjects.Email
 
+  alias Core.DomainLayer.Dtos.NotFoundError
+
   @type ok :: {
           :ok,
           ConfirmingCodeEntity.t()
