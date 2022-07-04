@@ -9,7 +9,7 @@ defmodule Core.DomainLayer.UseCases.CreatingUseCase do
 
   alias Core.DomainLayer.Ports.CreatingPort
 
-  @type ok :: {:ok, integer()}
+  @type ok :: {:ok, ConfirmingCodeEntity.t()}
 
   @type error :: {
           :error,

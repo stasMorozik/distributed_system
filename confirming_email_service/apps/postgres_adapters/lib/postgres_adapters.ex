@@ -10,6 +10,7 @@ defmodule PostgresAdapters do
   alias Core.DomainLayer.Ports.CreatingPort
   alias Core.DomainLayer.Ports.GettingPort
   alias Core.DomainLayer.Ports.UpdatingPort
+  alias Core.DomainLayer.Ports.DeletingPort
 
   alias Core.DomainLayer.ValueObjects.Created
   alias Core.DomainLayer.ValueObjects.Id
@@ -20,6 +21,7 @@ defmodule PostgresAdapters do
   alias Core.DomainLayer.Dtos.ImpossibleCreateError
   alias Core.DomainLayer.Dtos.ImpossibleGetError
   alias Core.DomainLayer.Dtos.NotFoundError
+  alias Core.DomainLayer.Dtos.ImpossibleDeleteError
 
   alias Core.DomainLayer.ConfirmingCodeEntity
 
@@ -145,5 +147,21 @@ defmodule PostgresAdapters do
       {:ok, _} -> {:ok, true}
       {:error, _} -> {:error, AlreadyExistsError.new()}
     end
+  end
+
+  @spec delete(Email.t()) :: DeletingPort.ok() | DeletingPort.error()
+  def delete(%Email{value: email}) when is_binary(email) do
+    q = from(c in CodesSchema, where: c.email == ^email)
+
+    case Multi.new()
+         |> Multi.delete_all(:delete_code, q)
+         |> Repo.transaction() do
+      {:ok, _} -> {:ok, true}
+      _ -> {:error, NotFoundError.new()}
+    end
+  end
+
+  def delete(_) do
+    {:error, ImpossibleDeleteError.new()}
   end
 end

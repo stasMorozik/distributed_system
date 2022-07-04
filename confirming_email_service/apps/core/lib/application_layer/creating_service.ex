@@ -26,16 +26,18 @@ defmodule Core.ApplicationLayer.CreatingService do
          {:ok, code_entity} <- getting_port.get(value_email),
          {:ok, code_entity} <- ConfirmingCodeEntity.from_origin(code_entity),
          {:ok, true} <- updating_port.update(code_entity) do
+      {:ok, code_entity}
     else
-      {:error, error_dto} ->
-        is_not_found = fn
-          %NotFoundError{} = _ -> true
-          _ -> false
+      {:error, %NotFoundError{message: _}} ->
+        with {:ok, code_entity} <- ConfirmingCodeEntity.new(maybe_email),
+             {:ok, true} <- creating_port.create(code_entity) do
+          {:ok, code_entity}
+        else
+          {:error, error_dto} -> {:error, error_dto}
         end
 
-
-
+      {:error, error_dto} ->
+        {:error, error_dto}
     end
   end
-
 end

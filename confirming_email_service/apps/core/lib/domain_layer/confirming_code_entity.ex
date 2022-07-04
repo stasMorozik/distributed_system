@@ -82,7 +82,7 @@ defmodule Core.DomainLayer.ConfirmingCodeEntity do
     else
       0 -> {:error, ImpossibleCreateError.new()}
       {:error, error_dto} -> {:error, error_dto}
-      true -> {:error, AlreadyExistsError.new()}
+      false -> {:error, AlreadyExistsError.new()}
     end
   end
 
@@ -115,8 +115,8 @@ defmodule Core.DomainLayer.ConfirmingCodeEntity do
 
   @spec validate_code(integer(), ConfirmingCodeEntity.t()) :: {:ok, true} | error_validating()
   def validate_code(
-        %ConfirmingCodeEntity{id: _, email: _, created: _, code: %Code{value: code}},
-        maybe_own_code
+        maybe_own_code,
+        %ConfirmingCodeEntity{id: _, email: _, created: _, code: %Code{value: code}}
       )
       when is_integer(maybe_own_code) do
     with {:ok, value_coe} <- Code.from_origin(code),
