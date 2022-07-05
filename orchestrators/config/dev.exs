@@ -66,3 +66,11 @@ config :task_adapters_for_notifying_service, :service_notifying,
   remote_node: :service_notifying@localhost,
   remote_supervisor: {Controller, :service_notifying@localhost},
   remote_module: Controller
+
+
+config :task_adapters_for_user_jtwt_service, :service_jwt,
+  remote_node: :service_jwt@localhost,
+  remote_supervisor: {Controller, :service_jwt@localhost},
+  remote_module: Controller,
+  secret_key: "dhriklbnciesc84uiv71",
+  secret_ex_key: "ap098hvb3w3dh8mvg754"

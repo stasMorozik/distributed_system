@@ -10,6 +10,8 @@ defmodule HttpUserEntryPointServiceWeb.Router do
 
     post "/confirm", UserController, :confirm
     post "/sign-up", UserController, :sign_up
+    post "/sign-in", UserController, :sign_in
+    get "/sign-out", UserController, :sign_out
   end
 
 

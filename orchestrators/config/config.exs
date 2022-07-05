@@ -33,6 +33,13 @@ config :task_adapters_for_notifying_service, :service_notifying,
   remote_supervisor: {Controller, :service_notifying@localhost},
   remote_module: Controller
 
+config :task_adapters_for_user_jtwt_service, :service_jwt,
+  remote_node: :service_jwt@localhost,
+  remote_supervisor: {Controller, :service_jwt@localhost},
+  remote_module: Controller,
+  secret_key: "dhriklbnciesc84uiv71",
+  secret_ex_key: "ap098hvb3w3dh8mvg754"
+
 config :http_user_entry_point_service, HttpUserEntryPointServiceWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4000],
   debug_errors: false,
