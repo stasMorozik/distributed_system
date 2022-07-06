@@ -38,19 +38,20 @@ defmodule Core.DomainLayer.ValueObjects.Token do
           :ok,
           %{
             email: binary(),
-            password: binary()
+            password: binary(),
+            id: binary()
           }
         }
 
-  @spec new(binary(), binary(), binary(), integer()) :: ok() | error()
-  def new(email, password, secret, expired) when is_binary(password) do
+  @spec new(binary(), binary(), binary(), binary(), integer()) :: ok() | error()
+  def new(email, password, id, secret, expired) when is_binary(password) and is_binary(id) do
     with {:ok, secret_v} <- validate_secret(secret),
          {:ok, expired_v} <- validate_exp(expired),
          {:ok, email_v} <- validate_email(email),
          expired_date <- DateTime.utc_now() |> DateTime.to_unix() |> Kernel.+(expired_v),
          signer <- Joken.Signer.create("HS256", secret_v),
          {:ok, token, _} <-
-           Token.generate_and_sign(%{em: email_v, ps: password, exp: expired_date}, signer) do
+           Token.generate_and_sign(%{em: email_v, ps: password, id: id, exp: expired_date}, signer) do
       {
         :ok,
         %Token{value: token}
@@ -74,7 +75,8 @@ defmodule Core.DomainLayer.ValueObjects.Token do
         :ok,
         %{
           email: claims["em"],
-          password: claims["ps"]
+          password: claims["ps"],
+          id: claims["id"]
         }
       }
     else

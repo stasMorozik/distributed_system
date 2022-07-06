@@ -48,7 +48,7 @@ defmodule HttpUserEntryPointService.MixProject do
       {:task_adapters_for_user_service, in_umbrella: true},
       {:task_adapters_for_notifying_service, in_umbrella: true},
       {:task_adapters_for_confirming_email_service, in_umbrella: true},
-      {:task_adapters_for_user_jtwt_service, in_umbrella: true},
+      {:task_adapters_for_user_jwt_service, in_umbrella: true},
     ]
   end
 

@@ -33,7 +33,7 @@ config :task_adapters_for_notifying_service, :service_notifying,
   remote_supervisor: {Controller, :service_notifying@localhost},
   remote_module: Controller
 
-config :task_adapters_for_user_jtwt_service, :service_jwt,
+config :task_adapters_for_user_jwt_service, :service_jwt,
   remote_node: :service_jwt@localhost,
   remote_supervisor: {Controller, :service_jwt@localhost},
   remote_module: Controller,

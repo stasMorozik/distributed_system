@@ -1,9 +1,9 @@
-defmodule TaskAdaptersForUserJtwtService.MixProject do
+defmodule TaskAdaptersForUserJwtService.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :task_adapters_for_user_jtwt_service,
+      app: :task_adapters_for_user_jwt_service,
       version: "0.1.0",
       build_path: "../../_build",
       config_path: "../../config/config.exs",

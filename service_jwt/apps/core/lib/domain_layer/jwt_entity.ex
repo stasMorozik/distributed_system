@@ -11,10 +11,10 @@ defmodule Core.DomainLayer.JWTEntity do
 
   @type ok :: {:ok, JWTEntity.t()}
 
-  @spec new(binary(), binary(), binary(), binary()) :: ok() | Token.error()
-  def new(email, password, secret, secret_exchanging) do
-    with {:ok, value_token} <- Token.new(email, password, secret, 900),
-         {:ok, value_refresh_token} <- Token.new(email, password, secret_exchanging, 87000) do
+  @spec new(binary(), binary(), binary(), binary(), binary()) :: ok() | Token.error()
+  def new(email, password, id, secret, secret_exchanging) do
+    with {:ok, value_token} <- Token.new(email, password, id, secret, 900),
+         {:ok, value_refresh_token} <- Token.new(email, password, id, secret_exchanging, 87000) do
       {
         :ok,
         %JWTEntity{
@@ -35,9 +35,9 @@ defmodule Core.DomainLayer.JWTEntity do
   @spec refresh(binary(), binary(), binary()) :: ok() | Token.error() | Token.error_parsing()
   def refresh(token, secret, secret_exchanging) do
     with {:ok, claims} <- Token.parse(token, secret_exchanging),
-         {:ok, value_token} <- Token.new(claims[:email], claims[:password], secret, 900),
+         {:ok, value_token} <- Token.new(claims[:email], claims[:password], claims[:id], secret, 900),
          {:ok, value_refresh_token} <-
-           Token.new(claims[:email], claims[:password], secret_exchanging, 87000) do
+           Token.new(claims[:email], claims[:password], claims[:id], secret_exchanging, 87000) do
       {
         :ok,
         %JWTEntity{

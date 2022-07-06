@@ -8,10 +8,14 @@ defmodule HttpUserEntryPointServiceWeb.Router do
   scope "/", HttpUserEntryPointServiceWeb do
     pipe_through :api
 
-    post "/confirm", UserController, :confirm
+    post "/confirm-email", UserController, :confirm_email
     post "/sign-up", UserController, :sign_up
     post "/sign-in", UserController, :sign_in
     get "/sign-out", UserController, :sign_out
+    get "/refresh-token", UserController, :refresh_token
+    get "/get", UserController, :get
+    put "/update-email", UserController, :update_email
+    put "/update", UserController, :update
   end
 
 

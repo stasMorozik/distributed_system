@@ -1,4 +1,4 @@
-defmodule Core.DomainLayer.Ports.CreatingJwtPort do
+defmodule Core.DomainLayer.Ports.RefreshingJwtPort do
   @moduledoc false
 
   alias Core.DomainLayer.Dtos.ServiceUnavailableError
@@ -13,5 +13,5 @@ defmodule Core.DomainLayer.Ports.CreatingJwtPort do
           | ServiceUnavailableError.t()
         }
 
-  @callback create(binary(), binary(), binary()) :: ok() | error()
+  @callback refresh(binary()) :: ok() | error()
 end

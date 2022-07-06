@@ -9,5 +9,5 @@ defmodule Core.DomainLayer.UseCases.CreatingUseCase do
 
   @type error :: Token.error()
 
-  @callback create(binary(), binary(), binary(), binary()) :: ok() | error()
+  @callback create(binary(), binary(), binary(), binary(), binary()) :: ok() | error()
 end

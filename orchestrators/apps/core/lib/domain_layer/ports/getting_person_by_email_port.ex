@@ -1,4 +1,4 @@
-defmodule Core.DomainLayer.Ports.GettingUserByEmailPort do
+defmodule Core.DomainLayer.Ports.GettingPersonByEmailPort do
   @moduledoc false
 
   alias Core.DomainLayer.Dtos.ServiceUnavailableError

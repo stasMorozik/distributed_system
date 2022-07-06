@@ -12,19 +12,19 @@ defmodule Core.DomainLayer.Dtos.PasswordIsNotTrueError do
   defstruct message: nil
 end
 
-defmodule Core.ApplicationLayer.ConfirmingUserEmailService do
+defmodule Core.ApplicationLayer.ConfirmingPersonEmailService do
   @moduledoc false
 
-  alias Core.DomainLayer.UseCases.ConfirmingUserEmailUseCase
+  alias Core.DomainLayer.UseCases.ConfirmingPersonEmailUseCase
 
-  alias Core.DomainLayer.Ports.GettingUserByEmailPort
+  alias Core.DomainLayer.Ports.GettingPersonByEmailPort
   alias Core.DomainLayer.Ports.CreatingConfirmingCodePort
   alias Core.DomainLayer.Ports.NotifyingMailPort
 
   alias Core.DomainLayer.Dtos.NotFoundError
   alias Core.DomainLayer.Dtos.PasswordIsNotTrueError
 
-  @behaviour ConfirmingUserEmailUseCase
+  @behaviour ConfirmingPersonEmailUseCase
 
   defmodule Core.DomainLayer.Dtos.AlreadyExistsError do
     @moduledoc false
@@ -37,10 +37,10 @@ defmodule Core.ApplicationLayer.ConfirmingUserEmailService do
 
   @spec send_to_email_code(
           binary(),
-          GettingUserByEmailPort.t(),
+          GettingPersonByEmailPort.t(),
           CreatingConfirmingCodePort.t(),
           NotifyingMailPort.t()
-        ) :: ConfirmingUserEmailUseCase.ok() | ConfirmingUserEmailUseCase.error()
+        ) :: ConfirmingPersonEmailUseCase.ok() | ConfirmingPersonEmailUseCase.error()
   def send_to_email_code(
         email,
         getting_user_by_email_port,

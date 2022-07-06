@@ -9,9 +9,9 @@ defmodule Controller do
   alias Core.DomainLayer.UseCases.ParsinfUseCase
   alias Core.DomainLayer.UseCases.CreatingUseCase
 
-  @spec create(binary(), binary(), binary(), binary()) :: CreatingUseCase.error() | CreatingUseCase.ok()
-  def create(email, password, secret, secret_exchanging) do
-    CreatingService.create(email, password, secret, secret_exchanging)
+  @spec create(binary(), binary(), binary(), binary(), binary()) :: CreatingUseCase.error() | CreatingUseCase.ok()
+  def create(email, password, id, secret, secret_exchanging) do
+    CreatingService.create(email, password, id, secret, secret_exchanging)
   end
 
   @spec refresh(binary(), binary(), binary()) :: RefreshingUseCase.ok() | RefreshingUseCase.error()
