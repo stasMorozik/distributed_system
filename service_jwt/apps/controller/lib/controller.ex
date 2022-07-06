@@ -3,9 +3,9 @@ defmodule Controller do
 
   alias Core.ApplicationLayer.CreatingService
   alias Core.ApplicationLayer.ParsingService
-  alias Core.ApplicationLayer.ExchangingService
+  alias Core.ApplicationLayer.RefreshingService
 
-  alias Core.DomainLayer.UseCases.ExchangingUseCase
+  alias Core.DomainLayer.UseCases.RefreshingUseCase
   alias Core.DomainLayer.UseCases.ParsinfUseCase
   alias Core.DomainLayer.UseCases.CreatingUseCase
 
@@ -14,9 +14,9 @@ defmodule Controller do
     CreatingService.create(email, password, secret, secret_exchanging)
   end
 
-  @spec exchange(binary(), binary(), binary()) :: ExchangingUseCase.ok() | ExchangingUseCase.error()
-  def exchange(token, secret, secret_exchanging) do
-    ExchangingService.exchange(token, secret, secret_exchanging)
+  @spec refresh(binary(), binary(), binary()) :: RefreshingUseCase.ok() | RefreshingUseCase.error()
+  def refresh(token, secret, secret_exchanging) do
+    RefreshingService.refresh(token, secret, secret_exchanging)
   end
 
   @spec parse(binary(), binary()) :: ParsinfUseCase.ok() | ParsinfUseCase.error()

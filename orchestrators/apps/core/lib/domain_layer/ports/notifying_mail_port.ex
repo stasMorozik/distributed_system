@@ -2,13 +2,6 @@ defmodule Core.DomainLayer.Ports.NotifyingMailPort do
   @moduledoc false
 
   alias Core.DomainLayer.Dtos.ServiceUnavailableError
-  alias Core.DomainLayer.Dtos.ImpossibleCreateError
-  alias Core.DomainLayer.Dtos.MessageIsInvalidError
-  alias Core.DomainLayer.Dtos.MessageIsTooLongError
-  alias Core.DomainLayer.Dtos.EmailIsInvalidError
-  alias Core.DomainLayer.Dtos.SubjectIsInvalidError
-  alias Core.DomainLayer.Dtos.SubjectIsTooLongError
-  alias Core.DomainLayer.Dtos.ServiceUnavailableError
 
   @type t :: Module
 
@@ -17,13 +10,7 @@ defmodule Core.DomainLayer.Ports.NotifyingMailPort do
   @type error ::
           {
             :error,
-            ImpossibleCreateError.t()
-            | MessageIsTooLongError.t()
-            | EmailIsInvalidError.t()
-            | MessageIsInvalidError.t()
-            | SubjectIsTooLongError.t()
-            | SubjectIsInvalidError.t()
-            | ServiceUnavailableError.t()
+            struct()
             | ServiceUnavailableError.t()
           }
 

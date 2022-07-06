@@ -20,7 +20,7 @@ defmodule Core.DomainLayer.UseCases.AuthenticatingUserService do
         :ok,
         %{
           token: jwt_entity.token.value,
-          exchanging_token: jwt_entity.exchanging_token.value
+          refresh_token: jwt_entity.refresh_token.value
         }
       }
     else

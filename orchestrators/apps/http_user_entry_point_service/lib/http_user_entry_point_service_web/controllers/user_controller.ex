@@ -64,7 +64,7 @@ defmodule HttpUserEntryPointServiceWeb.UserController do
              TaskAdaptersForUserService
            ) do
       conn = conn |> put_resp_cookie("token", jwt_tokens[:token])
-      conn = conn |> put_resp_cookie("token_ex", jwt_tokens[:exchanging_token])
+      conn = conn |> put_resp_cookie("refresh_token", jwt_tokens[:refresh_token])
       conn |> put_status(:ok) |> json(true)
     else
       {:error, %ServiceUnavailableError{message: m}} ->
@@ -77,7 +77,7 @@ defmodule HttpUserEntryPointServiceWeb.UserController do
 
   def sign_out(conn, _params) do
     conn = conn |> delete_resp_cookie("token")
-    conn = conn |> delete_resp_cookie("token_ex")
+    conn = conn |> delete_resp_cookie("refresh_token")
     conn |> put_status(:ok) |> json(:true)
   end
 end

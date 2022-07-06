@@ -1,4 +1,4 @@
-defmodule Core.DomainLayer.UseCases.ExchangingUseCase do
+defmodule Core.DomainLayer.UseCases.RefreshingUseCase do
   @typedoc false
 
   alias Core.DomainLayer.JWTEntity
@@ -9,5 +9,5 @@ defmodule Core.DomainLayer.UseCases.ExchangingUseCase do
 
   @type error :: Token.error() | Token.error_parsing()
 
-  @callback exchange(binary(), binary(), binary()) :: ok() | error()
+  @callback refresh(binary(), binary(), binary()) :: ok() | error()
 end
