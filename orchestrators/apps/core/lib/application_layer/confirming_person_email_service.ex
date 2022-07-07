@@ -43,11 +43,11 @@ defmodule Core.ApplicationLayer.ConfirmingPersonEmailService do
         ) :: ConfirmingPersonEmailUseCase.ok() | ConfirmingPersonEmailUseCase.error()
   def send_to_email_code(
         email,
-        getting_user_by_email_port,
+        getting_person_by_email_port,
         creating_confirming_code_port,
         notifying_mail_port
       ) do
-    with {:error, %NotFoundError{message: _}} <- getting_user_by_email_port.get(email, " "),
+    with {:error, %NotFoundError{message: _}} <- getting_person_by_email_port.get(email, " "),
          {:ok, confirming_code} <- creating_confirming_code_port.create(email),
          code <- confirming_code.code.value,
          {:ok, true} <-
