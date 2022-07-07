@@ -17,6 +17,17 @@ config :http_user_entry_point_service, HttpUserEntryPointServiceWeb.Endpoint,
   secret_key_base: "fYfvId/N+7MdqnMaxrNlYhyX7EanhgAkQCyfYxVghOwuA/Bg2zMgDOTX4BbMdB9a",
   watchers: []
 
+config :http_buyer_entry_point_service, HttpBuyerEntryPointServiceWeb.Endpoint,
+  # Binding to loopback ipv4 address prevents access from other machines.
+  # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
+  http: [ip: {127, 0, 0, 1}, port: 4001],
+  check_origin: false,
+  code_reloader: true,
+  debug_errors: false,
+  render_errors: [view: HttpBuyerEntryPointServiceWeb.ErrorView, accepts: ~w(json)],
+  secret_key_base: "LqhBEpe5GMZNf4UoCsmO+Gg4cvHgjg56T3c+eAjCEQzGZHOaGJMgU2Vn07eYxSel",
+  watchers: []
+
 # ## SSL Support
 #
 # In order to use HTTPS in development, a self-signed
@@ -56,6 +67,10 @@ config :task_adapters_for_user_service, :service_users,
   remote_supervisor: {Controller, :service_users@localhost},
   remote_module: Controller
 
+config :task_adapters_for_buyer_service, :service_buyers,
+  remote_node: :service_buyers@localhost,
+  remote_supervisor: {Controller, :service_buyers@localhost},
+  remote_module: Controller
 
 config :task_adapters_for_confirming_email_service, :service_confirming_email,
   remote_node: :service_confirming_email@localhost,
@@ -74,3 +89,10 @@ config :task_adapters_for_user_jwt_service, :service_jwt,
   remote_module: Controller,
   secret_key: "dhriklbnciesc84uiv71",
   secret_ex_key: "ap098hvb3w3dh8mvg754"
+
+config :task_adapters_for_buyer_jwt_service, :service_jwt,
+  remote_node: :service_jwt@localhost,
+  remote_supervisor: {Controller, :service_jwt@localhost},
+  remote_module: Controller,
+  secret_key: "ujb136ndaiewc84fiv71",
+  secret_ex_key: "xv6h7ge4vj2fn45bwc1p"

@@ -1,7 +1,7 @@
 defmodule Core.DomainLayer.Ports.UpdatingUserPort do
   @moduledoc false
 
-  alias Core.DomainLayer.Ports.UpdatingUserPort
+  alias Core.DomainLayer.Dtos.ServiceUnavailableError
 
   @type t :: Module
 

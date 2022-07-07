@@ -14,6 +14,8 @@ defmodule Controller do
 
   alias Core.DomainLayer.UseCases.UpdatingUseCase
 
+  alias Core.DomainLayer.UserEntity
+
   #here it's possible add logging
 
   @spec create(UserEntity.creating_dto()) :: CreatingUseCase.ok() | CreatingUseCase.error()

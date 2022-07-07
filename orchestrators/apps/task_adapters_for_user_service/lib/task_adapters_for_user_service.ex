@@ -54,8 +54,8 @@ defmodule TaskAdaptersForUserService do
     end
   end
 
-  @callback create(CreatingUserPort.creating_dto()) ::
-              CreatingUserPort.ok() | CreatingUserPort.error()
+  @spec create(CreatingUserPort.creating_dto()) ::
+          CreatingUserPort.ok() | CreatingUserPort.error()
   def create(dto) do
     case Node.connect(
            Application.get_env(:task_adapters_for_user_service, :service_users)[:remote_node]

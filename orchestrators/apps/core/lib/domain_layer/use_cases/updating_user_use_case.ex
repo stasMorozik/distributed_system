@@ -7,7 +7,6 @@ defmodule Core.DomainLayer.UseCases.UpdatingUserUseCase do
   @type ok :: {:ok, true}
 
   @type error :: UpdatingUserPort.error()
-                | ValidatingConfirmingCodePort.error()
                 | ParsingJwtPort.error()
 
   @type updating_dto :: %{

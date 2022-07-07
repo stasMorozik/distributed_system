@@ -8,12 +8,12 @@ defmodule Core.ApplicationLayer.UpdatingUserService do
 
   @behaviour UpdatingUserUseCase
 
-  @callback update(
-              binary(),
-              UpdatingUserUseCase.updating_dto(),
-              ParsingJwtPort.t(),
-              UpdatingUserPort.t()
-            ) :: UpdatingUserUseCase.ok() | UpdatingUserUseCase.error()
+  @spec update(
+          binary(),
+          UpdatingUserUseCase.updating_dto(),
+          ParsingJwtPort.t(),
+          UpdatingUserPort.t()
+        ) :: UpdatingUserUseCase.ok() | UpdatingUserUseCase.error()
   def update(token, dto, parsing_jwt_port, updating_user_port) do
     with {:ok, claims} <- parsing_jwt_port.parse(token),
          {:ok, _} <-
