@@ -1,5 +1,7 @@
 defmodule Core.DomainLayer.UseCases.RefreshingJwtUseCase do
-  @moduledoc false
+  @moduledoc """
+   This use case is shared between the buyer and the user, so its name is PersonUseCase.
+  """
 
   alias Core.DomainLayer.Ports.RefreshingJwtPort
 

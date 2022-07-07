@@ -1,5 +1,7 @@
 defmodule Core.DomainLayer.UseCases.ConfirmingPersonEmailUseCase do
-  @moduledoc false
+  @moduledoc """
+   This use case is shared between the buyer and the user, so its name is PersonUseCase.
+  """
 
   alias Core.DomainLayer.Ports.GettingPersonByEmailPort
   alias Core.DomainLayer.Ports.CreatingConfirmingCodePort
