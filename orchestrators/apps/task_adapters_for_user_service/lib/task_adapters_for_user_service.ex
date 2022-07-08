@@ -47,7 +47,7 @@ defmodule TaskAdaptersForUserService do
                 email: user_entity.email.value,
                 phone: user_entity.phone.value,
                 id: user_entity.id.value,
-                avatar: Base.encode64(user_entity.avatar.value)
+                avatar: Base.encode64(user_entity.avatar.image.value)
               }
             }
         end

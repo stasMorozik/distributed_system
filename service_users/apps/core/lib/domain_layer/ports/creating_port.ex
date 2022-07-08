@@ -3,7 +3,7 @@ defmodule Core.DomainLayer.Ports.CreatingPort do
 
   alias Core.DomainLayer.Dtos.AlreadyExistsError
 
-  alias Core.DomainLayer.UserEntity
+  alias Core.DomainLayer.UserAggregate
 
   alias Core.DomainLayer.Dtos.ImpossibleCreateError
 
@@ -13,5 +13,5 @@ defmodule Core.DomainLayer.Ports.CreatingPort do
 
   @type error :: {:error, AlreadyExistsError.t() | ImpossibleCreateError.t()}
 
-  @callback create(UserEntity.t()) :: ok() | error()
+  @callback create(UserAggregate.t()) :: ok() | error()
 end

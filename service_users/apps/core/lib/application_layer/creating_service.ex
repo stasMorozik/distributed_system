@@ -3,13 +3,13 @@ defmodule Core.ApplicationLayer.CreatingService do
 
   alias Core.DomainLayer.UseCases.CreatingUseCase
 
-  alias Core.DomainLayer.UserEntity
+  alias Core.DomainLayer.UserAggregate
 
   @behaviour CreatingUseCase
 
-  @spec create(UserEntity.creating_dto(), CreatingPort.t()) :: CreatingUseCase.ok() | CreatingUseCase.error()
+  @spec create(UserAggregate.creating_dto(), CreatingPort.t()) :: CreatingUseCase.ok() | CreatingUseCase.error()
   def create(creating_dto, creating_port) do
-    with {:ok, user_entity} <- UserEntity.new(creating_dto),
+    with {:ok, user_entity} <- UserAggregate.new(creating_dto),
          {:ok, true} <- creating_port.create(user_entity) do
       {:ok, true}
     else

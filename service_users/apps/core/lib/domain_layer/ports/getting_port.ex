@@ -5,11 +5,11 @@ defmodule Core.DomainLayer.Ports.GettingPort do
 
   alias Core.DomainLayer.ValueObjects.Id
 
-  alias Core.DomainLayer.UserEntity
+  alias Core.DomainLayer.UserAggregate
 
   @type t :: Module
 
-  @type ok :: {:ok, UserEntity.t()}
+  @type ok :: {:ok, UserAggregate.t()}
 
   @type error :: {:error, NotFoundError.t()}
 

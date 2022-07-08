@@ -9,13 +9,13 @@ defmodule Core.ApplicationLayer.UpdatingService do
 
   alias Core.DomainLayer.ValueObjects.Id
 
-  alias Core.DomainLayer.UserEntity
+  alias Core.DomainLayer.UserAggregate
 
-  @spec update(binary(), UserEntity.updating_dto(), GettingPort.t(), UpdatingPort.t()) :: UpdatingUseCase.ok() | UpdatingUseCase.error()
+  @spec update(binary(), UserAggregate.updating_dto(), GettingPort.t(), UpdatingPort.t()) :: UpdatingUseCase.ok() | UpdatingUseCase.error()
   def update(maybe_id, updating_dto, getting_port, updating_port) do
     with {:ok, value_id} <- Id.from_origin(maybe_id),
          {:ok, user_entity} <- getting_port.get(value_id),
-         {:ok, user_entity} <- UserEntity.update(user_entity, updating_dto),
+         {:ok, user_entity} <- UserAggregate.update(user_entity, updating_dto),
          {:ok, true} <- updating_port.update(user_entity) do
       {:ok, true}
     else

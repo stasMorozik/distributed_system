@@ -10,8 +10,8 @@ defmodule PostgresAdapters do
   alias Core.DomainLayer.Ports.GettingPort
   alias Core.DomainLayer.Ports.UpdatingPort
 
-  alias Core.DomainLayer.UserEntity
-  alias Core.DomainLayer.ValueObjects.Email
+  alias Core.DomainLayer.UserAggregate
+  alias Core.DomainLayer.AvatarEntity
 
   alias Core.DomainLayer.Dtos.NotFoundError
   alias Core.DomainLayer.Dtos.ImpossibleCreateError
@@ -19,6 +19,7 @@ defmodule PostgresAdapters do
   alias Core.DomainLayer.Dtos.ImpossibleUpdateError
   alias Core.DomainLayer.Dtos.AlreadyExistsError
 
+  alias Core.DomainLayer.ValueObjects.Email
   alias Core.DomainLayer.ValueObjects.Image
   alias Core.DomainLayer.ValueObjects.Created
   alias Core.DomainLayer.ValueObjects.PhoneNumber
@@ -36,14 +37,18 @@ defmodule PostgresAdapters do
   @behaviour GettingPort
   @behaviour UpdatingPort
 
-  @spec create(UserEntity.t()) :: CreatingPort.ok() | CreatingPort.error()
-  def create(%UserEntity{
+  @spec create(UserAggregate.t()) :: CreatingPort.ok() | CreatingPort.error()
+  def create(%UserAggregate{
         name: %Name{value: name},
         surname: %Surname{value: surname},
         email: %Email{value: email},
         phone: %PhoneNumber{value: phone},
         password: %Password{value: password},
-        avatar: %Image{value: avatar, id: id_ava, created: created_ava},
+        avatar: %AvatarEntity{
+          id: %Id{value: id_ava},
+          created: %Created{value: created_ava},
+          image: %Image{value: avatar}
+        },
         id: %Id{value: id},
         created: %Created{value: created}
       }) do
@@ -76,9 +81,9 @@ defmodule PostgresAdapters do
         created: created,
         id: id,
         avatar: %{
-          image: avatar,
-          created: created_ava,
           id: id_ava,
+          created: created_ava,
+          image: avatar,
           user_id: id
         }
       })
@@ -117,7 +122,7 @@ defmodule PostgresAdapters do
       user ->
         {
           :ok,
-          %UserEntity{
+          %UserAggregate{
             name: %Name{value: user.name},
             surname: %Surname{value: user.surname},
             email: %Email{value: user.email},
@@ -125,10 +130,10 @@ defmodule PostgresAdapters do
             password: %Password{value: user.password},
             created: %Created{value: user.created},
             id: %Id{value: user.id},
-            avatar: %Image{
-              value: user.avatar.image,
-              id: user.avatar.id,
-              created: user.avatar.created
+            avatar: %AvatarEntity{
+              image: %Image{value: user.avatar.image},
+              id: %Id{value: user.avatar.id},
+              created: %Created{value: user.avatar.created}
             }
           }
         }
@@ -160,7 +165,7 @@ defmodule PostgresAdapters do
           user ->
             {
               :ok,
-              %UserEntity{
+              %UserAggregate{
                 name: %Name{value: user.name},
                 surname: %Surname{value: user.surname},
                 email: %Email{value: user.email},
@@ -168,10 +173,10 @@ defmodule PostgresAdapters do
                 password: %Password{value: user.password},
                 created: %Created{value: user.created},
                 id: %Id{value: user.id},
-                avatar: %Image{
-                  value: user.avatar.image,
-                  id: user.avatar.id,
-                  created: user.avatar.created
+                avatar: %AvatarEntity{
+                  image: %Image{value: user.avatar.image},
+                  id: %Id{value: user.avatar.id},
+                  created: %Created{value: user.avatar.created}
                 }
               }
             }
@@ -183,14 +188,18 @@ defmodule PostgresAdapters do
     {:error, ImpossibleGetError.new()}
   end
 
-  @spec update(UserEntity.t()) :: UpdatingPort.ok() | UpdatingPort.error()
-  def update(%UserEntity{
+  @spec update(UserAggregate.t()) :: UpdatingPort.ok() | UpdatingPort.error()
+  def update(%UserAggregate{
         name: %Name{value: name},
         surname: %Surname{value: surname},
         email: %Email{value: email},
         phone: %PhoneNumber{value: phone},
         password: %Password{value: password},
-        avatar: %Image{value: avatar, id: id_ava, created: created_ava},
+        avatar: %AvatarEntity{
+          id: %Id{value: id_ava},
+          created: %Created{value: created_ava},
+          image: %Image{value: avatar}
+        },
         id: %Id{value: id},
         created: %Created{value: created}
       }) do
@@ -223,9 +232,9 @@ defmodule PostgresAdapters do
         created: created,
         id: id,
         avatar: %{
-          image: avatar,
-          created: created_ava,
           id: id_ava,
+          created: created_ava,
+          image: avatar,
           user_id: id
         }
       })

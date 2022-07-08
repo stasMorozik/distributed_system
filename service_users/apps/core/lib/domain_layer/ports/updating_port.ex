@@ -5,7 +5,7 @@ defmodule Core.DomainLayer.Ports.UpdatingPort do
 
   alias Core.DomainLayer.Dtos.ImpossibleUpdateError
 
-  alias Core.DomainLayer.UserEntity
+  alias Core.DomainLayer.UserAggregate
 
   @type t :: Module
 
@@ -13,5 +13,5 @@ defmodule Core.DomainLayer.Ports.UpdatingPort do
 
   @type error :: {:error, AlreadyExistsError.t() | ImpossibleUpdateError.t()}
 
-  @callback update(UserEntity.t()) :: ok() | error()
+  @callback update(UserAggregate.t()) :: ok() | error()
 end

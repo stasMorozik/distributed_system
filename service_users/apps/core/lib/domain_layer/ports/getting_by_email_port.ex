@@ -7,11 +7,11 @@ defmodule Core.DomainLayer.Ports.GettingByEmailPort do
 
   alias Core.DomainLayer.Dtos.ImpossibleGetError
 
-  alias Core.DomainLayer.UserEntity
+  alias Core.DomainLayer.UserAggregate
 
   @type t :: Module
 
-  @type ok :: {:ok, UserEntity.t()}
+  @type ok :: {:ok, UserAggregate.t()}
 
   @type error :: {:error, NotFoundError.t() | ImpossibleGetError.t()}
 

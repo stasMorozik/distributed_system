@@ -7,7 +7,7 @@ defmodule Core.ApplicationLayer.GettingByEmailService do
 
   alias Core.DomainLayer.Ports.GettingByEmailPort
 
-  alias Core.DomainLayer.UserEntity
+  alias Core.DomainLayer.UserAggregate
 
   @behaviour GettingByEmailUseCase
 
@@ -15,7 +15,7 @@ defmodule Core.ApplicationLayer.GettingByEmailService do
   def get(email, password, getting_by_email_port) do
     with {:ok, value_email} <- Email.new(email),
          {:ok, user_entity} <- getting_by_email_port.get_by_email(value_email),
-         {:ok, true} <- UserEntity.validate_password(user_entity, password) do
+         {:ok, true} <- UserAggregate.validate_password(user_entity, password) do
       {:ok, user_entity}
     else
       {:error, error_dto} -> {:error, error_dto}

@@ -1,7 +1,7 @@
 defmodule Core.DomainLayer.UseCases.CreatingUseCase do
   @moduledoc false
 
-  alias Core.DomainLayer.UserEntity
+  alias Core.DomainLayer.UserAggregate
 
   alias Core.DomainLayer.Ports.CreatingPort
 
@@ -9,7 +9,7 @@ defmodule Core.DomainLayer.UseCases.CreatingUseCase do
 
   @type ok :: {:ok, true}
 
-  @type error :: CreatingPort.error() | UserEntity.error_creating()
+  @type error :: CreatingPort.error() | UserAggregate.error_creating()
 
-  @callback create(UserEntity.creating_dto(), CreatingPort.t()) :: ok() | error()
+  @callback create(UserAggregate.creating_dto(), CreatingPort.t()) :: ok() | error()
 end
