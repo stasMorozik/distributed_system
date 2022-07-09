@@ -10,6 +10,9 @@ defmodule Core.DomainLayer.OwnerEntity do
 
   alias Core.DomainLayer.OwnerEntity
 
+  alias Core.DomainLayer.Dtos.EmailIsInvalidError
+  alias Core.DomainLayer.Dtos.IdIsInvalidError
+
   defstruct email: nil, id: nil, created: nil
 
   @type t :: %OwnerEntity{
@@ -23,21 +26,27 @@ defmodule Core.DomainLayer.OwnerEntity do
   @type error_creating ::
           Email.error()
           | {:error, ImpossibleCreateError.t()}
+          | {:error, IdIsInvalidError.t()}
 
-  @spec new(binary()) :: ok() | error_creating()
-  def new(email) when is_binary(email) do
-    case Email.new(email) do
-      {:error, error_dto} -> {:error, error_dto}
-      {:ok, value_email} ->
+  @type error_updating ::
+          Email.error()
+          | {:error, ImpossibleUpdateError.t()}
 
-        {
-          :ok,
-          %OwnerEntity{
-            email: value_email,
-            id: Id.new(),
-            created: Created.new()
-          }
+  @spec new(binary(), binary()) :: ok() | error_creating()
+  def new(email, id) when is_binary(email) do
+    with {:ok, value_email} <- Email.new(email),
+         {:ok, _} <- UUID.info(id) do
+      {
+        :ok,
+        %OwnerEntity{
+          email: value_email,
+          id: %Id{value: id},
+          created: Created.new()
         }
+      }
+    else
+      {:error, %EmailIsInvalidError{message: m}} -> {:error, %EmailIsInvalidError{message: m}}
+      {:error, _} -> {:error, IdIsInvalidError.new()}
     end
   end
 
@@ -47,7 +56,7 @@ defmodule Core.DomainLayer.OwnerEntity do
 
   @spec update(OwnerEntity.t(), binary()) :: ok() | error_updating()
   def update(%OwnerEntity{
-        email: %Email{value: email},
+        email: %Email{value: _},
         id: %Id{value: id},
         created: %Created{value: _}
       }, new_email) when is_binary(new_email) do
@@ -57,7 +66,7 @@ defmodule Core.DomainLayer.OwnerEntity do
 
         {
           :ok,
-          %AvatarEntity{
+          %OwnerEntity{
             email: value_email,
             id: %Id{value: id},
             created: Created.new(),
