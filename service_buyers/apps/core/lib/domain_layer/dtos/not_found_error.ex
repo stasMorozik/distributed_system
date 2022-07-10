@@ -9,6 +9,6 @@ defmodule Core.DomainLayer.Dtos.NotFoundError do
 
   @spec new :: NotFoundError.t()
   def new do
-    %NotFoundError{message: "User not found"}
+    %NotFoundError{message: "Buyer not found"}
   end
 end

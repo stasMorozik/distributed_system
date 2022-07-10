@@ -7,8 +7,8 @@ defmodule Core.DomainLayer.Dtos.AlreadyExistsError do
 
   @type t :: %AlreadyExistsError{message: binary}
 
-  @spec new :: AlreadyExistsError.t()
-  def new do
-    %AlreadyExistsError{message: "User with this email address already exists"}
+  @spec new(binary()) :: AlreadyExistsError.t()
+  def new(name_entity) do
+    %AlreadyExistsError{message: "#{name_entity} address already exists"}
   end
 end

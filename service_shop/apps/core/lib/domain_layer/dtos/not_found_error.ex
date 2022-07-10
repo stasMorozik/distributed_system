@@ -7,8 +7,8 @@ defmodule Core.DomainLayer.Dtos.NotFoundError do
 
   @type t :: %NotFoundError{message: binary}
 
-  @spec new :: NotFoundError.t()
-  def new do
-    %NotFoundError{message: "User not found"}
+  @spec new(binary()) :: NotFoundError.t()
+  def new(name_entity) do
+    %NotFoundError{message: "#{name_entity} not found"}
   end
 end
