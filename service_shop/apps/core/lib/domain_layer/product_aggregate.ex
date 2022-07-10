@@ -140,7 +140,7 @@ defmodule Core.DomainLayer.ProductAggregate do
 
   @spec update(ProductAggregate.t(), updating_dto()) :: ok() | error_updating()
   def update(%ProductAggregate{} = entity, %{} = dto)
-      when is_map(dto) and is_struct(dto) == false and map_size(dto) > 0 and is_struct(entity) do
+      when is_map(dto) and is_struct(dto) == false and map_size(dto) > 0 do
     case is_empty(dto) do
       true -> {:error, ImpossibleUpdateError.new()}
       false ->
@@ -193,7 +193,8 @@ defmodule Core.DomainLayer.ProductAggregate do
   end
 
   @spec like(ProductAggregate.t(), voiting_dto()) :: ok() | error_voiting()
-  def like(%ProductAggregate{} = entity, %{} = dto) do
+  def like(%ProductAggregate{} = entity, %{} = dto)
+      when is_map(dto) and is_struct(dto) == false and map_size(dto) > 0 do
     with false <- Enum.any?(entity.likes, fn owner -> owner.id.value == dto[:id] end),
          {:ok, owner_entity} <- OwnerEntity.new(dto[:email], dto[:id]) do
       {
@@ -218,7 +219,8 @@ defmodule Core.DomainLayer.ProductAggregate do
   end
 
   @spec dislike(ProductAggregate.t(), voiting_dto()) :: ok() | error_voiting()
-  def dislike(%ProductAggregate{} = entity, %{} = dto) do
+  def dislike(%ProductAggregate{} = entity, %{} = dto)
+      when is_map(dto) and is_struct(dto) == false and map_size(dto) > 0 do
     with false <- Enum.any?(entity.dislikes, fn owner -> owner.id.value == dto[:id] end),
          {:ok, owner_entity} <- OwnerEntity.new(dto[:email], dto[:id]) do
 
