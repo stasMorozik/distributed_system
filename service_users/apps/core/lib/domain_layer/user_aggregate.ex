@@ -64,12 +64,12 @@ defmodule Core.DomainLayer.UserAggregate do
 
   @type updating_dto ::
           %{
-            name: any(),
-            surname: any(),
-            email: any(),
-            phone: any(),
-            password: any(),
-            avatar: any()
+            name: binary() | nil,
+            surname: binary() | nil,
+            email: binary() | nil,
+            phone: binary() | nil,
+            password: binary() | nil,
+            avatar: binary() | nil
           }
 
   @type error_updating ::

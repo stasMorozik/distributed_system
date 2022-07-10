@@ -24,6 +24,7 @@ defmodule Core.DomainLayer.ProductAggregate do
             name: nil,
             created: nil,
             amount: nil,
+            ordered: nil,
             description: nil,
             price: nil,
             logo: nil,
@@ -37,6 +38,7 @@ defmodule Core.DomainLayer.ProductAggregate do
           name: Name.t(),
           created: Created.t(),
           amount: Amount.t(),
+          ordered: Amount.t(),
           description: Description.t(),
           price: Price.t(),
           logo: ImageEntity.t(),
@@ -97,11 +99,11 @@ defmodule Core.DomainLayer.ProductAggregate do
         }
 
   @type updating_dto :: %{
-          name: any(),
-          amount: any(),
-          description: any(),
-          price: any(),
-          logo: any()
+          name: binary() | nil,
+          amount: integer() | nil,
+          description: binary() | nil,
+          price: integer() | nil,
+          logo: binary() | nil
         }
 
   @spec new(creating_dto()) :: ok() | error_creating()
@@ -121,6 +123,7 @@ defmodule Core.DomainLayer.ProductAggregate do
         %ProductAggregate{
           name: value_name,
           amount: value_amount,
+          ordered: 0,
           description: value_desc,
           price: value_price,
           logo: entity_logo,
@@ -145,6 +148,7 @@ defmodule Core.DomainLayer.ProductAggregate do
         |> update_desc(dto)
         |> update_price(dto)
         |> update_amount(dto)
+        |> update_ordered(dto)
         |> update_logo(dto)
     end
   end
@@ -283,6 +287,17 @@ defmodule Core.DomainLayer.ProductAggregate do
     end
   end
 
+  defp update_ordered({result, maybe_entity}, %{} = dto) do
+    with true <- result == :ok,
+         true <- dto[:ordered] != nil,
+         {:ok, value_amount} <- Amount.new(dto[:ordered]) do
+      {:ok, %ProductAggregate{maybe_entity | ordered: value_amount}}
+    else
+      false -> {result, maybe_entity}
+      {:error, error_dto} -> {:error, error_dto}
+    end
+  end
+
   defp update_logo({result, maybe_entity}, %{} = dto) do
     with true <- result == :ok,
          true <- dto[:logo] != nil,
@@ -300,6 +315,7 @@ defmodule Core.DomainLayer.ProductAggregate do
       Map.has_key?(dto, :amount) == true -> false
       Map.has_key?(dto, :description) == true -> false
       Map.has_key?(dto, :price) == true -> false
+      Map.has_key?(dto, :ordered) == true -> false
       true -> true
     end
   end
