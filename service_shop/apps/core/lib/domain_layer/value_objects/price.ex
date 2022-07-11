@@ -6,14 +6,14 @@ defmodule Core.DomainLayer.ValueObjects.Price do
 
   defstruct value: nil
 
-  @type t :: %Price{value: integer()}
+  @type t :: %Price{value: float()}
 
   @type ok :: {:ok, Price.t()}
 
   @type error :: {:error, PriceIsInvalidError.t()}
 
   @spec new(binary) :: ok | error
-  def new(pr) when is_integer(pr) do
+  def new(pr) when is_float(pr) do
     case pr >= 0 do
       true -> {:ok, %Price{value: pr}}
       false -> {:error, PriceIsInvalidError.new()}
