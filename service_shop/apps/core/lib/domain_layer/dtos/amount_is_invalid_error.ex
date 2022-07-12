@@ -9,6 +9,6 @@ defmodule Core.DomainLayer.Dtos.AmountIsInvalidError do
 
   @spec new :: AmountIsInvalidError.t()
   def new do
-    %AmountIsInvalidError{message: "Price is invalid"}
+    %AmountIsInvalidError{message: "Amount is invalid"}
   end
 end

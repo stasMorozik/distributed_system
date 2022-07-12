@@ -111,13 +111,14 @@ defmodule Core.DomainLayer.ProductAggregate do
     with {:ok, value_name} <- Name.new(dto[:name]),
          {:ok, value_desc} <- Description.new(dto[:description]),
          {:ok, value_price} <- Price.new(dto[:price]),
-         {:ok, value_amount} <- Amount.new(dto[:price]),
+         {:ok, value_amount} <- Amount.new(dto[:amount]),
          {:ok, entity_logo} <- ImageEntity.new(dto[:logo]),
          {:ok, entity_owner} <- OwnerEntity.new(dto[:owner][:email], dto[:owner][:id]),
-         images <- Enum.map(dto[:images], fn image -> ImageEntity.new(image) end)
-          |> Enum.filter(fn {result, _} -> result == :ok end)
-          |> Enum.map(fn {_, entity_image} -> entity_image end)
-          |> Enum.take(4) do
+         images <-
+           Enum.map(dto[:images], fn image -> ImageEntity.new(image) end)
+           |> Enum.filter(fn {result, _} -> result == :ok end)
+           |> Enum.map(fn {_, entity_image} -> entity_image end)
+           |> Enum.take(4) do
       {
         :ok,
         %ProductAggregate{
@@ -142,7 +143,9 @@ defmodule Core.DomainLayer.ProductAggregate do
   def update(%ProductAggregate{} = entity, %{} = dto)
       when is_map(dto) and is_struct(dto) == false and map_size(dto) > 0 do
     case is_empty(dto) do
-      true -> {:error, ImpossibleUpdateError.new()}
+      true ->
+        {:error, ImpossibleUpdateError.new()}
+
       false ->
         update_name({:ok, entity}, dto)
         |> update_desc(dto)
@@ -202,10 +205,12 @@ defmodule Core.DomainLayer.ProductAggregate do
         Map.update!(entity, :likes, fn likes -> [owner_entity | likes] end)
         |> Map.update!(
           :dislikes,
-          fn dislikes -> Enum.filter(
-            dislikes,
-            fn dislike -> dislike.id.value != owner_entity.id.value end
-          ) end
+          fn dislikes ->
+            Enum.filter(
+              dislikes,
+              fn dislike -> dislike.id.value != owner_entity.id.value end
+            )
+          end
         )
       }
     else
@@ -223,16 +228,17 @@ defmodule Core.DomainLayer.ProductAggregate do
       when is_map(dto) and is_struct(dto) == false and map_size(dto) > 0 do
     with false <- Enum.any?(entity.dislikes, fn owner -> owner.id.value == dto[:id] end),
          {:ok, owner_entity} <- OwnerEntity.new(dto[:email], dto[:id]) do
-
       {
         :ok,
         Map.update!(entity, :dislikes, fn dislikes -> [owner_entity | dislikes] end)
         |> Map.update!(
           :likes,
-          fn likes -> Enum.filter(
-            likes,
-            fn like -> like.id.value != owner_entity.id.value end
-          ) end
+          fn likes ->
+            Enum.filter(
+              likes,
+              fn like -> like.id.value != owner_entity.id.value end
+            )
+          end
         )
       }
     else
