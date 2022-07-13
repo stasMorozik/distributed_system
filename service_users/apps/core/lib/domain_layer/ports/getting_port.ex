@@ -3,6 +3,8 @@ defmodule Core.DomainLayer.Ports.GettingPort do
 
   alias Core.DomainLayer.Dtos.NotFoundError
 
+  alias Core.DomainLayer.Dtos.ImpossibleGetError
+
   alias Core.DomainLayer.ValueObjects.Id
 
   alias Core.DomainLayer.UserAggregate
@@ -11,7 +13,7 @@ defmodule Core.DomainLayer.Ports.GettingPort do
 
   @type ok :: {:ok, UserAggregate.t()}
 
-  @type error :: {:error, NotFoundError.t()}
+  @type error :: {:error, NotFoundError.t() | ImpossibleGetError.t()}
 
   @callback get(Id.t()) :: ok() | error()
 end

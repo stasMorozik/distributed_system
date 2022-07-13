@@ -14,7 +14,7 @@ defmodule Core.DomainLayer.ValueObjects.Name do
 
   @spec new(binary) :: ok | error
   def new(nm) when is_binary(nm) do
-    case String.match?(nm, ~r/^[a-zA-Z]+$/) do
+    case String.match?(nm, ~r/^[a-zA-Z0-9]+$/) do
       true -> {:ok, %Name{value: nm}}
       false -> {:error, NameIsInvalidError.new()}
     end

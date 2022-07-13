@@ -122,6 +122,8 @@ defmodule Core.DomainLayer.ProductAggregate do
       {
         :ok,
         %ProductAggregate{
+          id: Id.new(),
+          created: Created.new(),
           name: value_name,
           amount: value_amount,
           ordered: 0,

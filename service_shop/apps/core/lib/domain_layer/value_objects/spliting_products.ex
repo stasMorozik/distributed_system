@@ -1,15 +1,15 @@
-defmodule Core.DomainLayer.ValueObjects.SplitProdutcs do
+defmodule Core.DomainLayer.ValueObjects.SplitingProdutcs do
   @moduledoc false
 
   alias Core.DomainLayer.ValueObjects.Email
   alias Core.DomainLayer.ValueObjects.Amount
   alias Core.DomainLayer.ValueObjects.Price
 
-  alias Core.DomainLayer.ValueObjects.SplitProdutcs
+  alias Core.DomainLayer.ValueObjects.SplitingProdutcs
 
   defstruct email: nil, ordered: nil, amount: nil, price: nil
 
-  @type t :: %SplitProdutcs{
+  @type t :: %SplitingProdutcs{
           email: Email.t()    | nil,
           ordered: Amount.t() | nil,
           amount: Amount.t()  | nil,
@@ -22,7 +22,7 @@ defmodule Core.DomainLayer.ValueObjects.SplitProdutcs do
           | Price.error()
           | {:error, ImpossibleCreateError.t()}
 
-  @type ok :: {:ok, SplitProdutcs.t()}
+  @type ok :: {:ok, SplitingProdutcs.t()}
 
   @type creating_dto :: %{
           email: binary()   | nil,
@@ -39,7 +39,7 @@ defmodule Core.DomainLayer.ValueObjects.SplitProdutcs do
          {:ok, value_price} <- price(dto[:price]) do
       {
         :ok,
-        %SplitProdutcs{
+        %SplitingProdutcs{
           email: value_email,
           ordered: value_ordered,
           amount: value_amount,
