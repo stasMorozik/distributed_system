@@ -4,6 +4,8 @@ defmodule Core.DomainLayer.ValueObjects.SortingProviderInvoices do
   alias Core.DomainLayer.ValueObjects.SortingProviderInvoices
   alias Core.DomainLayer.Dtos.ImpossibleCreateError
 
+  alias Core.DomainLayer.Utils.DefinerSorting
+
   defstruct price: nil, created: nil
 
   @type t :: %SortingProviderInvoices{
@@ -25,8 +27,8 @@ defmodule Core.DomainLayer.ValueObjects.SortingProviderInvoices do
     price: price,
     created: created
   }) do
-    with true <- type(price),
-         true <- type(created) do
+    with true <- DefinerSorting.type(price),
+         true <- DefinerSorting.define(created) do
       {
         :ok,
         %SortingProviderInvoices{
@@ -41,17 +43,5 @@ defmodule Core.DomainLayer.ValueObjects.SortingProviderInvoices do
 
   def new(_) do
     {:error, ImpossibleCreateError.new()}
-  end
-
-  defp type(sort) do
-    if sort != nil do
-      if sort == "ASC" || sort == "DESC" do
-        true
-      else
-        false
-      end
-    else
-      true
-    end
   end
 end

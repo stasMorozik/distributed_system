@@ -50,14 +50,19 @@ defmodule Core.DomainLayer.CustomerInvoiceAggregate do
   @spec new(creating_dto()) :: ok() | error_creating()
   def new(%{} = creating_dto) when is_map(creating_dto) and is_list(creating_dto.products) do
     with false <- Enum.empty?(creating_dto.products),
-         group <- Enum.group_by(creating_dto.products, fn dto -> dto.product.owner.email.value end) |> Enum.map(fn {_, list} -> list end),
-         invoices <- Enum.map(group, fn (list_dto) -> ProviderInvoiceAggreGate.new(%{customer: creating_dto.customer, products: list_dto}) end),
+         group <-
+           Enum.group_by(creating_dto.products, fn dto -> dto.product.owner.email.value end)
+           |> Enum.map(fn {_, list} -> list end),
+         invoices <-
+           Enum.map(group, fn list_dto ->
+             ProviderInvoiceAggreGate.new(%{customer: creating_dto.customer, products: list_dto})
+           end),
          nil <- Enum.find(invoices, fn {result, _} -> result == :error end),
          invoices <- Enum.map(invoices, fn {_, invoce} -> invoce end),
          price <-
-          Enum.reduce(invoices, 0, fn invoce, acc ->
-            invoce.price.value + acc
-          end),
+           Enum.reduce(invoices, 0, fn invoce, acc ->
+             invoce.price.value + acc
+           end),
          {:ok, value_price} <- Price.new(price) do
       {
         :ok,

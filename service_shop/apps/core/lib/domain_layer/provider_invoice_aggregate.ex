@@ -75,14 +75,15 @@ defmodule Core.DomainLayer.ProviderInvoiceAggreGate do
            |> Enum.map(fn {key, _} -> key end),
          true <- length(group) == 1,
          products <-
-          Enum.map(creating_dto.products, fn dto ->
-            %{amount: Amount.new(dto.amount), product: dto.product}
-          end),
-         nil <- Enum.find(products, fn %{amount: {result, _}, product: _} -> result == :error end),
+           Enum.map(creating_dto.products, fn dto ->
+             %{amount: Amount.new(dto.amount), product: dto.product}
+           end),
+         nil <-
+           Enum.find(products, fn %{amount: {result, _}, product: _} -> result == :error end),
          products <-
-          Enum.map(products, fn %{amount: {_, maybe_amount}, product: product} ->
-            %{amount: maybe_amount, product: product}
-          end),
+           Enum.map(products, fn %{amount: {_, maybe_amount}, product: product} ->
+             %{amount: maybe_amount, product: product}
+           end),
          nil <- Enum.find(products, fn dto -> dto.amount.value > dto.product.amount.value end),
          price <-
            Enum.reduce(products, 0, fn %{amount: amount, product: product}, acc ->

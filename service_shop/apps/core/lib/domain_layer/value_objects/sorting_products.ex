@@ -4,6 +4,8 @@ defmodule Core.DomainLayer.ValueObjects.SortingProducts do
   alias Core.DomainLayer.ValueObjects.SortingProducts
   alias Core.DomainLayer.Dtos.ImpossibleCreateError
 
+  alias Core.DomainLayer.Utils.DefinerSorting
+
   defstruct likes: nil, price: nil, ordered: nil, amount: nil, created: nil
 
   @type t :: %SortingProducts{
@@ -34,11 +36,11 @@ defmodule Core.DomainLayer.ValueObjects.SortingProducts do
     amount: amount,
     created: created
   }) do
-    with true <- type(likes),
-         true <- type(price),
-         true <- type(ordered),
-         true <- type(amount),
-         true <- type(created) do
+    with true <- DefinerSorting.define(likes),
+         true <- DefinerSorting.define(price),
+         true <- DefinerSorting.define(ordered),
+         true <- DefinerSorting.define(amount),
+         true <- DefinerSorting.define(created) do
       {
         :ok,
         %SortingProducts{
@@ -56,17 +58,5 @@ defmodule Core.DomainLayer.ValueObjects.SortingProducts do
 
   def new(_) do
     {:error, ImpossibleCreateError.new()}
-  end
-
-  defp type(sort) do
-    if sort != nil do
-      if sort == "ASC" || sort == "DESC" do
-        true
-      else
-        false
-      end
-    else
-      true
-    end
   end
 end
