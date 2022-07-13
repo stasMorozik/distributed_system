@@ -4,10 +4,10 @@ defmodule Core.DomainLayer.ValueObjects.SplitingProdutcs do
   alias Core.DomainLayer.Dtos.ImpossibleCreateError
   alias Core.DomainLayer.ValueObjects.SplitingProdutcs
 
-  defstruct email: nil, ordered: nil, amount: nil, price: nil
+  defstruct provider: nil, ordered: nil, amount: nil, price: nil
 
   @type t :: %SplitingProdutcs{
-          email: boolean()   | nil,
+          provider: boolean()   | nil,
           ordered: boolean() | nil,
           amount: boolean()  | nil,
           price: boolean()   | nil
@@ -19,7 +19,7 @@ defmodule Core.DomainLayer.ValueObjects.SplitingProdutcs do
   @type ok :: {:ok, SplitingProdutcs.t()}
 
   @type creating_dto :: %{
-          email: boolean()   | nil,
+          provider: boolean()   | nil,
           ordered: boolean() | nil,
           amount: boolean()  | nil,
           price: boolean()   | nil
@@ -27,7 +27,7 @@ defmodule Core.DomainLayer.ValueObjects.SplitingProdutcs do
 
   @spec new(creating_dto()) :: ok() | error()
   def new(%{
-    email: email,
+    provider: provider,
     ordered: ordered,
     amount: amount,
     price: price
@@ -35,7 +35,7 @@ defmodule Core.DomainLayer.ValueObjects.SplitingProdutcs do
     {
       :ok,
       %SplitingProdutcs{
-        email: email,
+        provider: provider,
         ordered: ordered,
         amount: amount,
         price: price
