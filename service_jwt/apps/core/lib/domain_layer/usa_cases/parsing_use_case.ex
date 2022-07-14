@@ -5,7 +5,7 @@ defmodule Core.DomainLayer.UseCases.ParsinfUseCase do
 
   @type ok :: {:ok, Token.claims()}
 
-  @type error :: {:error, Token.error_parsing()}
+  @type error :: Token.error_parsing()
 
   @callback parse(binary(), binary()) :: ok() | error()
 end

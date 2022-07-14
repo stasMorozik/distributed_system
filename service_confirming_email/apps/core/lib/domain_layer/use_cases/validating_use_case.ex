@@ -7,14 +7,16 @@ defmodule Core.DomainLayer.UseCases.ValidatingUseCase do
 
   alias Core.DomainLayer.Ports.DeletingPort
 
+  alias Core.DomainLayer.ValueObjects.Email
+
   @type ok :: {:ok, true}
 
-  @type error :: {
-    :error,
-    ConfirmingCodeEntity.error_validating()
-    | GettingPort.error()
-    | DeletingPort.error()
-  }
+  @type error ::
+          ConfirmingCodeEntity.error_validating()
+          | GettingPort.error()
+          | DeletingPort.error()
+          | Email.error()
+
 
   @callback validate(binary(), integer(), GettingPort.t(), DeletingPort.t()) :: ok() | error()
 end

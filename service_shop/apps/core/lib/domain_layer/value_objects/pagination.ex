@@ -15,8 +15,16 @@ defmodule Core.DomainLayer.ValueObjects.Pagination do
 
   @type error :: {:error, ImpossibleCreateError.t()}
 
-  @spec new(integer(), integer()) :: ok() | error()
-  def new(limit, offset) when is_integer(limit) and is_integer(offset) do
+  @type creating_dto :: %{
+          limit: integer(),
+          offset: integer()
+        }
+
+  @spec new(creating_dto()) :: ok() | error()
+  def new(%{
+    limit: limit,
+    offset: offset
+  }) when is_integer(limit) and is_integer(offset) do
     with true <- limit > 0,
          true <- offset > 0 do
       {
@@ -31,7 +39,7 @@ defmodule Core.DomainLayer.ValueObjects.Pagination do
     end
   end
 
-  def new(_, _) do
+  def new(_) do
     {:error, ImpossibleCreateError.new()}
   end
 end

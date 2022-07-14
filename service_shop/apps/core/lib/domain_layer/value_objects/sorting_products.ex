@@ -1,57 +1,42 @@
 defmodule Core.DomainLayer.ValueObjects.SortingProducts do
   @moduledoc false
 
-  alias Core.DomainLayer.ValueObjects.SortingProducts
   alias Core.DomainLayer.Dtos.ImpossibleCreateError
 
   alias Core.DomainLayer.Utils.DefinerSorting
-
-  defstruct likes: nil, price: nil, ordered: nil, amount: nil, created: nil
-
-  @type t :: %SortingProducts{
-          likes: binary()   | nil,
-          price: binary()   | nil,
-          ordered: binary() | nil,
-          amount: binary()  | nil,
-          created: binary() | nil
-        }
+  alias Core.DomainLayer.ValueObjects.Sorting
 
   @type error :: {:error, ImpossibleCreateError.t()}
 
-  @type ok :: {:ok, SortingProducts.t()}
+  @type ok :: {:ok, Sorting.t()}
 
-  @type creating_dto :: %{
-          likes: binary()   | nil,
-          price: binary()   | nil,
-          ordered: binary() | nil,
-          amount: binary()  | nil,
-          created: binary() | nil
-        }
-
-  @spec new(creating_dto()) :: ok() | error()
+  @spec new(Sorting.creating_dto()) :: ok() | error()
   def new(%{
-    likes: likes,
-    price: price,
-    ordered: ordered,
-    amount: amount,
-    created: created
+    type: type,
+    value: "likes"
   }) do
-    with true <- DefinerSorting.define(likes),
-         true <- DefinerSorting.define(price),
-         true <- DefinerSorting.define(ordered),
-         true <- DefinerSorting.define(amount),
-         true <- DefinerSorting.define(created) do
-      {
-        :ok,
-        %SortingProducts{
-          likes: likes,
-          price: price,
-          ordered: ordered,
-          amount: amount,
-          created: created
-        }
-      }
-    else
+    case DefinerSorting.define(type) do
+      true -> %Sorting{type: type, value: "likes"}
+      false -> {:error, ImpossibleCreateError.new()}
+    end
+  end
+
+  def new(%{
+    type: type,
+    value: "price"
+  }) do
+    case DefinerSorting.define(type) do
+      true -> %Sorting{type: type, value: "likes"}
+      false -> {:error, ImpossibleCreateError.new()}
+    end
+  end
+
+  def new(%{
+    type: type,
+    value: "created"
+  }) do
+    case DefinerSorting.define(type) do
+      true -> %Sorting{type: type, value: "likes"}
       false -> {:error, ImpossibleCreateError.new()}
     end
   end

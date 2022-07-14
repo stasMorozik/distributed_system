@@ -11,7 +11,11 @@ defmodule Core.DomainLayer.UseCases.UpdatingUseCase do
 
   @type ok :: {:ok, true}
 
-  @type error :: UpdatingPort.error() | GettingPort.error() | UserAggregate.error_updating() | Id.error()
+  @type error ::
+          UpdatingPort.error()
+          | GettingPort.error()
+          | UserAggregate.error_updating()
+          | Id.error()
 
   @callback update(binary(), UserAggregate.updating_dto(), GettingPort.t(), UpdatingPort.t()) :: ok() | error()
 end

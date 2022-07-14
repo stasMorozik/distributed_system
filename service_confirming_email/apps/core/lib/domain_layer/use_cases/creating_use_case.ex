@@ -9,15 +9,16 @@ defmodule Core.DomainLayer.UseCases.CreatingUseCase do
 
   alias Core.DomainLayer.Ports.CreatingPort
 
+  alias Core.DomainLayer.ValueObjects.Email
+
   @type ok :: {:ok, ConfirmingCodeEntity.t()}
 
-  @type error :: {
-          :error,
+  @type error ::
           ConfirmingCodeEntity.error_from_origin()
           | ConfirmingCodeEntity.error_creating()
           | CreatingPort.error()
           | UpdatingPort.error()
-        }
+          | Email.error()
 
   @callback create(binary(), GettingPort.t(), UpdatingPort.t(), CreatingPort.t()) :: ok() | error()
 end

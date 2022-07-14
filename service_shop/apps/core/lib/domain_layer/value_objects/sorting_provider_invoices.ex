@@ -1,42 +1,32 @@
 defmodule Core.DomainLayer.ValueObjects.SortingProviderInvoices do
   @moduledoc false
 
-  alias Core.DomainLayer.ValueObjects.SortingProviderInvoices
   alias Core.DomainLayer.Dtos.ImpossibleCreateError
 
   alias Core.DomainLayer.Utils.DefinerSorting
-
-  defstruct price: nil, created: nil
-
-  @type t :: %SortingProviderInvoices{
-          price: binary()   | nil,
-          created: binary() | nil
-        }
+  alias Core.DomainLayer.ValueObjects.Sorting
 
   @type error :: {:error, ImpossibleCreateError.t()}
 
-  @type ok :: {:ok, SortingProviderInvoices.t()}
+  @type ok :: {:ok, Sorting.t()}
 
-  @type creating_dto :: %{
-          price: binary()   | nil,
-          created: binary() | nil
-        }
-
-  @spec new(creating_dto()) :: ok() | error()
+  @spec new(Sorting.creating_dto()) :: ok() | error()
   def new(%{
-    price: price,
-    created: created
+    type: type,
+    value: "price"
   }) do
-    with true <- DefinerSorting.type(price),
-         true <- DefinerSorting.define(created) do
-      {
-        :ok,
-        %SortingProviderInvoices{
-          price: price,
-          created: created
-        }
-      }
-    else
+    case DefinerSorting.define(type) do
+      true -> %Sorting{type: type, value: "price"}
+      false -> {:error, ImpossibleCreateError.new()}
+    end
+  end
+
+  def new(%{
+    type: type,
+    value: "created"
+  }) do
+    case DefinerSorting.define(type) do
+      true -> %Sorting{type: type, value: "created"}
       false -> {:error, ImpossibleCreateError.new()}
     end
   end

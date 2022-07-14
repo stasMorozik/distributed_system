@@ -11,7 +11,7 @@ defmodule Core.DomainLayer.Ports.GettingListProductPort do
 
   alias Core.DomainLayer.ValueObjects.SortingProducts
 
-  alias Core.DomainLayer.ValueObjects.SplitingProdutcs
+  alias Core.DomainLayer.ValueObjects.SplitingProducts
 
   @type t :: Module
 
@@ -19,5 +19,5 @@ defmodule Core.DomainLayer.Ports.GettingListProductPort do
 
   @type error :: {:error, ImpossibleGetError.t()}
 
-  @callback get(Pagination.t(), FiltrationProducts.t(), SortingProducts.t(), SplitingProdutcs.t()) :: ok() | error()
+  @callback get(Pagination.t(), FiltrationProducts.t() | nil, SortingProducts.t() | nil, SplitingProducts.t() | nil) :: ok() | error()
 end

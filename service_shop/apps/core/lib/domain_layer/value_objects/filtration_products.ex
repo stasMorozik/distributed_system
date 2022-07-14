@@ -7,10 +7,10 @@ defmodule Core.DomainLayer.ValueObjects.FiltrationProducts do
 
   alias Core.DomainLayer.ValueObjects.FiltrationProducts
 
-  defstruct email: nil, name: nil
+  defstruct provider: nil, name: nil
 
   @type t :: %FiltrationProducts{
-          email: Email.t() | nil,
+          provider: Email.t() | nil,
           name: Name.t()   | nil
         }
 
@@ -21,14 +21,22 @@ defmodule Core.DomainLayer.ValueObjects.FiltrationProducts do
 
   @type ok :: {:ok, FiltrationProducts.t()}
 
-  @spec new(binary() | nil, binary() | nil) :: ok() | error()
-  def new(email, name) do
+  @type creating_dto :: %{
+          provider: binary() | nil,
+          name: binary()  | nil
+        }
+
+  @spec new(creating_dto()) :: ok() | error()
+  def new(%{
+    provider: email,
+    name: name
+  }) do
     with {:ok, value_email} <- email(email),
          {:ok, value_name} <- name(name) do
       {
         :ok,
         %FiltrationProducts{
-          email: value_email,
+          provider: value_email,
           name: value_name
         }
       }

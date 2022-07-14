@@ -69,7 +69,6 @@ defmodule Core.DomainLayer.ProductAggregate do
   @type error_voiting ::
           {:error, ImpossibleUpdateError.t()}
           | {:error, AlreadyExistsError.t()}
-          | OwnerEntity.error_creating()
 
   @type voiting_dto :: %{
           id: binary(),
@@ -83,7 +82,6 @@ defmodule Core.DomainLayer.ProductAggregate do
   @type error_adding_image ::
           {:error, ImpossibleUpdateError.t()}
           | {:error, ListImageIsTooLongError.t()}
-          | ImageEntity.error()
 
   @type creating_dto :: %{
           name: binary(),
@@ -99,11 +97,11 @@ defmodule Core.DomainLayer.ProductAggregate do
         }
 
   @type updating_dto :: %{
-          name: binary() | nil,
-          amount: integer() | nil,
+          name: binary()        | nil,
+          amount: integer()     | nil,
           description: binary() | nil,
-          price: integer() | nil,
-          logo: binary() | nil
+          price: integer()      | nil,
+          logo: binary()        | nil
         }
 
   @spec new(creating_dto()) :: ok() | error_creating()
@@ -162,10 +160,10 @@ defmodule Core.DomainLayer.ProductAggregate do
     {:error, ImpossibleUpdateError.new()}
   end
 
-  @spec delete_image(ProductAggregate.t(), binary()) :: ok() | error_deleting_image()
-  def delete_image(%ProductAggregate{} = entity, id_image) when is_binary(id_image) do
-    with true <- Enum.any?(entity.images, fn image -> image.id.value == id_image end),
-         images = Enum.filter(entity.images, fn image -> image.id.value == id_image end) do
+  @spec delete_image(ProductAggregate.t(), Id.t()) :: ok() | error_deleting_image()
+  def delete_image(%ProductAggregate{} = entity, %Id{} = id_image) when is_binary(id_image.value) do
+    with true <- Enum.any?(entity.images, fn image -> image.id.value == id_image.value end),
+         images = Enum.filter(entity.images, fn image -> image.id.value == id_image.value end) do
       {
         :ok,
         %ProductAggregate{entity | images: images}
@@ -179,13 +177,13 @@ defmodule Core.DomainLayer.ProductAggregate do
     {:error, ImpossibleDeleteError.new()}
   end
 
-  @spec add_image(ProductAggregate.t(), binary()) :: ok() | error_adding_image()
-  def add_image(%ProductAggregate{} = entity, image) when is_binary(image) do
+  @spec add_image(ProductAggregate.t(), list(ImageEntity.t())) :: ok() | error_adding_image()
+  def add_image(%ProductAggregate{} = entity, list_image_entity) when is_list(list_image_entity) do
     with true <- length(entity.images) < 4,
-         {:ok, entity_image} <- ImageEntity.new(image) do
+         true <- length(entity.images) + length(list_image_entity) < 4 do
       {
         :ok,
-        %ProductAggregate{entity | images: [entity_image | entity.images]}
+        %ProductAggregate{entity | images: list_image_entity ++ entity.images}
       }
     else
       false -> {:error, ListImageIsTooLongError.new()}
@@ -197,11 +195,10 @@ defmodule Core.DomainLayer.ProductAggregate do
     {:error, ImpossibleUpdateError.new()}
   end
 
-  @spec like(ProductAggregate.t(), voiting_dto()) :: ok() | error_voiting()
-  def like(%ProductAggregate{} = entity, %{} = dto)
-      when is_map(dto) and is_struct(dto) == false and map_size(dto) > 0 do
-    with false <- Enum.any?(entity.likes, fn owner -> owner.id.value == dto[:id] end),
-         {:ok, owner_entity} <- OwnerEntity.new(dto[:email], dto[:id]) do
+  @spec like(ProductAggregate.t(), OwnerEntity.t()) :: ok() | error_voiting()
+  def like(%ProductAggregate{} = entity, %OwnerEntity{} = owner_entity)
+      when is_struct(owner_entity) and is_struct(entity) do
+    with false <- Enum.any?(entity.likes, fn owner -> owner.id.value == owner_entity.id.value end) do
       {
         :ok,
         Map.update!(entity, :likes, fn likes -> [owner_entity | likes] end)
@@ -225,11 +222,10 @@ defmodule Core.DomainLayer.ProductAggregate do
     {:error, ImpossibleUpdateError.new()}
   end
 
-  @spec dislike(ProductAggregate.t(), voiting_dto()) :: ok() | error_voiting()
-  def dislike(%ProductAggregate{} = entity, %{} = dto)
-      when is_map(dto) and is_struct(dto) == false and map_size(dto) > 0 do
-    with false <- Enum.any?(entity.dislikes, fn owner -> owner.id.value == dto[:id] end),
-         {:ok, owner_entity} <- OwnerEntity.new(dto[:email], dto[:id]) do
+  @spec dislike(ProductAggregate.t(), OwnerEntity.t()) :: ok() | error_voiting()
+  def dislike(%ProductAggregate{} = entity, %OwnerEntity{} = owner_entity)
+      when is_struct(owner_entity) and is_struct(entity) do
+    with false <- Enum.any?(entity.dislikes, fn owner -> owner.id.value == owner_entity.id.value end) do
       {
         :ok,
         Map.update!(entity, :dislikes, fn dislikes -> [owner_entity | dislikes] end)
@@ -311,7 +307,7 @@ defmodule Core.DomainLayer.ProductAggregate do
   defp update_logo({result, maybe_entity}, %{} = dto) do
     with true <- result == :ok,
          true <- dto[:logo] != nil,
-         {:ok, image_entity} <- ImageEntity.new(dto[:logo]) do
+         {:ok, image_entity} <- ImageEntity.update(maybe_entity.logo, dto[:logo]) do
       {:ok, %ProductAggregate{maybe_entity | logo: image_entity}}
     else
       false -> {result, maybe_entity}

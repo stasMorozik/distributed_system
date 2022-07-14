@@ -1,44 +1,46 @@
-defmodule Core.DomainLayer.ValueObjects.SplitingProdutcs do
+defmodule Core.DomainLayer.ValueObjects.SplitingProducts do
   @moduledoc false
 
   alias Core.DomainLayer.Dtos.ImpossibleCreateError
-  alias Core.DomainLayer.ValueObjects.SplitingProdutcs
+  alias Core.DomainLayer.ValueObjects.Splitting
 
-  defstruct provider: nil, ordered: nil, amount: nil, price: nil
+  @type error :: {:error, ImpossibleCreateError.t()}
 
-  @type t :: %SplitingProdutcs{
-          provider: boolean()   | nil,
-          ordered: boolean() | nil,
-          amount: boolean()  | nil,
-          price: boolean()   | nil
-        }
+  @type ok :: {:ok, Splitting.t()}
 
-  @type error ::
-          {:error, ImpossibleCreateError.t()}
-
-  @type ok :: {:ok, SplitingProdutcs.t()}
-
-  @type creating_dto :: %{
-          provider: boolean()   | nil,
-          ordered: boolean() | nil,
-          amount: boolean()  | nil,
-          price: boolean()   | nil
-        }
-
-  @spec new(creating_dto()) :: ok() | error()
+  @spec new(Splitting.creating_dto()) :: ok() | error()
   def new(%{
-    provider: provider,
-    ordered: ordered,
-    amount: amount,
-    price: price
+    value: "provider"
   }) do
     {
       :ok,
-      %SplitingProdutcs{
-        provider: provider,
-        ordered: ordered,
-        amount: amount,
-        price: price
+      %Splitting{
+        value: "provider",
+        sort: "price"
+      }
+    }
+  end
+
+  def new(%{
+    value: "price"
+  }) do
+    {
+      :ok,
+      %Splitting{
+        value: "price",
+        sort: "likes"
+      }
+    }
+  end
+
+  def new(%{
+    value: "amount"
+  }) do
+    {
+      :ok,
+      %Splitting{
+        value: "amount",
+        sort: "price"
       }
     }
   end
