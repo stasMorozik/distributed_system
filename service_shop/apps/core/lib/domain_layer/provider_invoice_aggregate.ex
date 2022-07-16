@@ -1,4 +1,4 @@
-defmodule Core.DomainLayer.ProviderInvoiceAggreGate do
+defmodule Core.DomainLayer.ProviderInvoiceAggregate do
   @moduledoc false
 
   alias Core.DomainLayer.ValueObjects.Price
@@ -14,7 +14,7 @@ defmodule Core.DomainLayer.ProviderInvoiceAggreGate do
   alias Core.DomainLayer.Dtos.AlreadyHaveSentError
 
   alias Core.DomainLayer.ProductAggregate
-  alias Core.DomainLayer.ProviderInvoiceAggreGate
+  alias Core.DomainLayer.ProviderInvoiceAggregate
 
   alias Core.DomainLayer.OwnerEntity
 
@@ -32,7 +32,7 @@ defmodule Core.DomainLayer.ProviderInvoiceAggreGate do
           product: ProductAggregate.t()
         }
 
-  @type t :: %ProviderInvoiceAggreGate{
+  @type t :: %ProviderInvoiceAggregate{
           created: Created.t(),
           id: Id.t(),
           price: Price.t(),
@@ -43,7 +43,7 @@ defmodule Core.DomainLayer.ProviderInvoiceAggreGate do
           provider: OwnerEntity.t()
         }
 
-  @type ok :: {:ok, ProviderInvoiceAggreGate.t()}
+  @type ok :: {:ok, ProviderInvoiceAggregate.t()}
 
   @type error_creating ::
           Price.error()
@@ -58,7 +58,10 @@ defmodule Core.DomainLayer.ProviderInvoiceAggreGate do
         }
 
   @type creating_dto :: %{
-          customer: OwnerEntity.t(),
+          customer: %{
+            email: binary(),
+            id: binary()
+          },
           products: list(product_dto())
         }
 
@@ -92,15 +95,16 @@ defmodule Core.DomainLayer.ProviderInvoiceAggreGate do
          {:ok, value_price} <- Price.new(price),
          [head | _] <- products,
          owner <- head.product.owner,
-         {:ok, value_status} <- Status.new("Created") do
+         {:ok, value_status} <- Status.new("Created"),
+         {:ok, entity_customer} <- OwnerEntity.new(creating_dto.customer) do
       {
         :ok,
-        %ProviderInvoiceAggreGate{
+        %ProviderInvoiceAggregate{
           created: Created.new(),
           id: Id.new(),
           price: value_price,
           number: Number.new(),
-          customer: creating_dto.customer,
+          customer: entity_customer,
           status: value_status,
           products: products,
           provider: owner
@@ -128,11 +132,11 @@ defmodule Core.DomainLayer.ProviderInvoiceAggreGate do
     {:error, ImpossibleCreateError.new()}
   end
 
-  @spec change_status(ProviderInvoiceAggreGate.t()) :: ok() | error_updating()
-  def change_status(%ProviderInvoiceAggreGate{} = enity) do
+  @spec change_status(ProviderInvoiceAggregate.t()) :: ok() | error_updating()
+  def change_status(%ProviderInvoiceAggregate{} = enity) do
     with true <- enity.status.value == "Created",
          {:ok, value_status} <- Status.new("Sent") do
-      {:ok, %ProviderInvoiceAggreGate{enity | status: value_status}}
+      {:ok, %ProviderInvoiceAggregate{enity | status: value_status}}
     else
       false -> {:error, AlreadyHaveSentError.new()}
       {:error, error_dto} -> {:error, error_dto}
@@ -147,7 +151,7 @@ end
 # alias Core.DomainLayer.OwnerEntity
 # {:ok, owner} = OwnerEntity.new("email@gmail.com", "82594c54-da2c-4c76-b1c8-264a1bcb1458")
 # alias Core.DomainLayer.ProductAggregate
-# alias Core.DomainLayer.ProviderInvoiceAggreGate
+# alias Core.DomainLayer.ProviderInvoiceAggregate
 # {:ok, product} = ProductAggregate.new(%{name: "test", amount: 10, description: "test", price: 10.0, logo: "logo", images: [], owner: %{id: "57591024-abc2-4b40-95f2-35c436529c5e", email: "test1@gmail.com"}})
 # {:ok, product1} = ProductAggregate.new(%{name: "test", amount: 10, description: "test", price: 10.0, logo: "logo", images: [], owner: %{id: "0898430e-02fb-4c47-881e-63b822f1ca92", email: "test1@gmail.com"}})
-# ProviderInvoiceAggreGate.new(%{customer: owner, products: [ %{amount: 1, product: product}, %{amount: 2, product: product1}] })
+# ProviderInvoiceAggregate.new(%{customer: owner, products: [ %{amount: 1, product: product}, %{amount: 2, product: product1}] })

@@ -19,7 +19,7 @@ defmodule Core.ApplicationLayer.UpdatingProductService do
           GettingProductPort.t(),
           UpdatingProductPort.t()
         ) :: UpdatingProductUseCase.ok() | UpdatingProductUseCase.error()
-  def update(maybe_id, %{} = dto, getting_product_port, updating_product_port) do
+  def update(maybe_id, dto, getting_product_port, updating_product_port) do
     with {:ok, value_id} <- Id.from_origin(maybe_id),
          {:ok, product_entity} <- getting_product_port.get(value_id),
          {:ok, product_entity} <-

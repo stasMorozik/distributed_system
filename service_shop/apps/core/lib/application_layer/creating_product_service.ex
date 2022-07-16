@@ -13,7 +13,7 @@ defmodule Core.ApplicationLayer.CreatingProductService do
           ProductAggregate.creating_dto(),
           CreatingProductPort.t()
         ) :: CreatingProductUseCase.ok() | CreatingProductUseCase.error()
-  def create(%{} = dto, creating_product_port) do
+  def create(dto, creating_product_port) do
     with {:ok, product_entity} <- ProductAggregate.new(dto),
          {:ok, true} <- creating_product_port.create(product_entity) do
       {:ok, true}

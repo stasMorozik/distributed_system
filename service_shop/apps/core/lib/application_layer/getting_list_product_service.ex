@@ -9,6 +9,10 @@ defmodule Core.ApplicationLayer.GettingListProductService do
 
   alias Core.DomainLayer.ValueObjects.SplitingProducts
 
+  alias Core.DomainLayer.ValueObjects.Sorting
+
+  alias Core.DomainLayer.ValueObjects.Splitting
+
   alias Core.DomainLayer.ValueObjects.Pagination
 
   alias Core.DomainLayer.ValueObjects.FiltrationProducts
@@ -16,14 +20,14 @@ defmodule Core.ApplicationLayer.GettingListProductService do
   @behaviour GettingListProductUseCase
 
   @callback get(
-              GettingListProductUseCase.dto_pagination(),
-              GettingListProductUseCase.dto_sorting()    | nil,
+              Pagination.creating_dto(),
+              Sorting.creating_dto()                     | nil,
               GettingListProductUseCase.dto_filtration() | nil,
-              GettingListProductUseCase.dto_spliting()   | nil,
+              Splitting.creating_dto()                   | nil,
               GettingListProductPort.t()
             ) :: GettingListProductUseCase.ok() | GettingListProductUseCase.error()
   def get(
-        %{} = dto_pagination,
+        dto_pagination,
         maybe_dto_sorting,
         maybe_dto_filtration,
         maybe_dto_spliting,

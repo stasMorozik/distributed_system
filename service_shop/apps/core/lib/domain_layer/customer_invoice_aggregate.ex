@@ -43,7 +43,10 @@ defmodule Core.DomainLayer.CustomerInvoiceAggregate do
         }
 
   @type creating_dto :: %{
-          customer: OwnerEntity.t(),
+          customer: %{
+            email: binary(),
+            id: binary()
+          },
           products: list(product_dto())
         }
 
@@ -63,7 +66,8 @@ defmodule Core.DomainLayer.CustomerInvoiceAggregate do
            Enum.reduce(invoices, 0, fn invoce, acc ->
              invoce.price.value + acc
            end),
-         {:ok, value_price} <- Price.new(price) do
+         {:ok, value_price} <- Price.new(price),
+         {:ok, entity_customer} <- OwnerEntity.new(creating_dto.customer)  do
       {
         :ok,
         %CustomerInvoiceAggregate{
@@ -71,7 +75,7 @@ defmodule Core.DomainLayer.CustomerInvoiceAggregate do
           id: Id.new(),
           price: value_price,
           number: Number.new(),
-          customer: creating_dto.customer,
+          customer: entity_customer,
           invoices: invoices
         }
       }

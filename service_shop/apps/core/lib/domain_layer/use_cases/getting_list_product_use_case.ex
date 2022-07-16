@@ -7,9 +7,13 @@ defmodule Core.DomainLayer.UseCases.GettingListProductUseCase do
 
   alias Core.DomainLayer.ValueObjects.SplitingProducts
 
-  alias Core.DomainLayer.ValueObjects.Pagination
-
   alias Core.DomainLayer.ValueObjects.FiltrationProducts
+
+  alias Core.DomainLayer.ValueObjects.Sorting
+
+  alias Core.DomainLayer.ValueObjects.Splitting
+
+  alias Core.DomainLayer.ValueObjects.Pagination
 
   @type t :: Module
 
@@ -22,30 +26,16 @@ defmodule Core.DomainLayer.UseCases.GettingListProductUseCase do
           | FiltrationProducts.error()
           | GettingListProductPort.error()
 
-  @type dto_pagination :: %{
-          limit: integer(),
-          offset: integer()
-        }
-
-  @type dto_sorting :: %{
-          type: binary(),
-          value: binary()
-        }
-
   @type dto_filtration :: %{
-          email: any(),
-          name: any()
-        }
-
-  @type dto_spliting :: %{
-          value: binary()
+          email: binary() | nil,
+          name: binary()  | nil
         }
 
   @callback get(
-              dto_pagination(),
-              dto_sorting()    | nil,
-              dto_filtration() | nil,
-              dto_spliting()   | nil,
+              Pagination.creating_dto(),
+              Sorting.creating_dto()   | nil,
+              dto_filtration()         | nil,
+              Splitting.creating_dto() | nil,
               GettingListProductPort.t()
             ) :: ok() | error()
 end

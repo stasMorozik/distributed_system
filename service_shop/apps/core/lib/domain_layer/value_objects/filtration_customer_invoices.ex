@@ -1,34 +1,34 @@
-defmodule Core.DomainLayer.ValueObjects.FiltrationProviderInvoices do
+defmodule Core.DomainLayer.ValueObjects.FiltrationCustomerInvoices do
   @moduledoc false
 
   alias Core.DomainLayer.Dtos.ImpossibleCreateError
   alias Core.DomainLayer.ValueObjects.Email
 
-  alias Core.DomainLayer.ValueObjects.FiltrationProviderInvoices
+  alias Core.DomainLayer.ValueObjects.FiltrationCustomerInvoices
 
-  defstruct customer: nil
+  defstruct provider: nil
 
-  @type t :: %FiltrationProviderInvoices{
-          customer: Email.t() | nil
+  @type t :: %FiltrationCustomerInvoices{
+          provider: Email.t() | nil
         }
 
   @type error ::
           Email.error()
           | {:error, ImpossibleCreateError.t()}
 
-  @type ok :: {:ok, FiltrationProviderInvoices.t()}
+  @type ok :: {:ok, FiltrationCustomerInvoices.t()}
 
   @type creating_dto :: %{
-          customer: binary() | nil
+          provider: binary() | nil
         }
 
   @spec new(creating_dto()) :: ok() | error()
   def new(dto) do
-    with {:ok, value_email} <- email(dto[:customer]) do
+    with {:ok, value_email} <- email(dto[:provider]) do
       {
         :ok,
-        %FiltrationProviderInvoices{
-          customer: value_email,
+        %FiltrationCustomerInvoices{
+          provider: value_email,
         }
       }
     else

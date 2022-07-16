@@ -139,6 +139,10 @@ defmodule Core.DomainLayer.ProductAggregate do
     end
   end
 
+  def new(_) do
+    {:error, ImpossibleCreateError.new()}
+  end
+
   @spec update(ProductAggregate.t(), updating_dto()) :: ok() | error_updating()
   def update(%ProductAggregate{} = entity, %{} = dto)
       when is_map(dto) and is_struct(dto) == false and map_size(dto) > 0 do

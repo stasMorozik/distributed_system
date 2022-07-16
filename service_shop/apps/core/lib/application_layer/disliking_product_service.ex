@@ -28,7 +28,7 @@ defmodule Core.ApplicationLayer.DislikingProductservice do
             ) :: DislikingProductUseCase.ok() | DislikingProductUseCase.error()
   def dislike(
         maybe_id,
-        %{} = dto,
+        dto,
         getting_product_port,
         adding_product_dislike_port,
         deleting_product_dislike_port

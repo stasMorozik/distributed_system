@@ -19,5 +19,10 @@ defmodule Core.DomainLayer.Ports.GettingListProductPort do
 
   @type error :: {:error, ImpossibleGetError.t()}
 
-  @callback get(Pagination.t(), FiltrationProducts.t() | nil, SortingProducts.t() | nil, SplitingProducts.t() | nil) :: ok() | error()
+  @callback get(
+              Pagination.t(),
+              FiltrationProducts.t() | nil,
+              SortingProducts.t()    | nil,
+              SplitingProducts.t()   | nil
+            ) :: ok() | error()
 end

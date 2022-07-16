@@ -28,7 +28,7 @@ defmodule Core.ApplicationLayer.LikingProductservice do
         ) :: LikingProductUseCase.ok() | LikingProductUseCase.error()
   def like(
         maybe_id,
-        %{} = dto,
+        dto,
         getting_product_port,
         adding_product_like_port,
         deleting_product_like_port
