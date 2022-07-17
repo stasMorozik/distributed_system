@@ -147,11 +147,3 @@ defmodule Core.DomainLayer.ProviderInvoiceAggregate do
     {:error, ImpossibleUpdateError.new()}
   end
 end
-
-# alias Core.DomainLayer.OwnerEntity
-# {:ok, owner} = OwnerEntity.new("email@gmail.com", "82594c54-da2c-4c76-b1c8-264a1bcb1458")
-# alias Core.DomainLayer.ProductAggregate
-# alias Core.DomainLayer.ProviderInvoiceAggregate
-# {:ok, product} = ProductAggregate.new(%{name: "test", amount: 10, description: "test", price: 10.0, logo: "logo", images: [], owner: %{id: "57591024-abc2-4b40-95f2-35c436529c5e", email: "test1@gmail.com"}})
-# {:ok, product1} = ProductAggregate.new(%{name: "test", amount: 10, description: "test", price: 10.0, logo: "logo", images: [], owner: %{id: "0898430e-02fb-4c47-881e-63b822f1ca92", email: "test1@gmail.com"}})
-# ProviderInvoiceAggregate.new(%{customer: owner, products: [ %{amount: 1, product: product}, %{amount: 2, product: product1}] })

@@ -9,10 +9,10 @@
 # move said applications out of the umbrella.
 import Config
 
-# Sample configuration:
-#
-#     config :logger, :console,
-#       level: :info,
-#       format: "$date $time [$level] $metadata$message\n",
-#       metadata: [:user_id]
-#
+config :postgres_adapters, Shop.Repo,
+  database: "shop",
+  username: "me3",
+  password: "123",
+  hostname: "localhost"
+
+config :postgres_adapters, ecto_repos: [Shop.Repo]

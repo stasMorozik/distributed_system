@@ -9,7 +9,7 @@ defmodule Core.DomainLayer.CustomerInvoiceAggregate do
   alias Core.DomainLayer.Dtos.ImpossibleCreateError
 
   alias Core.DomainLayer.ProductAggregate
-  alias Core.DomainLayer.ProviderInvoiceAggreGate
+  alias Core.DomainLayer.ProviderInvoiceAggregate
   alias Core.DomainLayer.OwnerEntity
 
   alias Core.DomainLayer.CustomerInvoiceAggregate
@@ -27,7 +27,7 @@ defmodule Core.DomainLayer.CustomerInvoiceAggregate do
           price: Price.t(),
           number: Number.t(),
           customer: OwnerEntity.t(),
-          invoices: list(ProviderInvoiceAggreGate.t())
+          invoices: list(ProviderInvoiceAggregate.t())
         }
 
   @type ok :: {:ok, CustomerInvoiceAggregate.t()}
@@ -58,7 +58,7 @@ defmodule Core.DomainLayer.CustomerInvoiceAggregate do
            |> Enum.map(fn {_, list} -> list end),
          invoices <-
            Enum.map(group, fn list_dto ->
-             ProviderInvoiceAggreGate.new(%{customer: creating_dto.customer, products: list_dto})
+             ProviderInvoiceAggregate.new(%{customer: creating_dto.customer, products: list_dto})
            end),
          nil <- Enum.find(invoices, fn {result, _} -> result == :error end),
          invoices <- Enum.map(invoices, fn {_, invoce} -> invoce end),
@@ -85,17 +85,7 @@ defmodule Core.DomainLayer.CustomerInvoiceAggregate do
     end
   end
 
-  def new() do
+  def new(_) do
     {:error, ImpossibleCreateError.new()}
   end
 end
-
-# alias Core.DomainLayer.OwnerEntity
-# {:ok, owner} = OwnerEntity.new("email@gmail.com", "82594c54-da2c-4c76-b1c8-264a1bcb1458")
-# alias Core.DomainLayer.ProductAggregate
-# alias Core.DomainLayer.ProviderInvoiceAggreGate
-# {:ok, product} = ProductAggregate.new(%{name: "test1", amount: 10, description: "test", price: 110.0, logo: "logo", images: [], owner: %{id: "57591024-abc2-4b40-95f2-35c436529c5e", email: "test1@gmail.com"}})
-# {:ok, product1} = ProductAggregate.new(%{name: "test2", amount: 10, description: "test", price: 140.0, logo: "logo", images: [], owner: %{id: "0898430e-02fb-4c47-881e-63b822f1ca92", email: "test1@gmail.com"}})
-# {:ok, product2} = ProductAggregate.new(%{name: "test3", amount: 10, description: "test", price: 150.0, logo: "logo", images: [], owner: %{id: "0898430e-02fb-4c47-881e-63b822f1ca92", email: "test2@gmail.com"}})
-# alias Core.DomainLayer.CustomerInvoiceAggregate
-# CustomerInvoiceAggregate.new(%{customer: owner, products: [ %{amount: 3, product: product}, %{amount: 2, product: product1}, %{amount: 2, product: product2} ] })

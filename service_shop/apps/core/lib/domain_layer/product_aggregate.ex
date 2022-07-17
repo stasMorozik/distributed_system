@@ -110,6 +110,7 @@ defmodule Core.DomainLayer.ProductAggregate do
          {:ok, value_desc} <- Description.new(dto[:description]),
          {:ok, value_price} <- Price.new(dto[:price]),
          {:ok, value_amount} <- Amount.new(dto[:amount]),
+         {:ok, value_ordered} <- Amount.new(0),
          {:ok, entity_logo} <- ImageEntity.new(dto[:logo]),
          {:ok, entity_owner} <- OwnerEntity.new(dto[:owner][:email], dto[:owner][:id]),
          images <-
@@ -124,7 +125,7 @@ defmodule Core.DomainLayer.ProductAggregate do
           created: Created.new(),
           name: value_name,
           amount: value_amount,
-          ordered: 0,
+          ordered: value_ordered,
           description: value_desc,
           price: value_price,
           logo: entity_logo,
