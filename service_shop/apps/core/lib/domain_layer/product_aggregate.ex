@@ -15,10 +15,10 @@ defmodule Core.DomainLayer.ProductAggregate do
   alias Core.DomainLayer.ValueObjects.Description
   alias Core.DomainLayer.ValueObjects.Price
 
-  alias Core.DomainLayer.ProductAggregate
-
   alias Core.DomainLayer.ImageEntity
   alias Core.DomainLayer.OwnerEntity
+
+  alias Core.DomainLayer.ProductAggregate
 
   defstruct id: nil,
             name: nil,

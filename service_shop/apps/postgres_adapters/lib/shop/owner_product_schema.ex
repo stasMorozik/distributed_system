@@ -5,11 +5,10 @@ defmodule Shop.OwnerProductSchema do
   alias Shop.OwnerSchema
   alias Shop.ProductSchema
 
-  @primary_key :false
   @foreign_key_type :binary_id
   schema "owner_products" do
-    belongs_to :owners, OwnerSchema, foreign_key: :owner_id
-    belongs_to :products, ProductSchema, foreign_key: :product_id
+    belongs_to :product, ProductSchema, foreign_key: :product_id
+    belongs_to :owner, OwnerSchema, foreign_key: :owner_id
   end
 
   def changeset(data, params \\ %{}) do

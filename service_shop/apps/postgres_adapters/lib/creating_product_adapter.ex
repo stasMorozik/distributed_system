@@ -1,8 +1,7 @@
-defmodule PostgresAdapters.CreatingProductAdapters do
+defmodule PostgresAdapters.CreatingProductAdapter do
   @moduledoc false
 
   alias Ecto.Multi
-  import Ecto.Query
   alias Shop.Repo
 
   alias Core.DomainLayer.Ports.CreatingProductPort
@@ -12,8 +11,6 @@ defmodule PostgresAdapters.CreatingProductAdapters do
   alias Core.DomainLayer.ProductAggregate
 
   alias Shop.ProductSchema
-
-  alias Shop.OwnerProductSchema
 
   alias Shop.OwnerSchema
 
@@ -35,18 +32,27 @@ defmodule PostgresAdapters.CreatingProductAdapters do
       ordered: entity.ordered.value,
       description: entity.description.value,
       price: entity.price.value,
-      logo: entity.logo.image.value
-    })
-
-    changeset_owner_product = %OwnerProductSchema{} |> OwnerProductSchema.changeset(%{
-      owner_id: entity.owner.id.value,
-      product_id: entity.id.value
+      owner: %{
+        owner_id: entity.owner.id.value,
+        product_id: entity.id.value,
+      },
+      logo: %{
+        id: entity.logo.id.value,
+        image: entity.logo.image.value,
+        created: entity.logo.created.value,
+        product_id: entity.id.value
+      },
+      images: Enum.map(entity.images, fn entity_image -> %{
+        id: entity_image.id.value,
+        image: entity_image.image.value,
+        created: entity_image.created.value,
+        product_id: entity.id.value
+      } end)
     })
 
     case Multi.new()
          |> Multi.insert(:owners, changeset_owner, on_conflict: :nothing, conflict_target: :email)
-         |> Multi.insert(:products, changeset_product)
-         |> Multi.insert(:owner_products, changeset_owner_product)
+         |> Multi.insert(:products, changeset_product, on_conflict: :nothing)
          |> Repo.transaction() do
       {:ok, _} -> {:ok, true}
       {:error, _} -> {:error, ImpossibleCreateError.new()}

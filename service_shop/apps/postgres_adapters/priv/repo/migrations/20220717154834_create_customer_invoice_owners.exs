@@ -2,7 +2,7 @@ defmodule Shop.Repo.Migrations.CreateCustomerInvoiceOwners do
   use Ecto.Migration
 
   def change do
-    create table(:customer_invoices_owners, primary_key: false) do
+    create table(:customer_invoices_owners) do
       add :customer_id, references(:owners, type: :uuid, on_delete: :delete_all), null: false
       add :invoice_id, references(:customer_invoices, type: :uuid, on_delete: :delete_all), null: false
     end
