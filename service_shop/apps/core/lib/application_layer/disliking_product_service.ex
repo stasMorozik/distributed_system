@@ -37,7 +37,7 @@ defmodule Core.ApplicationLayer.DislikingProductservice do
          {:ok, owner_entity} <- OwnerEntity.new(dto[:email], dto[:id]),
          {:ok, product_entity} <- getting_product_port.get(value_id),
          {:ok, _} <- ProductAggregate.dislike(product_entity, owner_entity),
-         {:ok, true} <- adding_product_dislike_port.add(owner_entity) do
+         {:ok, true} <- adding_product_dislike_port.add(value_id, owner_entity) do
       {:ok, true}
     else
       {:error, error_dto} -> {:error, error_dto}

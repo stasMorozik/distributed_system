@@ -1,24 +1,24 @@
-defmodule PostgresAdapters.DeletingImageProductAdapter do
+defmodule PostgresAdapters.DeletingProductLikeAdapter do
   @moduledoc false
 
   import Ecto.Query
 
   alias Shop.Repo
 
-  alias Core.DomainLayer.Ports.DeletingProductImagePort
+  alias Core.DomainLayer.Ports.DeletingProductLikePort
 
   alias Core.DomainLayer.Dtos.ImpossibleDeleteError
 
   alias Core.DomainLayer.ValueObjects.Id
 
-  alias Shop.ImageShema
+  alias Shop.LikeSchema
 
-  @behaviour DeletingProductImagePort
+  @behaviour DeletingProductLikePort
 
-  @spec delete(Id.t()) :: DeletingProductImagePort.ok() | DeletingProductImagePort.error()
+  @callback delete(Id.t()) :: DeletingProductLikePort.ok() | DeletingProductLikePort.error()
   def delete(%Id{value: id}) do
     case Repo.transaction(fn ->
-      from(i in ImageShema, where: i.id == ^id) |> Repo.delete_all()
+      from(l in LikeSchema, where: l.owner_id == ^id) |> Repo.delete_all()
     end) do
       {:ok, _} -> {:ok, true}
       {:error, _} -> {:error, ImpossibleDeleteError.new()}

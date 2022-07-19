@@ -1,4 +1,4 @@
-defmodule PostgresAdapters.AddingProductLikeAdapter do
+defmodule PostgresAdapters.AddingProductDislikeAdapter do
   @moduledoc false
 
   import Ecto.Query
@@ -7,7 +7,7 @@ defmodule PostgresAdapters.AddingProductLikeAdapter do
 
   alias Shop.Repo
 
-  alias Core.DomainLayer.Ports.AddingProductLikePort
+  alias Core.DomainLayer.Ports.AddingProductDislikePort
 
   alias Core.DomainLayer.Dtos.ImpossibleCreateError
 
@@ -21,9 +21,7 @@ defmodule PostgresAdapters.AddingProductLikeAdapter do
 
   alias Shop.OwnerSchema
 
-  @behaviour AddingProductLikePort
-
-  @spec add(Id.t(), OwnerEntity.t()) :: AddingProductLikePort.ok() | AddingProductLikePort.error()
+  @spec add(Id.t(), OwnerEntity.t()) :: AddingProductDislikePort.ok() | AddingProductDislikePort.error()
   def add(%Id{} = value_id, %OwnerEntity{} = entity) do
     changeset_owner = %OwnerSchema{} |> OwnerSchema.changeset(%{
       id: entity.id.value,
@@ -31,17 +29,17 @@ defmodule PostgresAdapters.AddingProductLikeAdapter do
       created: entity.created.value
     })
 
-    changeset_like = %LikeSchema{} |> LikeSchema.changeset(%{
+    changeset_like = %DislikeSchema{} |> DislikeSchema.changeset(%{
       product_id: value_id.value,
       owner_id: entity.id.value
     })
 
-    q = from(d in DislikeSchema, where: d.owner_id == ^entity.id.value)
+    q = from(l in LikeSchema, where: l.owner_id == ^entity.id.value)
 
     case Multi.new()
          |> Multi.insert(:owners, changeset_owner, on_conflict: :nothing, conflict_target: :email)
-         |> Multi.insert(:likes, changeset_like)
-         |> Multi.delete_all(:dislikes, q)
+         |> Multi.insert(:dislikes, changeset_like)
+         |> Multi.delete_all(:likes, q)
          |> Repo.transaction() do
       {:ok, _} -> {:ok, true}
       {:error, _} -> {:error, ImpossibleCreateError.new()}
