@@ -5,11 +5,13 @@ defmodule Core.DomainLayer.Ports.AddingProductImagePort do
 
   alias Core.DomainLayer.ImageEntity
 
+  alias Core.DomainLayer.ValueObjects.Id
+
   @type t :: Module
 
   @type ok :: {:ok, true}
 
   @type error :: {:error, ImpossibleCreateError.t()}
 
-  @callback add(list(ImageEntity.t())) :: ok() | error()
+  @callback add(Id.t(), list(ImageEntity.t())) :: ok() | error()
 end

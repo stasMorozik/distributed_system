@@ -30,21 +30,39 @@ defmodule PostgresAdapters.GettingProductAdapter do
 
   alias Shop.OwnerSchema
 
+  alias Shop.LikeSchema
+
+  alias Shop.DislikeSchema
+
   @behaviour GettingProductPort
 
   @spec get(Id.t()) :: GettingProductPort.ok() | GettingProductPort.error()
   def get(%Id{value: id}) do
     with {:ok, _} <- UUID.info(id),
          query <-
-          from(p in ProductSchema,
-            join: l in assoc(p, :logo),
-            join: i in assoc(p, :images),
+          from(product in ProductSchema,
+            left_join: logo in assoc(product, :logo),
+            left_join: images in assoc(product, :images),
             join: owner in OwnerProductSchema,
-              on: owner.product_id == p.id,
+              on: owner.product_id == product.id,
               join: true_owner in OwnerSchema,
                 on: owner.owner_id == true_owner.id,
-            where: p.id == ^id,
-            preload: [logo: l, images: i, owner: true_owner]
+            left_join: like in LikeSchema,
+              on: like.product_id == product.id,
+              left_join: true_like in OwnerSchema,
+                on: like.owner_id == true_like.id,
+            left_join: dislike in DislikeSchema,
+              on: dislike.product_id == product.id,
+              left_join: true_dislike in OwnerSchema,
+                on: dislike.owner_id == true_dislike.id,
+            where: product.id == ^id,
+            preload: [
+              logo: logo,
+              images: images,
+              owner: true_owner,
+              likes: true_like,
+              dislikes: true_dislike
+            ]
           ),
          product_schema <- Repo.one(query),
          true <- product_schema != nil do
@@ -72,7 +90,12 @@ defmodule PostgresAdapters.GettingProductAdapter do
             id: %Id{value: product_schema.owner.id},
             created: %Created{value: product_schema.owner.created},
             email: %Email{value: product_schema.owner.email}
-          }
+          },
+          likes: Enum.map(product_schema.likes, fn owner -> %OwnerEntity{
+            id: %Id{value: owner.id},
+            created: %Created{value: owner.created},
+            email: %Email{value: owner.email}
+          } end)
         }
       }
     else

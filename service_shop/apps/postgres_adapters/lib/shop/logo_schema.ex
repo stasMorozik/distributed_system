@@ -18,4 +18,10 @@ defmodule Shop.LogoSchema do
     |> validate_required([:image, :created, :id, :product_id])
     |> unique_constraint(:id, name: :images_pkey)
   end
+
+  def update_changeset(data, params \\ %{}) do
+    data
+    |> cast(params, [:image])
+    |> validate_required([:image])
+  end
 end

@@ -11,5 +11,5 @@ defmodule Core.DomainLayer.Ports.UpdatingProductPort do
 
   @type error :: {:error, ImpossibleUpdateError.t()}
 
-  @callback create(ProductAggregate.t()) :: ok() | error()
+  @callback update(ProductAggregate.t()) :: ok() | error()
 end

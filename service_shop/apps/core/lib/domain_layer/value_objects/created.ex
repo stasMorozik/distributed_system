@@ -15,7 +15,7 @@ defmodule Core.DomainLayer.ValueObjects.Created do
 
   @spec new :: Created.t()
   def new do
-    %Created{value: DateTime.utc_now()}
+    %Created{value: DateTime.utc_now() |> DateTime.truncate(:second)}
   end
 
   @spec from_unix(integer()) :: ok() | error()

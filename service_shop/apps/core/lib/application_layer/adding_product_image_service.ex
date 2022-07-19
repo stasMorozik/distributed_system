@@ -33,7 +33,7 @@ defmodule Core.ApplicationLayer.AddingProductImageService do
          list_image_entity <- Enum.map(list_image_entity, fn {_, image_entity} -> image_entity end),
          {:ok, product_entity} <- getting_product_port.get(value_id),
          {:ok, _} <- ProductAggregate.add_image(product_entity, list_image_entity),
-         {:ok, true} <- adding_product_image_port.add(list_image_entity) do
+         {:ok, true} <- adding_product_image_port.add(value_id, list_image_entity) do
       {:ok, true}
     else
       {:error, error_dto} -> {:error, error_dto}

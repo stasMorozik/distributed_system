@@ -5,11 +5,13 @@ defmodule Core.DomainLayer.Ports.AddingProductLikePort do
 
   alias Core.DomainLayer.OwnerEntity
 
+  alias Core.DomainLayer.ValueObjects.Id
+
   @type t :: Module
 
   @type ok :: {:ok, true}
 
   @type error :: {:error, ImpossibleCreateError.t()}
 
-  @callback add(OwnerEntity.t()) :: ok() | error()
+  @callback add(Id.t(), OwnerEntity.t()) :: ok() | error()
 end
