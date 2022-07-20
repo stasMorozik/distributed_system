@@ -1,4 +1,4 @@
-defmodule PostgresAdapters.Utils.ProductToDomain do
+defmodule Utils.ProductToDomain do
   @moduledoc false
 
   alias Core.DomainLayer.ProductAggregate

@@ -1,4 +1,4 @@
-defmodule PostgresAdapters.GettingProductAdapter do
+defmodule GettingProductAdapter do
   @moduledoc false
 
   import Ecto.Query
@@ -22,7 +22,7 @@ defmodule PostgresAdapters.GettingProductAdapter do
 
   alias Shop.DislikeSchema
 
-  alias PostgresAdapters.Utils.ProductToDomain
+  alias Utils.ProductToDomain
 
   @behaviour GettingProductPort
 

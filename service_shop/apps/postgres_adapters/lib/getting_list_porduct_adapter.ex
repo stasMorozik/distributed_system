@@ -1,4 +1,4 @@
-defmodule PostgresAdapters.GettingListProductAdapter do
+defmodule GettingListProductAdapter do
   @moduledoc false
 
   import Ecto.Query
@@ -26,7 +26,7 @@ defmodule PostgresAdapters.GettingListProductAdapter do
 
   alias Core.DomainLayer.ValueObjects.SplitingProducts
 
-  alias PostgresAdapters.Utils.ProductToDomain
+  alias Utils.ProductToDomain
 
   alias Core.DomainLayer.ValueObjects.Name
   alias Core.DomainLayer.ValueObjects.Email

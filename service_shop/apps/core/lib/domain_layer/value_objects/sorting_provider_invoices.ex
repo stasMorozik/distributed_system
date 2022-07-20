@@ -3,7 +3,6 @@ defmodule Core.DomainLayer.ValueObjects.SortingProviderInvoices do
 
   alias Core.DomainLayer.Dtos.ImpossibleCreateError
 
-  alias Core.DomainLayer.Utils.DefinerSorting
   alias Core.DomainLayer.ValueObjects.Sorting
 
   @type error :: {:error, ImpossibleCreateError.t()}

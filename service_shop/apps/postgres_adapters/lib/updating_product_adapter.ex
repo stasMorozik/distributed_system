@@ -1,4 +1,4 @@
-defmodule PostgresAdapters.UpdatingProductAdapter do
+defmodule UpdatingProductAdapter do
   @moduledoc false
 
   alias Ecto.Multi

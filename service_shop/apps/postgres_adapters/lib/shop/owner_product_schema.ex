@@ -1,4 +1,6 @@
 defmodule Shop.OwnerProductSchema do
+  @moduledoc false
+
   use Ecto.Schema
   import Ecto.Changeset
 

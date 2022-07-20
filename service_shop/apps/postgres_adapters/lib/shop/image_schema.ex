@@ -1,4 +1,6 @@
 defmodule Shop.ImageShema do
+  @moduledoc false
+
   use Ecto.Schema
   import Ecto.Changeset
 

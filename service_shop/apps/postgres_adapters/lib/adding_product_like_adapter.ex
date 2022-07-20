@@ -1,4 +1,4 @@
-defmodule PostgresAdapters.AddingProductLikeAdapter do
+defmodule AddingProductLikeAdapter do
   @moduledoc false
 
   import Ecto.Query

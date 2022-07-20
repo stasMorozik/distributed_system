@@ -1,4 +1,6 @@
 defmodule Shop.LikeSchema do
+  @moduledoc false
+
   use Ecto.Schema
   import Ecto.Changeset
 

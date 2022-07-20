@@ -1,4 +1,4 @@
-defmodule PostgresAdapters.AddingProductImageAdapter do
+defmodule AddingProductImageAdapter do
   @moduledoc false
 
   alias Shop.Repo
