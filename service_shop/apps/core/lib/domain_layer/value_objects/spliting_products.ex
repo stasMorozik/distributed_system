@@ -22,7 +22,7 @@ defmodule Core.DomainLayer.ValueObjects.SplitingProducts do
   end
 
   def new(%{
-    value: :price
+    value: "price"
   }) do
     {
       :ok,

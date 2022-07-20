@@ -15,8 +15,8 @@ defmodule Core.DomainLayer.ValueObjects.SplitingCustomerInvoices do
     {
       :ok,
       %Splitting{
-        value: "created",
-        sort: "price"
+        value: :created,
+        sort: :price
       }
     }
   end
@@ -27,8 +27,8 @@ defmodule Core.DomainLayer.ValueObjects.SplitingCustomerInvoices do
     {
       :ok,
       %Splitting{
-        value: "price",
-        sort: "created"
+        value: :price,
+        sort: :created
       }
     }
   end

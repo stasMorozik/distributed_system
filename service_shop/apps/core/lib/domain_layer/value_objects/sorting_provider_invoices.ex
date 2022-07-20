@@ -12,23 +12,31 @@ defmodule Core.DomainLayer.ValueObjects.SortingProviderInvoices do
 
   @spec new(Sorting.creating_dto()) :: ok() | error()
   def new(%{
-    type: type,
+    type: "ASC",
     value: "price"
   }) do
-    case DefinerSorting.define(type) do
-      true -> %Sorting{type: type, value: "price"}
-      false -> {:error, ImpossibleCreateError.new()}
-    end
+    %Sorting{type: :asc, value: :price}
   end
 
   def new(%{
-    type: type,
+    type: "DESC",
+    value: "price"
+  }) do
+    %Sorting{type: :desc, value: :price}
+  end
+
+  def new(%{
+    type: "ASC",
     value: "created"
   }) do
-    case DefinerSorting.define(type) do
-      true -> %Sorting{type: type, value: "created"}
-      false -> {:error, ImpossibleCreateError.new()}
-    end
+    %Sorting{type: :asc, value: :created}
+  end
+
+  def new(%{
+    type: "DESC",
+    value: "created"
+  }) do
+    %Sorting{type: :desc, value: :created}
   end
 
   def new(_) do
