@@ -15,20 +15,20 @@ defmodule Core.DomainLayer.ValueObjects.SplitingProducts do
     {
       :ok,
       %Splitting{
-        value: "provider",
-        sort: "price"
+        value: :provider,
+        sort: :price
       }
     }
   end
 
   def new(%{
-    value: "price"
+    value: :price
   }) do
     {
       :ok,
       %Splitting{
-        value: "price",
-        sort: "likes"
+        value: :price,
+        sort: :likes
       }
     }
   end
@@ -39,8 +39,8 @@ defmodule Core.DomainLayer.ValueObjects.SplitingProducts do
     {
       :ok,
       %Splitting{
-        value: "amount",
-        sort: "price"
+        value: :amount,
+        sort: :price
       }
     }
   end

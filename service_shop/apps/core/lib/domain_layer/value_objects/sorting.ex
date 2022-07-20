@@ -6,8 +6,8 @@ defmodule Core.DomainLayer.ValueObjects.Sorting do
   alias Core.DomainLayer.ValueObjects.Sorting
 
   @type t :: %Sorting{
-          type: binary(),
-          value: binary()
+          type: atom(),
+          value: atom()
         }
 
   @type creating_dto :: %{

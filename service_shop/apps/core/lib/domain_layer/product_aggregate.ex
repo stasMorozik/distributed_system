@@ -31,6 +31,8 @@ defmodule Core.DomainLayer.ProductAggregate do
             images: [],
             likes: [],
             dislikes: [],
+            like_count: nil,
+            dislike_count: nil,
             owner: nil
 
   @type t :: %ProductAggregate{
@@ -45,6 +47,8 @@ defmodule Core.DomainLayer.ProductAggregate do
           images: list(ImageEntity.t()),
           likes: list(OwnerEntity.t()),
           dislikes: list(OwnerEntity.t()),
+          like_count: Amount.t(),
+          dislike_count: Amount.t(),
           owner: OwnerEntity.t()
         }
 
@@ -132,7 +136,9 @@ defmodule Core.DomainLayer.ProductAggregate do
           owner: entity_owner,
           images: images,
           likes: [],
-          dislikes: []
+          dislikes: [],
+          like_count: %Amount{value: 0},
+          dislike_count: %Amount{value: 0},
         }
       }
     else

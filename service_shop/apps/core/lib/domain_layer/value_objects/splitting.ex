@@ -6,8 +6,8 @@ defmodule Core.DomainLayer.ValueObjects.Splitting do
   alias Core.DomainLayer.ValueObjects.Splitting
 
   @type t :: %Splitting{
-          value: binary(),
-          sort: binary()
+          value: atom(),
+          sort: atom()
         }
 
   @type creating_dto :: %{

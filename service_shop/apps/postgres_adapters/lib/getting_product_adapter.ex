@@ -11,18 +11,6 @@ defmodule PostgresAdapters.GettingProductAdapter do
   alias Core.DomainLayer.Dtos.NotFoundError
 
   alias Core.DomainLayer.ValueObjects.Id
-  alias Core.DomainLayer.ValueObjects.Created
-  alias Core.DomainLayer.ValueObjects.Name
-  alias Core.DomainLayer.ValueObjects.Amount
-  alias Core.DomainLayer.ValueObjects.Description
-  alias Core.DomainLayer.ValueObjects.Price
-  alias Core.DomainLayer.ValueObjects.Image
-  alias Core.DomainLayer.ValueObjects.Email
-
-  alias Core.DomainLayer.ImageEntity
-  alias Core.DomainLayer.OwnerEntity
-
-  alias Core.DomainLayer.ProductAggregate
 
   alias Shop.ProductSchema
 
@@ -34,6 +22,8 @@ defmodule PostgresAdapters.GettingProductAdapter do
 
   alias Shop.DislikeSchema
 
+  alias PostgresAdapters.Utils.ProductToDomain
+
   @behaviour GettingProductPort
 
   @spec get(Id.t()) :: GettingProductPort.ok() | GettingProductPort.error()
@@ -41,19 +31,24 @@ defmodule PostgresAdapters.GettingProductAdapter do
     with query <-
            from(product in ProductSchema,
              left_join: logo in assoc(product, :logo),
+             group_by: [product.id, logo.id],
              left_join: images in assoc(product, :images),
+             group_by: [product.id, images.id],
              join: owner in OwnerProductSchema,
              on: owner.product_id == product.id,
              join: true_owner in OwnerSchema,
              on: owner.owner_id == true_owner.id,
+             group_by: [product.id, true_owner.id],
              left_join: like in LikeSchema,
              on: like.product_id == product.id,
              left_join: true_like in OwnerSchema,
              on: like.owner_id == true_like.id,
+             group_by: [product.id, true_like.id],
              left_join: dislike in DislikeSchema,
              on: dislike.product_id == product.id,
              left_join: true_dislike in OwnerSchema,
              on: dislike.owner_id == true_dislike.id,
+             group_by: [product.id, true_dislike.id],
              where: product.id == ^id,
              preload: [
                logo: logo,
@@ -61,47 +56,18 @@ defmodule PostgresAdapters.GettingProductAdapter do
                owner: true_owner,
                likes: true_like,
                dislikes: true_dislike
-             ]
+             ],
+             select: {
+               product,
+               %{count: fragment("count(?) as like_count", true_like)},
+               %{count: fragment("count(?) as true_dislike", true_dislike)}
+             }
            ),
-         product_schema <- Repo.one(query),
+         {product_schema, like_count, dislike_count} <- Repo.one(query),
          true <- product_schema != nil do
       {
         :ok,
-        %ProductAggregate{
-          id: %Id{value: product_schema.id},
-          name: %Name{value: product_schema.name},
-          created: %Created{value: product_schema.created},
-          amount: %Amount{value: product_schema.amount},
-          ordered: %Amount{value: product_schema.ordered},
-          description: %Description{value: product_schema.description},
-          price: %Price{value: product_schema.price},
-          logo: %ImageEntity{
-            created: %Created{value: product_schema.logo.created},
-            id: %Id{value: product_schema.logo.id},
-            image: %Image{value: product_schema.logo.image}
-          },
-          images:
-            Enum.map(product_schema.images, fn image ->
-              %ImageEntity{
-                created: %Created{value: image.created},
-                id: %Id{value: image.id},
-                image: %Image{value: image.image}
-              }
-            end),
-          owner: %OwnerEntity{
-            id: %Id{value: product_schema.owner.id},
-            created: %Created{value: product_schema.owner.created},
-            email: %Email{value: product_schema.owner.email}
-          },
-          likes:
-            Enum.map(product_schema.likes, fn owner ->
-              %OwnerEntity{
-                id: %Id{value: owner.id},
-                created: %Created{value: owner.created},
-                email: %Email{value: owner.email}
-              }
-            end)
-        }
+        ProductToDomain.to(product_schema, like_count, dislike_count)
       }
     else
       false -> {:error, NotFoundError.new("Product")}
