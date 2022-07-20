@@ -116,7 +116,7 @@ defmodule Core.DomainLayer.ProductAggregate do
          {:ok, value_amount} <- Amount.new(dto[:amount]),
          {:ok, value_ordered} <- Amount.new(0),
          {:ok, entity_logo} <- ImageEntity.new(dto[:logo]),
-         {:ok, entity_owner} <- OwnerEntity.new(dto[:owner][:email], dto[:owner][:id]),
+         {:ok, entity_owner} <- OwnerEntity.new(%{email: dto[:owner][:email], id: dto[:owner][:id]}),
          images <-
            Enum.map(dto[:images], fn image -> ImageEntity.new(image) end)
            |> Enum.filter(fn {result, _} -> result == :ok end)

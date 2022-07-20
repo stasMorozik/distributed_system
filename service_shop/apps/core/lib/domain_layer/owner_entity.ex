@@ -32,8 +32,13 @@ defmodule Core.DomainLayer.OwnerEntity do
           Email.error()
           | {:error, ImpossibleUpdateError.t()}
 
-  @spec new(binary(), binary()) :: ok() | error_creating()
-  def new(email, id) when is_binary(email) do
+  @type creating_dto :: %{
+    email: binary(),
+    id: binary()
+  }
+
+  @spec new(creating_dto()) :: ok() | error_creating()
+  def new(%{email: email, id: id}) when is_binary(email) and is_binary(id) do
     with {:ok, value_email} <- Email.new(email),
          {:ok, _} <- UUID.info(id) do
       {
