@@ -11,5 +11,5 @@ defmodule Core.DomainLayer.Ports.UpdatingProviderInvoicePort do
 
   @type error :: {:error, ImpossibleUpdateError.t()}
 
-  @callback create(ProviderInvoiceAggregate.t()) :: ok() | error()
+  @callback update(ProviderInvoiceAggregate.t()) :: ok() | error()
 end

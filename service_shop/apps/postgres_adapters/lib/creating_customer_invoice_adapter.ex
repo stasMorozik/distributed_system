@@ -13,9 +13,7 @@ defmodule CreatingCustomerInvoiceAdapter do
   alias Shop.ProviderInvoiceProductShema
 
   alias Core.DomainLayer.Ports.CreatingCustomerInvoicePort
-
   alias Core.DomainLayer.CustomerInvoiceAggregate
-
   alias Core.DomainLayer.Dtos.ImpossibleCreateError
 
   @spec create(CustomerInvoiceAggregate.t()) ::
@@ -99,6 +97,10 @@ defmodule CreatingCustomerInvoiceAdapter do
       {:ok, _} -> {:ok, true}
       {:error, _, _, _} -> {:error, ImpossibleCreateError.new()}
     end
+  end
+
+  def create(_) do
+    {:error, ImpossibleCreateError.new()}
   end
 
   defp insert_list_provider_invoice(multi, list_invoice) do

@@ -54,31 +54,28 @@ defmodule GettingListProductAdapter do
         limit: ^pagination.limit,
         offset: ^pagination.offset,
         left_join: logo in assoc(product, :logo),
-        group_by: [product.id, logo.id],
         join: owner in OwnerProductSchema,
         on: owner.product_id == product.id,
         join: true_owner in OwnerSchema,
         as: :true_owner,
         on: owner.owner_id == true_owner.id,
-        group_by: [product.id, true_owner.id],
         left_join: like in LikeSchema,
         on: like.product_id == product.id,
         left_join: true_like in OwnerSchema,
         as: :true_like,
         on: like.owner_id == true_like.id,
-        group_by: [product.id, true_like.id],
         left_join: dislike in DislikeSchema,
         on: dislike.product_id == product.id,
         left_join: true_dislike in OwnerSchema,
         as: :true_dislike,
         on: dislike.owner_id == true_dislike.id,
-        group_by: [product.id, true_dislike.id],
         preload: [
           logo: logo,
           owner: true_owner,
           likes: true_like,
           dislikes: true_dislike
-        ]
+        ],
+        group_by: [true_dislike.id, true_like.id, true_owner.id, logo.id, product.id]
       )
 
     case maybe_spliting != nil do
@@ -121,7 +118,7 @@ defmodule GettingListProductAdapter do
       {
         product,
         %{count: fragment("count(?) as like_count", true_like)},
-        %{count: fragment("count(?) as true_dislike", true_dislike)}
+        %{count: fragment("count(?) as dislike_count", true_dislike)}
       }
     )
   end
@@ -251,7 +248,7 @@ defmodule GettingListProductAdapter do
         {
           product,
           %{count: fragment("count(?) as like_count", true_like)},
-          %{count: fragment("count(?) as true_dislike", true_dislike)},
+          %{count: fragment("count(?) as dislike_count", true_dislike)},
           %{
             row_number:
               row_number()
@@ -274,7 +271,7 @@ defmodule GettingListProductAdapter do
         {
           product,
           %{count: fragment("count(?) as like_count", true_like)},
-          %{count: fragment("count(?) as true_dislike", true_dislike)},
+          %{count: fragment("count(?) as dislike_count", true_dislike)},
           %{
             row_number:
               row_number()
@@ -297,7 +294,7 @@ defmodule GettingListProductAdapter do
         {
           product,
           %{count: fragment("count(?) as like_count", true_like)},
-          %{count: fragment("count(?) as true_dislike", true_dislike)},
+          %{count: fragment("count(?) as dislike_count", true_dislike)},
           %{
             row_number:
               row_number()

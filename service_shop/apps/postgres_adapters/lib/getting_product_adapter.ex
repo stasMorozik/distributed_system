@@ -5,23 +5,15 @@ defmodule GettingProductAdapter do
   alias Shop.Repo
 
   alias Core.DomainLayer.Ports.GettingProductPort
-
   alias Core.DomainLayer.Dtos.ImpossibleGetError
-
   alias Core.DomainLayer.Dtos.NotFoundError
-
   alias Core.DomainLayer.ValueObjects.Id
 
   alias Shop.ProductSchema
-
   alias Shop.OwnerProductSchema
-
   alias Shop.OwnerSchema
-
   alias Shop.LikeSchema
-
   alias Shop.DislikeSchema
-
   alias Utils.ProductToDomain
 
   @behaviour GettingProductPort
@@ -31,24 +23,24 @@ defmodule GettingProductAdapter do
     with query <-
            from(product in ProductSchema,
              left_join: logo in assoc(product, :logo),
-             group_by: [product.id, logo.id],
+
              left_join: images in assoc(product, :images),
-             group_by: [product.id, images.id],
+
              join: owner in OwnerProductSchema,
              on: owner.product_id == product.id,
              join: true_owner in OwnerSchema,
              on: owner.owner_id == true_owner.id,
-             group_by: [product.id, true_owner.id],
+
              left_join: like in LikeSchema,
              on: like.product_id == product.id,
              left_join: true_like in OwnerSchema,
              on: like.owner_id == true_like.id,
-             group_by: [product.id, true_like.id],
+
              left_join: dislike in DislikeSchema,
              on: dislike.product_id == product.id,
              left_join: true_dislike in OwnerSchema,
              on: dislike.owner_id == true_dislike.id,
-             group_by: [product.id, true_dislike.id],
+
              where: product.id == ^id,
              preload: [
                logo: logo,
@@ -60,11 +52,13 @@ defmodule GettingProductAdapter do
              select: {
                product,
                %{count: fragment("count(?) as like_count", true_like)},
-               %{count: fragment("count(?) as true_dislike", true_dislike)}
-             }
+               %{count: fragment("count(?) as dislike_count", true_dislike)}
+             },
+             group_by: [true_dislike.id, true_like.id, true_owner.id, images.id, product.id, logo.id]
            ),
-         {product_schema, like_count, dislike_count} <- Repo.one(query),
-         true <- product_schema != nil do
+         product <- Repo.one(query),
+         true <- product != nil,
+         {product_schema, like_count, dislike_count} <- product do
       {
         :ok,
         ProductToDomain.to(product_schema, like_count, dislike_count)

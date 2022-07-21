@@ -13,7 +13,8 @@ defmodule Shop.ProviderInvoiceSchema do
     field :number, :integer
     field :price, :float
     field :status, :string
-    has_one :owners, ProviderInvoiceOwnerSchema, foreign_key: :invoice_id
+    has_one :customer, ProviderInvoiceOwnerSchema, foreign_key: :invoice_id
+    has_one :provider, ProviderInvoiceOwnerSchema, foreign_key: :invoice_id
     has_many :products, ProviderInvoiceProductShema, foreign_key: :invoice_id
   end
 
@@ -22,5 +23,11 @@ defmodule Shop.ProviderInvoiceSchema do
     |> cast(params, [:number, :created, :price, :id, :status])
     |> validate_required([:number, :created, :price, :id, :status])
     |> unique_constraint(:id, name: :provider_invoices_pkey)
+  end
+
+  def update_changeset(data, params \\ %{}) do
+    data
+    |> cast(params, [:status])
+    |> validate_required([:status])
   end
 end

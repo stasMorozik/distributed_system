@@ -17,6 +17,5 @@ defmodule Shop.DislikeSchema do
     data
     |> cast(params, [:product_id, :owner_id])
     |> validate_required([:product_id, :owner_id])
-    |> unique_constraint(:owner_id, name: :dislikes_owner_id_index)
   end
 end
