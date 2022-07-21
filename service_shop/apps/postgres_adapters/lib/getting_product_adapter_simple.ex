@@ -12,11 +12,18 @@ defmodule GettingProductAdapterimple do
 
   alias Shop.ProductSchema
 
+  alias Core.DomainLayer.OwnerEntity
+
   alias Core.DomainLayer.ValueObjects.Id
   alias Core.DomainLayer.ValueObjects.Price
   alias Core.DomainLayer.ValueObjects.Amount
+  alias Core.DomainLayer.ValueObjects.Email
 
   alias Core.DomainLayer.ProductAggregate
+
+  alias Shop.OwnerProductSchema
+
+  alias Shop.OwnerSchema
 
   @behaviour GettingProductPort
 
@@ -25,8 +32,14 @@ defmodule GettingProductAdapterimple do
     with query <-
            from(
              product in ProductSchema,
+             join: owner in OwnerProductSchema,
+             on: owner.product_id == product.id,
+             join: true_owner in OwnerSchema,
+             on: owner.owner_id == true_owner.id,
              where: product.id == ^id,
-             select: %{id: product.id, amount: product.amount, price: product.price}
+             preload: [
+              owner: true_owner,
+            ]
            ),
          product_schema <- Repo.one(query),
          true <- product_schema != nil do
@@ -35,7 +48,11 @@ defmodule GettingProductAdapterimple do
         %ProductAggregate{
           id: %Id{value: product_schema.id},
           price: %Price{value: product_schema.price},
-          amount: %Amount{value: product_schema.amount}
+          amount: %Amount{value: product_schema.amount},
+          owner: %OwnerEntity{
+            id: %Id{value: product_schema.owner.id},
+            email: %Email{value: product_schema.owner.email}
+          },
         }
       }
     else

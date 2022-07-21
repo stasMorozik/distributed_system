@@ -10,7 +10,7 @@ defmodule Shop.ProviderInvoiceSchema do
   @primary_key {:id, :binary_id, autogenerate: false}
   schema "provider_invoices" do
     field :created, :utc_datetime
-    field :number, :string
+    field :number, :integer
     field :price, :float
     field :status, :string
     has_one :owners, ProviderInvoiceOwnerSchema, foreign_key: :invoice_id
