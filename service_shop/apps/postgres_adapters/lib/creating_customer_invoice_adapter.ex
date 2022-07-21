@@ -57,20 +57,20 @@ defmodule CreatingCustomerInvoiceAdapter do
             id: provider_invoice.id.value
           })
 
+        changeset_provider_invoice_owners =
+          %ProviderInvoiceOwnerSchema{}
+          |> ProviderInvoiceOwnerSchema.changeset(%{
+            provider_id: provider_invoice.provider.id.value,
+            customer_id: provider_invoice.customer.id.value,
+            invoice_id: provider_invoice.id.value
+          })
+
         changeset_customer_invoice_provider_invoice =
           %CustomerInvoiceProviderInvoiceSchema{}
           |> CustomerInvoiceProviderInvoiceSchema.changeset(%{
             customer_invoice_id: entity.id.value,
             provider_invoice_id: provider_invoice.id.value
           })
-
-        changeset_provider_invoice_owners =
-            %ProviderInvoiceOwnerSchema{}
-            |> ProviderInvoiceOwnerSchema.changeset(%{
-              provider_id: provider_invoice.provider.id.value,
-              customer_id: provider_invoice.customer.id.value,
-              invoice_id: provider_invoice.id.value
-            })
 
         list_changeset_provider_invoice_porduct =
           Enum.map(provider_invoice.products, fn product_invoice ->
@@ -117,12 +117,10 @@ defmodule CreatingCustomerInvoiceAdapter do
   end
 
   defp insert_list_provider_invoice_porduct(multi, list_invoice) do
-    Enum.reduce(
-      list_invoice,
-      multi,
-      fn invoice_prod, multi ->
-        Multi.insert(multi, {:provider_invoice_porduct, invoice_prod.changes.product_id}, invoice_prod)
-      end
-    )
+    inserting_fun = fn prod, multi ->
+      Multi.insert(multi, {:provider_invoice_porduct, prod.changes.product_id}, prod)
+    end
+
+    Enum.reduce(list_invoice, multi, &inserting_fun.(&1, &2))
   end
 end
