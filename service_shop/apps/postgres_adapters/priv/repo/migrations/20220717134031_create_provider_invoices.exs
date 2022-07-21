@@ -6,7 +6,7 @@ defmodule Shop.Repo.Migrations.CreateProviderInvoices do
       add :id, :uuid, primary_key: true, null: false
       add :created, :utc_datetime, null: false
       add :price, :float, null: false
-      add :number, :string, null: false
+      add :number, :integer, null: false
       add :status, :string, null: false
     end
   end
