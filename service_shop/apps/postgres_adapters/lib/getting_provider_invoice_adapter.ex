@@ -18,6 +18,8 @@ defmodule GettingProviderInvoiceAdapter do
   alias Shop.LikeSchema
   alias Shop.DislikeSchema
 
+  alias Utils.ProviderInvoiceToDomain
+
   @behaviour GettingProviderInvoicePort
 
 
@@ -73,8 +75,14 @@ defmodule GettingProviderInvoiceAdapter do
       )
 
     case Repo.one(query_invoice) do
-      nil -> {:error, NotFoundError.new("Provider invoice")}
-      invoice -> invoice
+      nil ->
+        {:error, NotFoundError.new("Provider invoice")}
+
+      invoice ->
+        {
+          :ok,
+          ProviderInvoiceToDomain.to(invoice)
+        }
     end
   end
 

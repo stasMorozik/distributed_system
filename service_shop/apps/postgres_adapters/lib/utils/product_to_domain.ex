@@ -55,17 +55,18 @@ defmodule Utils.ProductToDomain do
           _ ->
             []
         end,
-      owner: case Map.has_key?(product_schema.owner, :id) do
-        false ->
-          nil
+      owner:
+        case Map.has_key?(product_schema.owner, :id) do
+          false ->
+            nil
 
-        true ->
-          %OwnerEntity{
-            id: %Id{value: product_schema.owner.id},
-            created: %Created{value: product_schema.owner.created},
-            email: %Email{value: product_schema.owner.email}
-          },
-      end
+          true ->
+            %OwnerEntity{
+              id: %Id{value: product_schema.owner.id},
+              created: %Created{value: product_schema.owner.created},
+              email: %Email{value: product_schema.owner.email}
+            }
+        end,
       likes:
         Enum.map(product_schema.likes, fn owner ->
           %OwnerEntity{
