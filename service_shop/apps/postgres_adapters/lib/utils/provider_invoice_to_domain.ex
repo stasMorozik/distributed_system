@@ -15,6 +15,18 @@ defmodule Utils.ProviderInvoiceToDomain do
 
   alias Core.DomainLayer.OwnerEntity
 
+  def from_list_splitting(list_splitting_product) do
+    Enum.map(list_splitting_product, fn {invoice, _} ->
+      to(invoice)
+    end)
+  end
+
+  def from_list(list_product) do
+    Enum.map(list_product, fn invoice ->
+      to(invoice)
+    end)
+  end
+
   def to(invoice_schema) do
     %ProviderInvoiceAggregate{
       created: %Created{value: invoice_schema.created},
@@ -28,12 +40,19 @@ defmodule Utils.ProviderInvoiceToDomain do
       },
       status: %Status{value: invoice_schema.status},
       products:
-        Enum.map(invoice_schema.products, fn {invoice_product, like_count, dislike_count} ->
-          %{
-            amount: %Amount{value: invoice_product.amount},
-            product: ProductToDomain.to(invoice_product.product, like_count, dislike_count)
-          }
-        end),
+        case is_list(invoice_schema.products) do
+          false ->
+            []
+
+          true ->
+
+            Enum.map(invoice_schema.products, fn {invoice_product, like_count, dislike_count} ->
+              %{
+                amount: %Amount{value: invoice_product.amount},
+                product: ProductToDomain.to(invoice_product.product, like_count, dislike_count)
+              }
+            end)
+        end,
       provider: %OwnerEntity{
         email: %Email{value: invoice_schema.provider.email},
         id: %Id{value: invoice_schema.provider.id},

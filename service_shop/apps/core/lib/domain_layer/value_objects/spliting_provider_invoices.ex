@@ -10,18 +10,6 @@ defmodule Core.DomainLayer.ValueObjects.SplitingProviderInvoices do
 
   @spec new(Splitting.creating_dto()) :: ok() | error()
   def new(%{
-    value: "created"
-  }) do
-    {
-      :ok,
-      %Splitting{
-        value: :created,
-        sort: :price
-      }
-    }
-  end
-
-  def new(%{
     value: "price"
   }) do
     {

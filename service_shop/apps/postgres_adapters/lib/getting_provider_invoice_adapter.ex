@@ -25,7 +25,6 @@ defmodule GettingProviderInvoiceAdapter do
 
   @spec get(Id.t()) :: GettingProviderInvoicePort.ok() | GettingProviderInvoicePort.error()
   def get(%Id{value: id}) do
-
     query_products = from(
       provider_product in ProviderInvoiceProductShema,
       join: product in ProductSchema,
