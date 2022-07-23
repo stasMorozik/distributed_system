@@ -56,7 +56,9 @@ defmodule GettingProviderInvoiceAdapter do
     )
 
     query_invoice =
-      from(invoice in ProviderInvoiceSchema, as: :invoice,
+      from(
+        invoice in ProviderInvoiceSchema, as: :invoice,
+
         join: owners in ProviderInvoiceOwnerSchema,
         on: owners.invoice_id == invoice.id,
         join: customer in OwnerSchema,
