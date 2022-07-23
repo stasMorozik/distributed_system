@@ -25,11 +25,11 @@ defmodule GettingCustomerInvoiceAdapter do
   @spec get(Id.t()) :: GettingCustomerInvoicePort.ok() | GettingCustomerInvoicePort.error()
   def get(%Id{value: id}) do
 
-    fun = fn query, id ->
+    # fun = fn query, id ->
 
-      from provider_product in query, where: provider_product.invoice_id == ^id
+    #   from provider_product in query, where: provider_product.invoice_id == ^id
 
-    end
+    # end
 
     query_products =
       from(
@@ -63,10 +63,10 @@ defmodule GettingCustomerInvoiceAdapter do
 
     query_invoices =
       from(
-        customer_invoce in CustomerInvoiceProviderInvoiceSchema,
+        customer_invoice in CustomerInvoiceProviderInvoiceSchema,
 
         join: invoice in ProviderInvoiceSchema, as: :invoice,
-        on: customer_invoce.provider_invoice_id = invoice.id,
+        on: customer_invoice.provider_invoice_id == invoice.id,
 
         join: owners in ProviderInvoiceOwnerSchema,
         on: owners.invoice_id == invoice.id,
@@ -76,14 +76,14 @@ defmodule GettingCustomerInvoiceAdapter do
         join: provider in OwnerSchema,
         on: owners.provider_id == provider.id,
 
-        where: customer_invoce.id == ^id,
+        where: customer_invoice.id == ^id,
         preload: [
           customer: customer,
           provider: provider,
           products: ^query_products
         ],
 
-        where: invoce.customer_invoice_id == ^id
+        where: customer_invoice.customer_invoice_id == ^id
       )
 
     query_invoice =
