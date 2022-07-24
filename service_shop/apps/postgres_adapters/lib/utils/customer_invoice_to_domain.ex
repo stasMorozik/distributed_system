@@ -23,13 +23,18 @@ defmodule Utils.CustomerInvoiceToDomain do
         id: %Id{value: invoice_schema.customer.id},
         created: %Created{value: invoice_schema.customer.created}
       },
-      invoices:
-      Enum.map(
-        invoice_schema.provider_invoces,
-        fn customer_invoice_provider_invoice ->
-          ProviderInvoiceToDomain.to(customer_invoice_provider_invoice.provider_invoice)
-        end
-      )
+      invoices: case is_list(invoice_schema.provider_invoces) do
+        false ->
+          []
+
+        true ->
+          Enum.map(
+            invoice_schema.provider_invoces,
+            fn customer_invoice_provider_invoice ->
+              ProviderInvoiceToDomain.to(customer_invoice_provider_invoice.provider_invoice)
+            end
+          )
+      end
     }
   end
 
