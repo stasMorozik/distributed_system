@@ -15,21 +15,18 @@ defmodule GettingCustomerInvoiceAdapter do
   alias Shop.CustomerInvoiceSchema
   alias Shop.CustomerInvoiceOwnerSchema
   alias Shop.CustomerInvoiceProviderInvoiceSchema
+  alias Shop.OwnerSchema
   alias Shop.ProductSchema
   alias Shop.LogoSchema
   alias Shop.LikeSchema
   alias Shop.DislikeSchema
 
+  alias Utils.CustomerInvoiceToDomain
+
   @behaviour GettingCustomerInvoicePort
 
   @spec get(Id.t()) :: GettingCustomerInvoicePort.ok() | GettingCustomerInvoicePort.error()
   def get(%Id{value: id}) do
-
-    # fun = fn query, id ->
-
-    #   from provider_product in query, where: provider_product.invoice_id == ^id
-
-    # end
 
     query_products =
       from(
@@ -76,13 +73,7 @@ defmodule GettingCustomerInvoiceAdapter do
         join: provider in OwnerSchema,
         on: owners.provider_id == provider.id,
 
-        where: customer_invoice.id == ^id,
-        preload: [
-          customer: customer,
-          provider: provider,
-          products: ^query_products
-        ],
-
+        preload: [provider_invoice: {invoice, provider: provider, customer: customer, products: ^query_products}],
         where: customer_invoice.customer_invoice_id == ^id
       )
 
@@ -101,6 +92,17 @@ defmodule GettingCustomerInvoiceAdapter do
           provider_invoces: ^query_invoices
         ]
       )
+
+      case Repo.one(query_invoice) do
+        nil ->
+          {:error, NotFoundError.new("Provider invoice")}
+
+        invoice ->
+          {
+            :ok,
+            CustomerInvoiceToDomain.to(invoice)
+          }
+      end
   end
 
   def get(_) do
