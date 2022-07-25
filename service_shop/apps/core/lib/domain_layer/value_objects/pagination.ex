@@ -26,7 +26,7 @@ defmodule Core.DomainLayer.ValueObjects.Pagination do
     offset: offset
   }) when is_integer(limit) and is_integer(offset) do
     with true <- limit > 0,
-         true <- offset > 0 do
+         true <- offset >= 0 do
       {
         :ok,
         %Pagination{

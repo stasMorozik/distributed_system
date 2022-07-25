@@ -14,28 +14,28 @@ defmodule Core.DomainLayer.ValueObjects.SortingCustomerInvoices do
     type: "ASC",
     value: "price"
   }) do
-    %Sorting{type: :asc, value: :price}
+    {:ok, %Sorting{type: :asc, value: :price}}
   end
 
   def new(%{
     type: "DESC",
     value: "price"
   }) do
-    %Sorting{type: :desc, value: :price}
+    {:ok, %Sorting{type: :desc, value: :price}}
   end
 
   def new(%{
     type: "ASC",
     value: "created"
   }) do
-    %Sorting{type: :asc, value: :created}
+    {:ok, %Sorting{type: :asc, value: :created}}
   end
 
   def new(%{
     type: "DESC",
     value: "created"
   }) do
-    %Sorting{type: :desc, value: :created}
+    {:ok, %Sorting{type: :desc, value: :created}}
   end
 
   def new(_) do

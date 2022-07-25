@@ -31,8 +31,8 @@ defmodule GettingListProviderInvoiceAdapter do
             ) :: GettingListProviderInvoicePort.ok() | GettingListProviderInvoicePort.error()
   def get(
         %Pagination{} = pagination,
-        maybe_filtration,
         maybe_sorting,
+        maybe_filtration,
         maybe_spliting
       ) do
 

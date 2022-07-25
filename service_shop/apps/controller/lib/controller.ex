@@ -163,7 +163,8 @@ defmodule Controller do
   @spec delete_image_product(binary(), binary()) :: DeletingProductImageUseCase.ok() | DeletingProductImageUseCase.error()
   def delete_image_product(maybe_product_id, maybe_image_id) do
     DeletingProductImageService.delete(
-      maybe_product_id, maybe_image_id,
+      maybe_product_id,
+      maybe_image_id,
       GettingProductAdapter,
       DeletingImageProductAdapter
     )
@@ -174,7 +175,8 @@ defmodule Controller do
         ) :: DislikingProductUseCase.ok() | DislikingProductUseCase.error()
   def dislike_product(maybe_id, owner_dto) do
     DislikingProductservice.dislike(
-      maybe_id, owner_dto,
+      maybe_id,
+      owner_dto,
       GettingProductAdapter,
       AddingProductDislikeAdapter,
       DeletingProductDislikeAdapter

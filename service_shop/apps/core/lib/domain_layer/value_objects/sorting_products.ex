@@ -14,42 +14,42 @@ defmodule Core.DomainLayer.ValueObjects.SortingProducts do
     type: "ASC",
     value: "likes"
   }) do
-    %Sorting{type: :asc, value: :likes}
+    {:ok, %Sorting{type: :asc, value: :likes}}
   end
 
   def new(%{
     type: "DESC",
     value: "likes"
   }) do
-    %Sorting{type: :desc, value: :likes}
+    {:ok, %Sorting{type: :desc, value: :likes}}
   end
 
   def new(%{
     type: "ASC",
     value: "price"
   }) do
-    %Sorting{type: :asc, value: :price}
+    {:ok, %Sorting{type: :asc, value: :price}}
   end
 
   def new(%{
     type: "DESC",
     value: "price"
   }) do
-    %Sorting{type: :desc, value: :price}
+    {:ok, %Sorting{type: :desc, value: :price}}
   end
 
   def new(%{
     type: "ASC",
     value: "created"
   }) do
-    %Sorting{type: :asc, value: :created}
+    {:ok, %Sorting{type: :asc, value: :created}}
   end
 
   def new(%{
     type: "DESC",
     value: "created"
   }) do
-    %Sorting{type: :desc, value: :created}
+    {:ok, %Sorting{type: :desc, value: :created}}
   end
 
   def new(_) do

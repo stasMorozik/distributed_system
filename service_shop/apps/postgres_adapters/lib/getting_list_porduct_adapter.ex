@@ -43,8 +43,8 @@ defmodule GettingListProductAdapter do
         ) :: GettingListProductPort.ok() | GettingListProductPort.error()
   def get(
         %Pagination{} = pagination,
-        maybe_filtration,
         maybe_sorting,
+        maybe_filtration,
         maybe_spliting
       ) do
     query =

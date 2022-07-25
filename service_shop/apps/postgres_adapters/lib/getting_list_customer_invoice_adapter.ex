@@ -33,8 +33,8 @@ defmodule GettingListCustomerInvoicesAdapter do
         ) :: GettingListCustomerInvoicePort.ok() | GettingListCustomerInvoicePort.error()
   def get(
         %Pagination{} = pagination,
-        maybe_filtration,
         maybe_sorting,
+        maybe_filtration,
         _
       ) do
 

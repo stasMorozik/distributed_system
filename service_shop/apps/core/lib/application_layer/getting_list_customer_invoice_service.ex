@@ -34,15 +34,16 @@ defmodule Core.ApplicationLayer.GettingListCustomerInvoiceService do
         getting_list_customer_invoice_port
       ) do
     with {:ok, value_pagination} <- Pagination.new(dto_pagination),
-      {:ok, value_sorting} <- define_sorting(maybe_dto_sorting),
-      {:ok, value_filtration} <- define_filtration(maybe_dto_filtration),
-      {:ok, value_spliting} <- define_spliting(maybe_dto_spliting),
-      {:ok, list_provider_invoice_entity} <- getting_list_customer_invoice_port.get(
-        value_pagination,
-        value_sorting,
-        value_filtration,
-        value_spliting
-      ) do
+         {:ok, value_sorting} <- define_sorting(maybe_dto_sorting),
+         {:ok, value_filtration} <- define_filtration(maybe_dto_filtration),
+         {:ok, value_spliting} <- define_spliting(maybe_dto_spliting),
+         {:ok, list_provider_invoice_entity} <-
+            getting_list_customer_invoice_port.get(
+              value_pagination,
+              value_sorting,
+              value_filtration,
+              value_spliting
+            ) do
       {:ok, list_provider_invoice_entity}
     else
       {:error, error_dto} -> {:error, error_dto}
