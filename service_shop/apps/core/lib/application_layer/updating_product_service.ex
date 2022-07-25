@@ -25,7 +25,7 @@ defmodule Core.ApplicationLayer.UpdatingProductService do
          {:ok, product_entity} <-
            ProductAggregate.update(product_entity, %{
              name: dto[:name],
-             amount: nil,
+             amount: dto[:amount],
              description: dto[:description],
              price: dto[:price],
              logo: dto[:logo]

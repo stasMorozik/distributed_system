@@ -19,5 +19,9 @@ defmodule Core.DomainLayer.UseCases.UpdatingProviderInvoiceStatusUseCase do
           | GettingProviderInvoicePort.error()
           | ProviderInvoiceAggregate.error_updating()
 
-  @callback update(binary(), GettingProviderInvoicePort.t(), UpdatingProviderInvoicePort.t()) :: ok() | error()
+  @callback update(
+              binary(),
+              GettingProviderInvoicePort.t(),
+              UpdatingProviderInvoicePort.t()
+            ) :: ok() | error()
 end

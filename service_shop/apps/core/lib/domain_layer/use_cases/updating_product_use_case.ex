@@ -23,7 +23,8 @@ defmodule Core.DomainLayer.UseCases.UpdatingProductUseCase do
           name: binary()        | nil,
           description: binary() | nil,
           price: integer()      | nil,
-          logo: binary()        | nil
+          logo: binary()        | nil,
+          amount: integer()     | nil
         }
 
   @callback update(

@@ -26,7 +26,7 @@ defmodule Core.ApplicationLayer.CreatingCustomerInvoiceService do
          list_dto_product <- Enum.map(list_dto_with_index, fn {dto, index} -> %{product: Enum.fetch!(list_product, index), amount: dto.amount} end),
          {:ok, entity_invoice} <- CustomerInvoiceAggregate.new(%{customer: creating_dto.customer, products: list_dto_product}),
          {:ok, true} <- creating_customer_invoice_port.create(entity_invoice) do
-      {:ok, true}
+      {:ok, entity_invoice}
     else
       {:error, error_dto} -> {:error, error_dto}
     end

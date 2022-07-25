@@ -6,9 +6,11 @@ defmodule Core.DomainLayer.UseCases.CreatingCustomerInvoiceUseCase do
   alias Core.DomainLayer.Ports.GettingProductPort
   alias Core.DomainLayer.ValueObjects.Id
 
+  alias Core.DomainLayer.CustomerInvoiceAggregate
+
   @type t :: Module
 
-  @type ok :: {:ok, true}
+  @type ok :: {:ok, CustomerInvoiceAggregate.t()}
 
   @type error ::
     Id.error()
