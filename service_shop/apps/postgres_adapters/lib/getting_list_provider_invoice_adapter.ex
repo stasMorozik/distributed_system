@@ -17,7 +17,6 @@ defmodule GettingListProviderInvoiceAdapter do
 
   alias Shop.ProviderInvoiceSchema
   alias Shop.ProviderInvoiceOwnerSchema
-  alias Shop.ProviderInvoiceProductShema
   alias Shop.OwnerSchema
 
   alias Utils.ProviderInvoiceToDomain
@@ -39,6 +38,9 @@ defmodule GettingListProviderInvoiceAdapter do
 
     query =
       from(invoice in ProviderInvoiceSchema, as: :invoice,
+        limit: ^pagination.limit,
+        offset: ^pagination.offset,
+
         join: owners in ProviderInvoiceOwnerSchema,
         on: owners.invoice_id == invoice.id,
 

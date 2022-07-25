@@ -23,8 +23,8 @@ defmodule Core.DomainLayer.ValueObjects.FiltrationProviderInvoices do
         }
 
   @spec new(creating_dto()) :: ok() | error()
-  def new(dto) do
-    with {:ok, value_email} <- email(dto[:customer]) do
+  def new(%{customer: customer}) do
+    with {:ok, value_email} <- email(customer) do
       {
         :ok,
         %FiltrationProviderInvoices{
@@ -34,6 +34,10 @@ defmodule Core.DomainLayer.ValueObjects.FiltrationProviderInvoices do
     else
       {:error, error_dto} -> {:error, error_dto}
     end
+  end
+
+  def new(_) do
+    {:error, ImpossibleCreateError.new()}
   end
 
   defp email(email) do

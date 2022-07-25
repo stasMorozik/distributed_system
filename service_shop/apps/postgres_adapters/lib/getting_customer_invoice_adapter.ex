@@ -67,13 +67,21 @@ defmodule GettingCustomerInvoiceAdapter do
 
         join: owners in ProviderInvoiceOwnerSchema,
         on: owners.invoice_id == invoice.id,
+
         join: customer in OwnerSchema,
         on: owners.customer_id == customer.id,
 
         join: provider in OwnerSchema,
         on: owners.provider_id == provider.id,
 
-        preload: [provider_invoice: {invoice, provider: provider, customer: customer, products: ^query_products}],
+        preload: [
+          provider_invoice: {
+            invoice,
+            provider: provider,
+            customer: customer,
+            products: ^query_products
+          }
+        ],
         where: customer_invoice.customer_invoice_id == ^id
       )
 

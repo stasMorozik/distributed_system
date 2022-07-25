@@ -45,6 +45,10 @@ defmodule Core.DomainLayer.ValueObjects.FiltrationProducts do
     end
   end
 
+  def new(_) do
+    {:error, ImpossibleCreateError.new()}
+  end
+
   defp email(email) do
     if email == nil do
       {:ok, nil}
