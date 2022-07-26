@@ -43,4 +43,8 @@ defmodule MailerAdapters do
       false -> {:error, ImpossibleSendError.new()}
     end
   end
+
+  def send(_) do
+    {:error, ImpossibleSendError.new()}
+  end
 end

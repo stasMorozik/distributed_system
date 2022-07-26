@@ -7,7 +7,10 @@ defmodule Controller do
 
   alias Core.ApplicationLayer.UpdatingService
 
-  alias PostgresAdapters
+  alias UpdatingAdapter
+  alias GettingAdapter
+  alias CreatingAdapter
+  alias GettingByEmailAdapter
 
   alias Core.DomainLayer.UseCases.CreatingUseCase
 
@@ -21,16 +24,16 @@ defmodule Controller do
 
   @spec create(BuyerEntity.creating_dto()) :: CreatingUseCase.ok() | CreatingUseCase.error()
   def create(creating_dto) do
-    CreatingService.create(creating_dto, PostgresAdapters)
+    CreatingService.create(creating_dto, CreatingAdapter)
   end
 
   @spec get_by_email(binary(), binary()) :: GettingByEmailUseCase.ok() | GettingByEmailUseCase.error()
   def get_by_email(maybe_email, maybe_own_password) do
-    GettingByEmailService.get(maybe_email, maybe_own_password, PostgresAdapters)
+    GettingByEmailService.get(maybe_email, maybe_own_password, GettingByEmailAdapter)
   end
 
   @spec update(binary(), BuyerEntity.updating_dto()) :: UpdatingUseCase.ok() | UpdatingUseCase.error()
   def update(maybe_id, updating_dto) do
-    UpdatingService.update(maybe_id, updating_dto, PostgresAdapters, PostgresAdapters)
+    UpdatingService.update(maybe_id, updating_dto, GettingAdapter, UpdatingAdapter)
   end
 end

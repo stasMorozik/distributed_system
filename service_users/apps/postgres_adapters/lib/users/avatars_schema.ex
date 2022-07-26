@@ -21,7 +21,7 @@ defmodule Users.AvatarsSchema do
 
   def update_changeset(data, params \\ %{}) do
     data
-    |> cast(params, [:image, :created])
-    |> validate_required([:image, :created])
+    |> cast(params, [:image])
+    |> validate_required([:image])
   end
 end

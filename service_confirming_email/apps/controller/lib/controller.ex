@@ -1,7 +1,10 @@
 defmodule Controller do
   @moduledoc false
 
-  alias PostgresAdapters
+  alias GetingAdapter
+  alias DeletingAdapter
+  alias UpdatingAdapter
+  alias CreatingAdapter
 
   alias Core.ApplicationLayer.CreatingService
 
@@ -13,11 +16,11 @@ defmodule Controller do
 
   @spec create(binary()) :: CreatingUseCase.ok() | CreatingUseCase.error()
   def create(email) do
-    CreatingService.create(email, PostgresAdapters, PostgresAdapters, PostgresAdapters)
+    CreatingService.create(email, GetingAdapter, UpdatingAdapter, CreatingAdapter)
   end
 
   @spec validate(binary(), integer()) :: ValidatingUseCase.ok() | ValidatingUseCase.error()
   def validate(email, code) do
-    ValidatingService.validate(email, code, PostgresAdapters, PostgresAdapters)
+    ValidatingService.validate(email, code, GetingAdapter, DeletingAdapter)
   end
 end
