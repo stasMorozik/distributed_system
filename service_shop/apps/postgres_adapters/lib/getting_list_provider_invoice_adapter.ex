@@ -49,6 +49,7 @@ defmodule GettingListProviderInvoiceAdapter do
         on: owners.customer_id == customer.id,
 
         join: provider in OwnerSchema,
+        as: :provider,
         on: owners.provider_id == provider.id,
 
         preload: [
@@ -90,12 +91,36 @@ defmodule GettingListProviderInvoiceAdapter do
   end
 
   defp define_filtration(query, %FiltrationProviderInvoices{
-    customer: %Email{value: customer}
+    customer: %Email{value: customer},
+    provider: %Email{value: provider}
   }) do
     {
       :ok,
       query
       |> where([customer: customer], customer.email == ^customer)
+      |> where([provider: provider], provider.email == ^provider)
+    }
+  end
+
+  defp define_filtration(query, %FiltrationProviderInvoices{
+    customer: %Email{value: customer},
+    provider: nil
+  }) do
+    {
+      :ok,
+      query
+      |> where([customer: customer], customer.email == ^customer)
+    }
+  end
+
+  defp define_filtration(query, %FiltrationProviderInvoices{
+    customer: nil,
+    provider: %Email{value: provider}
+  }) do
+    {
+      :ok,
+      query
+      |> where([provider: provider], provider.email == ^provider)
     }
   end
 

@@ -6,10 +6,11 @@ defmodule Core.DomainLayer.ValueObjects.FiltrationProviderInvoices do
 
   alias Core.DomainLayer.ValueObjects.FiltrationProviderInvoices
 
-  defstruct customer: nil
+  defstruct customer: nil, provider: nil
 
   @type t :: %FiltrationProviderInvoices{
-          customer: Email.t() | nil
+          customer: Email.t() | nil,
+          provider: Email.t() | nil,
         }
 
   @type error ::
@@ -19,16 +20,19 @@ defmodule Core.DomainLayer.ValueObjects.FiltrationProviderInvoices do
   @type ok :: {:ok, FiltrationProviderInvoices.t()}
 
   @type creating_dto :: %{
-          customer: binary() | nil
+          customer: binary() | nil,
+          provider: binary() | nil
         }
 
   @spec new(creating_dto()) :: ok() | error()
-  def new(%{customer: customer}) do
-    with {:ok, value_email} <- email(customer) do
+  def new(%{customer: customer, provider: provider}) do
+    with {:ok, value_email_customer} <- email(customer),
+         {:ok, value_email_provider} <- email(provider) do
       {
         :ok,
         %FiltrationProviderInvoices{
-          customer: value_email,
+          customer: value_email_customer,
+          provider: value_email_provider
         }
       }
     else

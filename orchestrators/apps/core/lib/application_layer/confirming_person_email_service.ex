@@ -49,13 +49,12 @@ defmodule Core.ApplicationLayer.ConfirmingPersonEmailService do
       ) do
     with {:error, %NotFoundError{message: _}} <- getting_person_by_email_port.get(email, " "),
          {:ok, confirming_code} <- creating_confirming_code_port.create(email),
-         code <- confirming_code.code.value,
          {:ok, true} <-
            notifying_mail_port.send_mail(
              "support@gmail.com",
              email,
              "Confirming code",
-             "Your code is #{code}"
+             "Your code is #{confirming_code.code}"
            ) do
       {:ok, true}
     else

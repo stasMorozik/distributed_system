@@ -20,6 +20,7 @@ defmodule GettingCustomerInvoiceAdapter do
   alias Shop.LogoSchema
   alias Shop.LikeSchema
   alias Shop.DislikeSchema
+  alias Shop.OwnerProductSchema
 
   alias Utils.CustomerInvoiceToDomain
 
@@ -31,8 +32,14 @@ defmodule GettingCustomerInvoiceAdapter do
     query_products =
       from(
         provider_product in ProviderInvoiceProductShema,
+
         join: product in ProductSchema,
         on: provider_product.product_id == product.id,
+
+        join: owner in OwnerProductSchema,
+        on: owner.product_id == product.id,
+        join: true_owner in OwnerSchema,
+        on: owner.owner_id == true_owner.id,
 
         left_join: logo in LogoSchema,
         on: logo.product_id == product.id,
@@ -48,14 +55,14 @@ defmodule GettingCustomerInvoiceAdapter do
         on: dislike.owner_id == true_dislike.id,
 
         preload: [
-          product: {product, likes: true_like, dislikes: true_dislike, logo: logo}
+          product: {product, likes: true_like, dislikes: true_dislike, logo: logo, owner: true_owner}
         ],
         select: {
           provider_product,
           %{count: fragment("count(?) as like_count", true_like)},
           %{count: fragment("count(?) as dislike_count", true_dislike)}
         },
-        group_by: [true_dislike.id, true_like.id, product.id, logo.id, provider_product.id]
+        group_by: [true_dislike.id, true_like.id, product.id, logo.id, provider_product.id, true_owner.id]
       )
 
     query_invoices =

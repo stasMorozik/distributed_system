@@ -154,7 +154,8 @@ defmodule Controller do
   @spec add_image_product(binary(), list(binary())) :: AddingProductImageUseCase.ok() | AddingProductImageUseCase.error()
   def add_image_product(maybe_id, list_binary) do
     AddingProductImageService.add(
-      maybe_id, list_binary,
+      maybe_id,
+      list_binary,
       GettingProductAdapter,
       AddingProductImageAdapter
     )

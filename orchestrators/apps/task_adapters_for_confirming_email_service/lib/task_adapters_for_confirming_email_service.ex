@@ -23,7 +23,18 @@ defmodule TaskAdaptersForConfirmingEmailService do
         )
         case Task.await task do
           {:error, error_dto} -> {:error, error_dto}
-          {:ok, code_entity} -> {:ok, code_entity}
+          {:ok, code_entity} ->
+
+            {
+              :ok,
+              %{
+                code: code_entity.code.value,
+                id: code_entity.id.value,
+                email: code_entity.email.value,
+                created: code_entity.created.value
+              }
+
+            }
         end
     end
   end
