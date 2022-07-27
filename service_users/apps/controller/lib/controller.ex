@@ -19,8 +19,6 @@ defmodule Controller do
 
   alias Core.DomainLayer.UserEntity
 
-  #here it's possible add logging
-
   @spec create(UserEntity.creating_dto()) :: CreatingUseCase.ok() | CreatingUseCase.error()
   def create(creating_dto) do
     CreatingService.create(creating_dto, CreatingAdapter)
