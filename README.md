@@ -6,6 +6,6 @@ A core of any microservice contains domain layer that includes entities, value-o
 
 A service of application is orchestration between entities and adapters. Any service of application can be wraped by another service that includes logging and metrics.
 
-Any adapter can be wrapped another adapter that includes logging and metrics.
+Any adapter can be wrapped by another adapter that includes logging and metrics.
 
 
