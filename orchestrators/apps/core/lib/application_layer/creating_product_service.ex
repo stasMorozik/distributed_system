@@ -27,6 +27,7 @@ defmodule Core.ApplicationLayer.CreatingProductService do
             email: claims.email
           }
         }) do
+      {:ok, true}
     else
       {:error, error_dto} -> {:error, error_dto}
     end

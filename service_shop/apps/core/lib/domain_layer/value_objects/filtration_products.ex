@@ -30,7 +30,7 @@ defmodule Core.DomainLayer.ValueObjects.FiltrationProducts do
   def new(%{
     provider: email,
     name: name
-  }) do
+  }) when is_binary(email) and is_binary(name) do
     with {:ok, value_email} <- email(email),
          {:ok, value_name} <- name(name) do
       {
@@ -43,6 +43,47 @@ defmodule Core.DomainLayer.ValueObjects.FiltrationProducts do
     else
       {:error, error_dto} -> {:error, error_dto}
     end
+  end
+
+  def new(%{
+    provider: nil,
+    name: name
+  }) when is_binary(name) do
+    with {:ok, value_name} <- name(name) do
+      {
+        :ok,
+        %FiltrationProducts{
+          provider: nil,
+          name: value_name
+        }
+      }
+    else
+      {:error, error_dto} -> {:error, error_dto}
+    end
+  end
+
+  def new(%{
+    provider: email,
+    name: nil
+  }) when is_binary(email) do
+    with {:ok, value_email} <- email(email) do
+      {
+        :ok,
+        %FiltrationProducts{
+          provider: value_email,
+          name: nil
+        }
+      }
+    else
+      {:error, error_dto} -> {:error, error_dto}
+    end
+  end
+
+  def new(%{
+    provider: nil,
+    name: nil
+  }) do
+    {:ok, nil}
   end
 
   def new(_) do

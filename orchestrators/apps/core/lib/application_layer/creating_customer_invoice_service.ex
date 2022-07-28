@@ -8,14 +8,14 @@ defmodule Core.ApplicationLayer.CreatingCustomerInvoiceService do
 
   @behaviour CreatingCustomerInvoiceUseCase
 
-  @spec create_invoice(
+  @spec create(
           binary(),
           list(CreatingCustomerInvoiceUseCase.product_dto()),
           ParsingJwtPort.t(),
           CreatingCustomerInvoicePort.t(),
           NotifyingMailPort.t()
         ) :: CreatingCustomerInvoiceUseCase.ok() | CreatingCustomerInvoiceUseCase.error()
-  def create_invoice(
+  def create(
         token,
         list_dto,
         parsing_jwt_port,
@@ -32,14 +32,14 @@ defmodule Core.ApplicationLayer.CreatingCustomerInvoiceService do
              products: list_dto
            }),
          list_result <-
-           Enum.each(
+           Enum.map(
              invoice_entity.invoices,
              fn invoice ->
                notifying_mail_port.send_mail(
                  "support@gmail.com",
                  invoice.provider.email,
                  "Created invoice",
-                 "Your number of invoice is #{invoice.code}"
+                 "Your number of invoice is #{invoice.number}"
                )
              end
            ),
@@ -49,7 +49,7 @@ defmodule Core.ApplicationLayer.CreatingCustomerInvoiceService do
              "support@gmail.com",
              invoice_entity.customer.email,
              "Created invoice",
-             "Your number of invoice is #{invoice_entity.code}"
+             "Your number of invoice is #{invoice_entity.number}"
            ) do
       {:ok, true}
     else

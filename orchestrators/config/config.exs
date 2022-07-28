@@ -60,15 +60,19 @@ config :http_user_entry_point_service, HttpUserEntryPointServiceWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4000],
   debug_errors: false,
   render_errors: [view: HttpUserEntryPointServiceWeb.ErrorView, accepts: ~w(json), layout: false],
-  pubsub_server: HttpUserEntryPointService.PubSub,
   live_view: [signing_salt: "wOWltuIV"]
 
 config :http_buyer_entry_point_service, HttpBuyerEntryPointServiceWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4001],
   debug_errors: false,
   render_errors: [view: HttpBuyerEntryPointServiceWeb.ErrorView, accepts: ~w(json), layout: false],
-  pubsub_server: HttpBuyerEntryPointService.PubSub,
   live_view: [signing_salt: "AJ0eDnzW"]
+
+config :http_shop_entry_point_service, HttpShopEntryPointServiceWeb.Endpoint,
+  http: [ip: {127, 0, 0, 1}, port: 4002],
+  debug_errors: false,
+  render_errors: [view: HttpShopEntryPointServiceWeb.ErrorView, accepts: ~w(json), layout: false],
+  live_view: [signing_salt: "jA6k7j16"]
 
 # Configures Elixir's Logger
 config :logger, :console,

@@ -13,6 +13,8 @@ defmodule TaskAdaptersForShopService do
   alias Core.DomainLayer.Ports.UpdatingStatusProviderInvoicePort
   alias Core.DomainLayer.Ports.GettingProviderInvoicePort
   alias Core.DomainLayer.Ports.GettingListProviderInvoicePort
+  alias Core.DomainLayer.Ports.GettingCustomerInvoicePort
+  alias Core.DomainLayer.Ports.GettingLIstCustomerInvoicePort
 
   alias Core.DomainLayer.Dtos.ServiceUnavailableError
 
@@ -28,6 +30,8 @@ defmodule TaskAdaptersForShopService do
   @behaviour UpdatingStatusProviderInvoicePort
   @behaviour GettingProviderInvoicePort
   @behaviour GettingListProviderInvoicePort
+  @behaviour GettingCustomerInvoicePort
+  @behaviour GettingLIstCustomerInvoicePort
 
   @spec create_product(CreatingProductPort.creating_dto()) :: CreatingProductPort.ok() | CreatingProductPort.error()
   def create_product(dto) do
@@ -249,7 +253,6 @@ defmodule TaskAdaptersForShopService do
         case Task.await(task) do
           {:error, error_dto} -> {:error, error_dto}
           {:ok, invoice_entity} ->
-
             {
               :ok,
               %{
@@ -264,7 +267,6 @@ defmodule TaskAdaptersForShopService do
                     provider: %{
                       email: invoice.provider.email.value,
                       id: invoice.provider.id.value,
-                      created: invoice.provider.created.value,
                     },
                     number: invoice.number.value,
                   } end)
@@ -296,22 +298,6 @@ defmodule TaskAdaptersForShopService do
         end
     end
   end
-
-  # @type product :: %{
-  #   amount: Amount.t(),
-  #   product: ProductAggregate.t()
-  # }
-
-  # @type t :: %ProviderInvoiceAggregate{
-  #   created: Created.t(),
-  #   id: Id.t(),
-  #   price: Price.t(),
-  #   number: Number.t(),
-  #   customer: OwnerEntity.t(),
-  #   status: Status.t(),
-  #   products: list(product()),
-  #   provider: OwnerEntity.t()
-  # }
 
   @spec get_provider_invoice(
           binary()
@@ -378,6 +364,91 @@ defmodule TaskAdaptersForShopService do
             }
         end
     end
+  end
+
+  @spec get_customer_invoice(
+          binary()
+        ) :: GettingCustomerInvoicePort.ok() | GettingCustomerInvoicePort.error()
+  def get_customer_invoice(id) do
+    case Node.connect(Application.get_env(:task_adapters_for_shop_service, :service_shop)[:remote_node]) do
+      :false -> {:error, ServiceUnavailableError.new("Shop")}
+      :ignored -> {:error, ServiceUnavailableError.new("Shop")}
+      :true ->
+        task = Task.Supervisor.async(
+          Application.get_env(:task_adapters_for_shop_service, :service_shop)[:remote_supervisor],
+          Application.get_env(:task_adapters_for_shop_service, :service_shop)[:remote_module],
+          :get_customer_invoice,
+          [
+            id
+          ]
+        )
+        case Task.await(task) do
+          {:error, error_dto} -> {:error, error_dto}
+          {:ok, invoice_entity} ->
+
+            {
+              :ok,
+              customer_invoice_from_domain(invoice_entity)
+            }
+        end
+    end
+  end
+
+  @spec get_list_customer_invoice(
+          GettingLIstCustomerInvoicePort.dto_pagination(),
+          GettingLIstCustomerInvoicePort.dto_sorting()    | nil,
+          GettingLIstCustomerInvoicePort.dto_filtration() | nil,
+          GettingLIstCustomerInvoicePort.dto_spliting()   | nil
+        ) :: GettingLIstCustomerInvoicePort.ok() | GettingLIstCustomerInvoicePort.error()
+  def get_list_customer_invoice(
+        dto_pagination,
+        dto_sorting,
+        dto_filtration,
+        dto_spliting
+      ) do
+    case Node.connect(Application.get_env(:task_adapters_for_shop_service, :service_shop)[:remote_node]) do
+      :false -> {:error, ServiceUnavailableError.new("Shop")}
+      :ignored -> {:error, ServiceUnavailableError.new("Shop")}
+      :true ->
+        task = Task.Supervisor.async(
+          Application.get_env(:task_adapters_for_shop_service, :service_shop)[:remote_supervisor],
+          Application.get_env(:task_adapters_for_shop_service, :service_shop)[:remote_module],
+          :get_list_customer_invoice,
+          [
+            dto_pagination,
+            dto_sorting,
+            dto_filtration,
+            dto_spliting
+          ]
+        )
+        case Task.await(task) do
+          {:error, error_dto} -> {:error, error_dto}
+          {:ok, invoice_entities} ->
+            {
+              :ok,
+              customer_invoice_from_list_domain(invoice_entities)
+            }
+        end
+    end
+  end
+
+  defp customer_invoice_from_list_domain(invoice_entities) do
+    Enum.map(invoice_entities, fn invoice_entity -> customer_invoice_from_domain(invoice_entity) end)
+  end
+
+  defp customer_invoice_from_domain(invoice_entity) do
+    %{
+      created: invoice_entity.created.value,
+      id: invoice_entity.id.value,
+      price: invoice_entity.price.value,
+      number: invoice_entity.number.value,
+      customer: %{
+        email: invoice_entity.customer.email.value,
+        id: invoice_entity.customer.id.value,
+        created: invoice_entity.customer.created.value,
+      },
+      invoices: provider_invoice_from_list_domain(invoice_entity.invoices)
+    }
   end
 
   defp provider_invoice_from_list_domain(invoice_entities) do

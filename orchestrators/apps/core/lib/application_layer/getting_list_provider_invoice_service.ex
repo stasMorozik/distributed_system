@@ -55,6 +55,5 @@ defmodule Core.ApplicationLayer.GettingListProviderInvoiceService do
           {:error, error_dto} -> {:error, error_dto}
         end
     end
-
   end
 end

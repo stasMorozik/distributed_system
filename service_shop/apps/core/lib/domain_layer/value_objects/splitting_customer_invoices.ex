@@ -21,6 +21,12 @@ defmodule Core.DomainLayer.ValueObjects.SplitingCustomerInvoices do
     }
   end
 
+  def new(%{
+    value: nil
+  }) do
+    {:ok, nil}
+  end
+
   def new(_) do
     {:error, ImpossibleCreateError.new()}
   end

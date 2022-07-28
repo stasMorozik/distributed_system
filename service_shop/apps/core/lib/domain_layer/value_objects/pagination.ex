@@ -39,6 +39,27 @@ defmodule Core.DomainLayer.ValueObjects.Pagination do
     end
   end
 
+  def new(%{
+    limit: limit,
+    offset: offset
+  }) do
+    with {limit, _} <- Integer.parse(limit),
+         {offset, _} <- Integer.parse(offset),
+         true <- limit > 0,
+         true <- offset >= 0 do
+      {
+        :ok,
+        %Pagination{
+          limit: limit,
+          offset: offset
+        }
+      }
+    else
+      false -> {:error, ImpossibleCreateError.new()}
+      :error -> {:error, ImpossibleCreateError.new()}
+    end
+  end
+
   def new(_) do
     {:error, ImpossibleCreateError.new()}
   end

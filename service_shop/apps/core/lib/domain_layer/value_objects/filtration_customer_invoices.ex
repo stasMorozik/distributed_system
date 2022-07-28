@@ -28,9 +28,9 @@ defmodule Core.DomainLayer.ValueObjects.FiltrationCustomerInvoices do
   def new(%{
     provider: provider,
     customer: customer
-  }) do
-    with {:ok, value_email_c} <- email(provider),
-         {:ok, value_email_p} <- email(customer) do
+  }) when is_binary(provider) and is_binary(customer) do
+    with {:ok, value_email_p} <- email(provider),
+         {:ok, value_email_c} <- email(customer) do
       {
         :ok,
         %FiltrationCustomerInvoices{
@@ -41,6 +41,47 @@ defmodule Core.DomainLayer.ValueObjects.FiltrationCustomerInvoices do
     else
       {:error, error_dto} -> {:error, error_dto}
     end
+  end
+
+  def new(%{
+    provider: nil,
+    customer: customer
+  }) when is_binary(customer) do
+    with {:ok, value_email_c} <- email(customer) do
+      {
+        :ok,
+        %FiltrationCustomerInvoices{
+          provider: nil,
+          customer: value_email_c
+        }
+      }
+    else
+      {:error, error_dto} -> {:error, error_dto}
+    end
+  end
+
+  def new(%{
+    provider: provider,
+    customer: nil
+  }) when is_binary(provider) do
+    with {:ok, value_email_p} <- email(provider) do
+      {
+        :ok,
+        %FiltrationCustomerInvoices{
+          provider: value_email_p,
+          customer: nil
+        }
+      }
+    else
+      {:error, error_dto} -> {:error, error_dto}
+    end
+  end
+
+  def new(%{
+    provider: nil,
+    customer: nil
+  }) do
+    {:ok, nil}
   end
 
   def new() do

@@ -28,6 +28,14 @@ config :http_buyer_entry_point_service, HttpBuyerEntryPointServiceWeb.Endpoint,
   secret_key_base: "LqhBEpe5GMZNf4UoCsmO+Gg4cvHgjg56T3c+eAjCEQzGZHOaGJMgU2Vn07eYxSel",
   watchers: []
 
+config :http_shop_entry_point_service, HttpShopEntryPointServiceWeb.Endpoint,
+  http: [ip: {127, 0, 0, 1}, port: 4002],
+  check_origin: false,
+  code_reloader: true,
+  debug_errors: false,
+  render_errors: [view: HttpShopEntryPointServiceWeb.ErrorView, accepts: ~w(json), layout: false],
+  live_view: [signing_salt: "jA6k7j16"]
+
 # ## SSL Support
 #
 # In order to use HTTPS in development, a self-signed

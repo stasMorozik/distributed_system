@@ -19,7 +19,7 @@ defmodule Core.DomainLayer.UseCases.CreatingCustomerInvoiceUseCase do
           amount: integer()
         }
 
-  @callback create_invoice(
+  @callback create(
             binary(),
             list(product_dto()),
             ParsingJwtPort.t(),

@@ -52,6 +52,13 @@ defmodule Core.DomainLayer.ValueObjects.SortingProducts do
     {:ok, %Sorting{type: :desc, value: :created}}
   end
 
+  def new(%{
+    type: nil,
+    value: nil
+  }) do
+    {:ok, nil}
+  end
+
   def new(_) do
     {:error, ImpossibleCreateError.new()}
   end

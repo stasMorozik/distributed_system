@@ -25,7 +25,10 @@ defmodule Core.DomainLayer.ValueObjects.FiltrationProviderInvoices do
         }
 
   @spec new(creating_dto()) :: ok() | error()
-  def new(%{customer: customer, provider: provider}) do
+  def new(%{
+    customer: customer,
+    provider: provider
+  }) when is_binary(customer) and is_binary(provider) do
     with {:ok, value_email_customer} <- email(customer),
          {:ok, value_email_provider} <- email(provider) do
       {
@@ -38,6 +41,44 @@ defmodule Core.DomainLayer.ValueObjects.FiltrationProviderInvoices do
     else
       {:error, error_dto} -> {:error, error_dto}
     end
+  end
+
+  def new(%{
+    customer: nil,
+    provider: provider
+  }) when is_binary(provider) do
+    with {:ok, value_email_provider} <- email(provider) do
+      {
+        :ok,
+        %FiltrationProviderInvoices{
+          customer: nil,
+          provider: value_email_provider
+        }
+      }
+    else
+      {:error, error_dto} -> {:error, error_dto}
+    end
+  end
+
+  def new(%{
+    customer: customer,
+    provider: nil
+  }) when is_binary(customer) do
+    with {:ok, value_email_customer} <- email(customer) do
+      {
+        :ok,
+        %FiltrationProviderInvoices{
+          customer: value_email_customer,
+          provider: nil
+        }
+      }
+    else
+      {:error, error_dto} -> {:error, error_dto}
+    end
+  end
+
+  def new(%{customer: nil, provider: nil}) do
+    {:ok, nil}
   end
 
   def new(_) do

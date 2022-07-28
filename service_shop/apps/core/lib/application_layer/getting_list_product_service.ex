@@ -33,6 +33,10 @@ defmodule Core.ApplicationLayer.GettingListProductService do
         maybe_dto_spliting,
         getting_list_product_port
       ) do
+    IO.inspect(dto_pagination)
+    IO.inspect(maybe_dto_sorting)
+    IO.inspect(maybe_dto_filtration)
+    IO.inspect(maybe_dto_spliting)
     with {:ok, value_pagination} <- Pagination.new(dto_pagination),
          {:ok, value_sorting} <- define_sorting(maybe_dto_sorting),
          {:ok, value_filtration} <- define_filtration(maybe_dto_filtration),
