@@ -1,1 +1,0 @@
-The entry point to the microservice. This application must compiling. For example, if the read load is higher, you can create another controller that includes read-only entry points and run it on the cluster.
