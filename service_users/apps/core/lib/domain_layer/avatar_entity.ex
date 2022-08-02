@@ -5,8 +5,7 @@ defmodule Core.DomainLayer.AvatarEntity do
   alias Core.DomainLayer.ValueObjects.Created
   alias Core.DomainLayer.ValueObjects.Image
 
-  alias Core.DomainLayer.Dtos.ImpossibleCreateError
-  alias Core.DomainLayer.Dtos.ImpossibleUpdateError
+  alias Core.DomainLayer.Errors.DomainError
 
   alias Core.DomainLayer.AvatarEntity
 
@@ -20,15 +19,9 @@ defmodule Core.DomainLayer.AvatarEntity do
 
   @type ok :: {:ok, AvatarEntity.t()}
 
-  @type error_creating ::
-          Image.error()
-          | {:error, ImpossibleCreateError.t()}
+  @type error :: {:error, DomainError.t()}
 
-  @type error_updating ::
-          Image.error()
-          | {:error, ImpossibleUpdateError.t()}
-
-  @spec new(binary()) :: ok() | error_creating()
+  @spec new(binary()) :: ok() | error()
   def new(img) when is_binary(img) do
     case Image.new(img) do
       {:ok, value_image} ->
@@ -46,10 +39,10 @@ defmodule Core.DomainLayer.AvatarEntity do
   end
 
   def new (_) do
-    {:error, ImpossibleCreateError.new()}
+    {:error, DomainError.new("Invalid input data")}
   end
 
-  @spec update(AvatarEntity.t(), binary()) :: ok() | error_updating()
+  @spec update(AvatarEntity.t(), binary()) :: ok() | error()
   def update(%AvatarEntity{
         id: %Id{value: id},
         created: %Created{value: _},
@@ -72,6 +65,6 @@ defmodule Core.DomainLayer.AvatarEntity do
   end
 
   def update(_, _) do
-    {:error, ImpossibleUpdateError.new()}
+    {:error, DomainError.new("Invalid input data")}
   end
 end

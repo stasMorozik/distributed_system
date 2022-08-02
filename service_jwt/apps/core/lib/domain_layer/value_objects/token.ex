@@ -2,15 +2,7 @@ defmodule Core.DomainLayer.ValueObjects.Token do
   @moduledoc false
 
   use Joken.Config
-
-  alias Core.DomainLayer.Dtos.EmailIsInvalidError
-  alias Core.DomainLayer.Dtos.SecretIsInvalidError
-  alias Core.DomainLayer.Dtos.ExpiredIsInvalidError
-  alias Core.DomainLayer.Dtos.ImpossibleCreateError
-  alias Core.DomainLayer.Dtos.JokenError
-
-  alias Core.DomainLayer.Dtos.TokenIsInvalidError
-
+  alias Core.DomainLayer.Errors.DomainError
   alias Core.DomainLayer.ValueObjects.Token
 
   defstruct value: nil
@@ -21,17 +13,7 @@ defmodule Core.DomainLayer.ValueObjects.Token do
 
   @type error :: {
           :error,
-          EmailIsInvalidError.t()
-          | SecretIsInvalidError.t()
-          | ExpiredIsInvalidError.t()
-          | ImpossibleCreateError.t()
-          | JokenError.t()
-        }
-
-  @type error_parsing :: {
-          :error,
-          TokenIsInvalidError.t()
-          | SecretIsInvalidError.t()
+          DomainError.t()
         }
 
   @type claims :: {
@@ -58,15 +40,15 @@ defmodule Core.DomainLayer.ValueObjects.Token do
       }
     else
       {:error, dto} -> {:error, dto}
-      _ -> {:error, JokenError.new()}
+      _ -> {:error, DomainError.new("Joken error")}
     end
   end
 
   def new(_, _, _, _) do
-    {:error, ImpossibleCreateError.new()}
+    {:error, DomainError.new("Invalid input data")}
   end
 
-  @spec parse(binary(), binary()) :: claims() | error_parsing()
+  @spec parse(binary(), binary()) :: claims() | error()
   def parse(token, secret) when is_binary(token) do
     with {:ok, secret_v} <- validate_secret(secret),
          signer <- Joken.Signer.create("HS256", secret_v),
@@ -80,48 +62,48 @@ defmodule Core.DomainLayer.ValueObjects.Token do
         }
       }
     else
-      {:error, %SecretIsInvalidError{message: m}} -> {:error, %SecretIsInvalidError{message: m}}
-      {:error, _} -> {:error, TokenIsInvalidError.new()}
+      {:error, %DomainError{message: m}} -> {:error, %DomainError{message: m}}
+      {:error, _} -> {:error, DomainError.new("Token is invalid")}
     end
   end
 
   def parse(_, _) do
-    {:error, TokenIsInvalidError.new()}
+    {:error, DomainError.new("Token is invalid")}
   end
 
   defp validate_secret(s) when is_binary(s) do
     if String.length(s) > 10 && String.length(s) <= 20 do
       {:ok, s}
     else
-      {:error, SecretIsInvalidError.new()}
+      {:error, DomainError.new("Secret is invalid")}
     end
   end
 
   defp validate_secret(_) do
-    {:error, SecretIsInvalidError.new()}
+    {:error, DomainError.new("Secret is invalid")}
   end
 
   defp validate_exp(e) when is_integer(e) do
     if e >= 900 && e <= 87000 do
       {:ok, e}
     else
-      {:error, ExpiredIsInvalidError.new()}
+      {:error, DomainError.new("Expired is invalid")}
     end
   end
 
   defp validate_exp(_) do
-    {:error, ExpiredIsInvalidError.new()}
+    {:error, DomainError.new("Expired is invalid")}
   end
 
   defp validate_email(e) when is_binary(e) do
     if String.match?(e, ~r/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/) do
       {:ok, e}
     else
-      {:error, EmailIsInvalidError.new()}
+      {:error, DomainError.new("Eamil is invalid")}
     end
   end
 
   defp validate_email(_) do
-    {:error, EmailIsInvalidError.new()}
+    {:error, DomainError.new("Eamil is invalid")}
   end
 end

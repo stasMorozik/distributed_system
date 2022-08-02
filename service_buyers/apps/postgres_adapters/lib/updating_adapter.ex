@@ -7,8 +7,7 @@ defmodule UpdatingAdapter do
 
   alias Core.DomainLayer.BuyerEntity
 
-  alias Core.DomainLayer.Dtos.AlreadyExistsError
-  alias Core.DomainLayer.Dtos.ImpossibleUpdateError
+  alias Core.DomainLayer.Errors.InfrastructureError
 
   alias Buyers.BuyersSchema
 
@@ -25,12 +24,21 @@ defmodule UpdatingAdapter do
     case Repo.transaction(fn ->
       Repo.update(:buyers, buyer_changeset)
     end) do
-      {:ok, _} -> {:ok, true}
-      _ -> {:error, AlreadyExistsError.new()}
+      {:ok, _} ->
+        {:ok, true}
+
+      error ->
+        with {:error, _, error_changeset, _} <- error,
+             [head| _] <- error_changeset.errors,
+             {:email, {"has already been taken", _}} <- head do
+          {:error, InfrastructureError.new("User with this email already exists")}
+        else
+          _ -> {:error, InfrastructureError.new("Something went wrong")}
+        end
     end
   end
 
   def update(_) do
-    {:error, ImpossibleUpdateError.new()}
+    {:error, InfrastructureError.new("Invalid input data for updating")}
   end
 end

@@ -2,7 +2,7 @@ defmodule Core.DomainLayer.ValueObjects.Password do
   @moduledoc false
 
   alias Core.DomainLayer.ValueObjects.Password
-  alias Core.DomainLayer.Dtos.PasswordIsInvalidError
+  alias Core.DomainLayer.Errors.DomainError
 
   defstruct value: nil
 
@@ -10,7 +10,7 @@ defmodule Core.DomainLayer.ValueObjects.Password do
 
   @type ok :: {:ok, Password.t()}
 
-  @type error :: {:error, PasswordIsInvalidError.t()}
+  @type error :: {:error, DomainError.t()}
 
   @spec new(binary) :: ok | error
   def new(password) when is_binary(password) do
@@ -26,11 +26,11 @@ defmodule Core.DomainLayer.ValueObjects.Password do
         }
       }
     else
-      {:error, PasswordIsInvalidError.new()}
+      {:error, DomainError.new("Password is invalid")}
     end
   end
 
   def new(_) do
-    {:error, PasswordIsInvalidError.new()}
+    {:error, DomainError.new("Password is invalid")}
   end
 end

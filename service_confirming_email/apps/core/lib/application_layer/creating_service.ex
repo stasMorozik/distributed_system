@@ -2,18 +2,12 @@ defmodule Core.ApplicationLayer.CreatingService do
   @moduledoc false
 
   alias Core.DomainLayer.UseCases.CreatingUseCase
-
   alias Core.DomainLayer.ConfirmingCodeEntity
-
   alias Core.DomainLayer.Ports.GettingPort
-
   alias Core.DomainLayer.Ports.UpdatingPort
-
   alias Core.DomainLayer.Ports.CreatingPort
-
   alias Core.DomainLayer.ValueObjects.Email
-
-  alias Core.DomainLayer.Dtos.NotFoundError
+  alias Core.DomainLayer.Errors.InfrastructureError
 
   @spec create(
           binary(),
@@ -28,7 +22,7 @@ defmodule Core.ApplicationLayer.CreatingService do
          {:ok, true} <- updating_port.update(code_entity) do
       {:ok, code_entity}
     else
-      {:error, %NotFoundError{message: _}} ->
+      {:error, %InfrastructureError{message: "Code not found"}} ->
         with {:ok, code_entity} <- ConfirmingCodeEntity.new(maybe_email),
              {:ok, true} <- creating_port.create(code_entity) do
           {:ok, code_entity}

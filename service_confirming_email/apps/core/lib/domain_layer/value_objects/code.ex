@@ -2,8 +2,7 @@ defmodule Core.DomainLayer.ValueObjects.Code do
   @moduledoc false
 
   alias Core.DomainLayer.ValueObjects.Code
-
-  alias Core.DomainLayer.Dtos.CodeIsInvalidError
+  alias Core.DomainLayer.Errors.DomainError
 
   defstruct value: nil
 
@@ -18,7 +17,7 @@ defmodule Core.DomainLayer.ValueObjects.Code do
 
   @type error :: {
           :error,
-          CodeIsInvalidError.t()
+          DomainError.t()
         }
 
   @spec new :: Code.t()
@@ -34,6 +33,6 @@ defmodule Core.DomainLayer.ValueObjects.Code do
   end
 
   def from_origin(_) do
-    {:error, CodeIsInvalidError.new()}
+    {:error, DomainError.new("Code is invalid")}
   end
 end

@@ -6,8 +6,7 @@ defmodule GetingAdapter do
 
   alias Core.DomainLayer.Ports.GettingPort
 
-  alias Core.DomainLayer.Dtos.ImpossibleGetError
-  alias Core.DomainLayer.Dtos.NotFoundError
+  alias Core.DomainLayer.Errors.InfrastructureError
 
   alias Core.DomainLayer.ValueObjects.Created
   alias Core.DomainLayer.ValueObjects.Id
@@ -26,7 +25,7 @@ defmodule GetingAdapter do
 
     case Repo.one(query) do
       nil ->
-        {:error, NotFoundError.new()}
+        {:error, InfrastructureError.new("Code not found")}
 
       code ->
         {
@@ -42,6 +41,6 @@ defmodule GetingAdapter do
   end
 
   def get(_) do
-    {:error, ImpossibleGetError.new()}
+    {:error, InfrastructureError.new("Invalid input data for select")}
   end
 end

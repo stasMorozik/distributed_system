@@ -6,8 +6,7 @@ defmodule CreatingAdapter do
 
   alias Core.DomainLayer.UserAggregate
   alias Core.DomainLayer.Ports.CreatingPort
-  alias Core.DomainLayer.Dtos.ImpossibleCreateError
-  alias Core.DomainLayer.Dtos.AlreadyExistsError
+  alias Core.DomainLayer.Errors.InfrastructureError
 
   alias Users.UsersSchema
 
@@ -33,13 +32,22 @@ defmodule CreatingAdapter do
     })
 
     case Multi.new() |> Multi.insert(:users, user_changeset) |> Repo.transaction() do
-      {:ok, _} -> {:ok, true}
-      _ -> {:error, AlreadyExistsError.new()}
+      {:ok, _} ->
+        {:ok, true}
+
+      error ->
+        with {:error, _, error_changeset, _} <- error,
+             [head| _] <- error_changeset.errors,
+             {:email, {"has already been taken", _}} <- head do
+          {:error, InfrastructureError.new("User with this email already exists")}
+        else
+          _ -> {:error, InfrastructureError.new("Something went wrong")}
+        end
     end
 
   end
 
   def create(_) do
-  {:error, ImpossibleCreateError.new()}
+  {:error, InfrastructureError.new("Invalid input data for inserting")}
   end
 end

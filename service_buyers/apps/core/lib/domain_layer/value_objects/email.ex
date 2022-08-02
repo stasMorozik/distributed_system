@@ -2,7 +2,7 @@ defmodule Core.DomainLayer.ValueObjects.Email do
   @moduledoc false
 
   alias Core.DomainLayer.ValueObjects.Email
-  alias Core.DomainLayer.Dtos.EmailIsInvalidError
+  alias Core.DomainLayer.Errors.DomainError
 
   defstruct value: nil
 
@@ -10,17 +10,17 @@ defmodule Core.DomainLayer.ValueObjects.Email do
 
   @type ok :: {ok, Email.t()}
 
-  @type error :: {:error, EmailIsInvalidError.t()}
+  @type error :: {:error, DomainError.t()}
 
   @spec new(binary) :: ok | error
   def new(em) when is_binary(em) do
     case String.match?(em, ~r/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/) do
       true -> {:ok, %Email{value: em}}
-      false -> {:error, EmailIsInvalidError.new()}
+      false -> {:error, DomainError.new("Email is invalid")}
     end
   end
 
   def new(_) do
-    {:error, EmailIsInvalidError.new()}
+    {:error, DomainError.new("Email is invalid")}
   end
 end

@@ -6,11 +6,7 @@ defmodule Core.DomainLayer.ConfirmingCodeEntity do
   alias Core.DomainLayer.ValueObjects.Email
   alias Core.DomainLayer.ValueObjects.Code
 
-  alias Core.DomainLayer.Dtos.AlreadyExistsError
-  alias Core.DomainLayer.Dtos.CodeIsWrongError
-  alias Core.DomainLayer.Dtos.ImpossibleCreateError
-  alias Core.DomainLayer.Dtos.CodeIsInvalidError
-  alias Core.DomainLayer.Dtos.ImpossibleValidateError
+  alias Core.DomainLayer.Errors.DomainError
 
   alias Core.DomainLayer.ConfirmingCodeEntity
 
@@ -28,28 +24,12 @@ defmodule Core.DomainLayer.ConfirmingCodeEntity do
           ConfirmingCodeEntity.t()
         }
 
-  @type error_from_origin :: {
+  @type error :: {
           :error,
-          AlreadyExistsError.t()
-          | EmailIsInvalidError.t()
-          | IdIsInvalidError.t()
-          | ImpossibleCreateError.t()
+          DomainError.t()
         }
 
-  @type error_creating() :: {
-          :error,
-          EmailIsInvalidError.t()
-          | ImpossibleCreateError.t()
-        }
-
-  @type error_validating :: {
-          :error,
-          CodeIsWrongError.t()
-          | CodeIsInvalidError.t()
-          | ImpossibleValidateError.t()
-        }
-
-  @spec from_origin(ConfirmingCodeEntity.t()) :: ok() | error_from_origin()
+  @spec from_origin(ConfirmingCodeEntity.t()) :: ok() | error()
   def from_origin(%ConfirmingCodeEntity{
         id: %Id{value: id},
         email: %Email{value: email},
@@ -80,17 +60,17 @@ defmodule Core.DomainLayer.ConfirmingCodeEntity do
         }
       }
     else
-      0 -> {:error, ImpossibleCreateError.new()}
+      0 -> {:error, DomainError.new("Invalid input data")}
       {:error, error_dto} -> {:error, error_dto}
-      false -> {:error, AlreadyExistsError.new()}
+      false -> {:error, DomainError.new("Code already exists")}
     end
   end
 
   def from_origin(_) do
-    {:error, ImpossibleCreateError.new()}
+    {:error, DomainError.new("Invalid input data")}
   end
 
-  @spec new(binary()) :: ok() | error_creating()
+  @spec new(binary()) :: ok() | error()
   def new(maybe_email) when is_binary(maybe_email) do
     case Email.new(maybe_email) do
       {:error, error_dto} ->
@@ -110,10 +90,10 @@ defmodule Core.DomainLayer.ConfirmingCodeEntity do
   end
 
   def new(_) do
-    {:error, ImpossibleCreateError.new()}
+    {:error, DomainError.new("Invalid input data")}
   end
 
-  @spec validate_code(integer(), ConfirmingCodeEntity.t()) :: {:ok, true} | error_validating()
+  @spec validate_code(integer(), ConfirmingCodeEntity.t()) :: {:ok, true} | error()
   def validate_code(
         maybe_own_code,
         %ConfirmingCodeEntity{id: _, email: _, created: _, code: %Code{value: code}}
@@ -124,11 +104,11 @@ defmodule Core.DomainLayer.ConfirmingCodeEntity do
       {:ok, true}
     else
       {:error, error_dto} -> {:error, error_dto}
-      false -> {:error, CodeIsWrongError.new()}
+      false -> {:error, DomainError.new("Wrong code")}
     end
   end
 
   def validate_code(_, _) do
-    {:error, ImpossibleValidateError.new()}
+    {:error, DomainError.new("Invalid input data")}
   end
 end

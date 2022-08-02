@@ -5,11 +5,8 @@ defmodule DeletingAdapter do
   alias Codes.Repo
 
   alias Core.DomainLayer.Ports.DeletingPort
-
   alias Core.DomainLayer.ValueObjects.Email
-
-  alias Core.DomainLayer.Dtos.ImpossibleDeleteError
-  alias Core.DomainLayer.Dtos.NotFoundError
+  alias Core.DomainLayer.Errors.InfrastructureError
 
   alias Codes.CodesSchema
 
@@ -21,11 +18,11 @@ defmodule DeletingAdapter do
       from(c in CodesSchema, where: c.email == ^email) |> Repo.delete_all(:delete_code)
     end) do
       {:ok, _} -> {:ok, true}
-      _ -> {:error, NotFoundError.new()}
+      _ -> {:error, InfrastructureError.new("Code not found")}
     end
   end
 
   def delete(_) do
-    {:error, ImpossibleDeleteError.new()}
+    {:error, InfrastructureError.new("Invalid input data for deleting")}
   end
 end

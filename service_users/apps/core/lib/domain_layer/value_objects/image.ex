@@ -2,7 +2,7 @@ defmodule Core.DomainLayer.ValueObjects.Image do
   @moduledoc false
 
   alias Core.DomainLayer.ValueObjects.Image
-  alias Core.DomainLayer.Dtos.ImageIsInvalidError
+  alias Core.DomainLayer.Errors.DomainError
 
   defstruct value: nil
 
@@ -10,12 +10,12 @@ defmodule Core.DomainLayer.ValueObjects.Image do
 
   @type ok :: {:ok, Image.t()}
 
-  @type error :: {:error, ImageIsInvalidError.t()}
+  @type error :: {:error, DomainError.t()}
 
   @spec new(binary) :: ok() | error
   def new(image) when is_binary(image) do
     if byte_size(image) > 150000 do
-      {:error, ImageIsInvalidError.new()}
+      {:error, DomainError.new("Image size is too long")}
     else
       {
         :ok,
@@ -25,6 +25,6 @@ defmodule Core.DomainLayer.ValueObjects.Image do
   end
 
   def new(_) do
-    {:error, ImageIsInvalidError.new()}
+    {:error, DomainError.new("Image is invalid")}
   end
 end

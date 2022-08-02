@@ -7,9 +7,8 @@ defmodule CreatingAdapter do
 
   alias Core.DomainLayer.Ports.CreatingPort
   alias Core.DomainLayer.ConfirmingCodeEntity
-  alias Core.DomainLayer.Dtos.ImpossibleCreateError
 
-  alias Core.DomainLayer.Dtos.AlreadyExistsError
+  alias Core.DomainLayer.Errors.InfrastructureError
 
   alias Codes.CodesSchema
 
@@ -31,11 +30,11 @@ defmodule CreatingAdapter do
          |> Multi.insert(:codes, changeset_code)
          |> Repo.transaction() do
       {:ok, _} -> {:ok, true}
-      _ -> {:error, AlreadyExistsError.new()}
+      _ -> {:error, InfrastructureError.new("Code already exists")}
     end
   end
 
   def create(_) do
-    {:error, ImpossibleCreateError.new()}
+    {:error, InfrastructureError.new("Invalid input data for inserting")}
   end
 end

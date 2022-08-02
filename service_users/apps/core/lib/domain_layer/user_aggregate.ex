@@ -9,10 +9,7 @@ defmodule Core.DomainLayer.UserAggregate do
   alias Core.DomainLayer.ValueObjects.Surname
   alias Core.DomainLayer.ValueObjects.Password
 
-  alias Core.DomainLayer.Dtos.ImpossibleCreateError
-  alias Core.DomainLayer.Dtos.PasswordIsNotTrueError
-  alias Core.DomainLayer.Dtos.ImpossibleValidatePasswordError
-  alias Core.DomainLayer.Dtos.ImpossibleUpdateError
+  alias Core.DomainLayer.Errors.DomainError
 
   alias Core.DomainLayer.AvatarEntity
 
@@ -43,14 +40,7 @@ defmodule Core.DomainLayer.UserAggregate do
           UserAggregate.t()
         }
 
-  @type error_creating ::
-          Surname.error()
-          | Name.error()
-          | PhoneNumber.error()
-          | Password.error()
-          | Email.error()
-          | AvatarEntity.error_creating()
-          | {:error, ImpossibleCreateError.t()}
+  @type error :: {:error, DomainError.t()}
 
   @type creating_dto ::
           %{
@@ -72,22 +62,7 @@ defmodule Core.DomainLayer.UserAggregate do
             avatar: binary() | nil
           }
 
-  @type error_updating ::
-          Surname.error()
-          | Name.error()
-          | PhoneNumber.error()
-          | Password.error()
-          | Email.error()
-          | AvatarEntity.error_updating()
-          | {:error, ImpossibleUpdateError.t()}
-
-  @type error_validating_password :: {
-          :error,
-          PasswordIsNotTrueError.t()
-          | ImpossibleValidatePasswordError.t()
-        }
-
-  @spec new(creating_dto()) :: ok() | error_creating()
+  @spec new(creating_dto()) :: ok() | error()
   def new(dto = %{}) when is_map(dto) and map_size(dto) > 0 and is_struct(dto) == false do
     with {:ok, value_name} <- Name.new(dto[:name]),
          {:ok, value_surname} <- Surname.new(dto[:surname]),
@@ -114,29 +89,29 @@ defmodule Core.DomainLayer.UserAggregate do
   end
 
   def new(_) do
-    {:error, ImpossibleCreateError.new()}
+    {:error, DomainError.new("Invalid input data")}
   end
 
-  @spec validate_password(UserAggregate.t(), binary()) :: {:ok, true} | error_validating_password()
+  @spec validate_password(UserAggregate.t(), binary()) :: {:ok, true} | error()
   def validate_password(%UserAggregate{} = entity, password)
       when is_struct(entity) and is_binary(password) do
     with true <- is_binary(password),
          true <- Bcrypt.verify_pass(password, entity.password.value) do
       {:ok, true}
     else
-      false -> {:error, PasswordIsNotTrueError.new()}
+      false -> {:error, DomainError.new("Wrong password")}
     end
   end
 
   def validate_password(_, _) do
-    {:error, ImpossibleValidatePasswordError.new()}
+    {:error, DomainError.new("Invalid input data")}
   end
 
-  @spec update(UserAggregate.t(), updating_dto()) :: ok() | error_updating()
+  @spec update(UserAggregate.t(), updating_dto()) :: ok() | error()
   def update(%UserAggregate{} = entity, %{} = dto)
       when is_map(dto) and is_struct(dto) == false and map_size(dto) > 0 and is_struct(entity) do
     case is_empty(dto) do
-      true -> {:error, ImpossibleUpdateError.new()}
+      true -> {:error, DomainError.new("Invalid input data")}
       false ->
         update_name({:ok, entity}, dto)
         |> update_surname(dto)
@@ -148,7 +123,7 @@ defmodule Core.DomainLayer.UserAggregate do
   end
 
   def update(_, _) do
-    {:error, ImpossibleUpdateError.new()}
+    {:error, DomainError.new("Invalid input data")}
   end
 
   defp update_name({result, maybe_entity}, %{} = dto) do

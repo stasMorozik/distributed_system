@@ -6,11 +6,7 @@ defmodule Core.DomainLayer.BuyerEntity do
   alias Core.DomainLayer.ValueObjects.Email
   alias Core.DomainLayer.ValueObjects.Password
 
-  alias Core.DomainLayer.Dtos.ImpossibleCreateError
-  alias Core.DomainLayer.Dtos.PasswordIsNotTrueError
-  alias Core.DomainLayer.Dtos.ImpossibleValidatePasswordError
-  alias Core.DomainLayer.Dtos.ImpossibleUpdateError
-
+  alias Core.DomainLayer.Errors.DomainError
   alias Core.DomainLayer.BuyerEntity
 
   defstruct email: nil, password: nil, created: nil, id: nil
@@ -27,10 +23,7 @@ defmodule Core.DomainLayer.BuyerEntity do
           BuyerEntity.t()
         }
 
-  @type error_creating ::
-          Password.error()
-          | Email.error()
-          | {:error, ImpossibleCreateError.t()}
+  @type error :: {:error, DomainError.t()}
 
   @type creating_dto ::
           %{
@@ -44,22 +37,7 @@ defmodule Core.DomainLayer.BuyerEntity do
             password: any(),
           }
 
-  @type error_updating ::
-          Surname.error()
-          | Name.error()
-          | PhoneNumber.error()
-          | Password.error()
-          | Email.error()
-          | Image.error()
-          | {:error, ImpossibleUpdateError.t()}
-
-  @type error_validating_password :: {
-          :error,
-          PasswordIsNotTrueError.t()
-          | ImpossibleValidatePasswordError.t()
-        }
-
-  @spec new(creating_dto()) :: ok() | error_creating()
+  @spec new(creating_dto()) :: ok() | error()
   def new(dto = %{}) when is_map(dto) and map_size(dto) > 0 and is_struct(dto) == false do
     with {:ok, value_email} <- Email.new(dto[:email]),
          {:ok, value_password} <- Password.new(dto[:password]) do
@@ -78,36 +56,36 @@ defmodule Core.DomainLayer.BuyerEntity do
   end
 
   def new(_) do
-    {:error, ImpossibleCreateError.new()}
+    {:error, DomainError.new("Invalid input data")}
   end
 
-  @spec validate_password(BuyerEntity.t(), binary()) :: {:ok, true} | error_validating_password()
+  @spec validate_password(BuyerEntity.t(), binary()) :: {:ok, true} | error()
   def validate_password(%BuyerEntity{} = entity, password)
       when is_struct(entity) and is_binary(password) do
     with true <- is_binary(password),
          true <- Bcrypt.verify_pass(password, entity.password.value) do
       {:ok, true}
     else
-      false -> {:error, PasswordIsNotTrueError.new()}
+      false -> {:error, DomainError.new("Wrong password")}
     end
   end
 
   def validate_password(_, _) do
-    {:error, ImpossibleValidatePasswordError.new()}
+    {:error, DomainError.new("Invalid input data")}
   end
 
-  @spec update(BuyerEntity.t(), updating_dto()) :: ok() | error_updating()
+  @spec update(BuyerEntity.t(), updating_dto()) :: ok() | error()
   def update(%BuyerEntity{} = entity, %{} = dto)
       when is_map(dto) and is_struct(dto) == false and map_size(dto) > 0 and is_struct(entity) do
     case is_empty(dto) do
-      true -> {:error, ImpossibleUpdateError.new()}
+      true -> {:error, DomainError.new("Invalid input data")}
       false ->
         update_email({:ok, entity}, dto) |> update_password(dto)
     end
   end
 
   def update(_, _) do
-    {:error, ImpossibleUpdateError.new()}
+    {:error, DomainError.new("Invalid input data")}
   end
 
   defp update_email({result, maybe_entity}, %{} = dto) do

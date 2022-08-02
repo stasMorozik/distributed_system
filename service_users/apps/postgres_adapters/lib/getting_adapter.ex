@@ -9,8 +9,7 @@ defmodule GettingAdapter do
   alias Core.DomainLayer.UserAggregate
   alias Core.DomainLayer.AvatarEntity
 
-  alias Core.DomainLayer.Dtos.NotFoundError
-  alias Core.DomainLayer.Dtos.ImpossibleGetError
+  alias Core.DomainLayer.Errors.InfrastructureError
 
   alias Core.DomainLayer.ValueObjects.Image
   alias Core.DomainLayer.ValueObjects.Created
@@ -36,7 +35,7 @@ defmodule GettingAdapter do
 
     case Repo.one(query) do
       nil ->
-        {:error, NotFoundError.new()}
+        {:error, InfrastructureError.new("User not found")}
 
       user ->
         {
@@ -60,6 +59,6 @@ defmodule GettingAdapter do
   end
 
   def get(_) do
-    {:error, ImpossibleGetError.new()}
+    {:error, InfrastructureError.new("Invalid input data for select")}
   end
 end

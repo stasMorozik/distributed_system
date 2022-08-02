@@ -6,8 +6,7 @@ defmodule UpdatingAdapter do
 
   alias Core.DomainLayer.Ports.UpdatingPort
 
-  alias Core.DomainLayer.Dtos.ImpossibleUpdateError
-  alias Core.DomainLayer.Dtos.AlreadyExistsError
+  alias Core.DomainLayer.Errors.InfrastructureError
 
   alias Core.DomainLayer.UserAggregate
 
@@ -34,12 +33,21 @@ defmodule UpdatingAdapter do
          |> Multi.update(:users, changeset_user)
          |> Multi.update(:avatars, changeset_avatar)
          |> Repo.transaction() do
-      {:ok, _} -> {:ok, true}
-      {:error, _} -> {:error, AlreadyExistsError.new()}
+      {:ok, _} ->
+        {:ok, true}
+
+      error ->
+        with {:error, _, error_changeset, _} <- error,
+             [head| _] <- error_changeset.errors,
+             {:email, {"has already been taken", _}} <- head do
+          {:error, InfrastructureError.new("User with this email already exists")}
+        else
+          _ -> {:error, InfrastructureError.new("Something went wrong")}
+        end
     end
   end
 
   def update(_) do
-    {:error, ImpossibleUpdateError.new()}
+    {:error, InfrastructureError.new("Invalid input data for updating")}
   end
 end

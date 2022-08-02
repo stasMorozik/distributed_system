@@ -7,13 +7,7 @@ defmodule Core.DomainLayer.NotificationEntity do
   alias Core.DomainLayer.ValueObjects.Message
   alias Core.DomainLayer.ValueObjects.Subject
 
-  alias Core.DomainLayer.Dtos.ImpossibleCreateError
-  alias Core.DomainLayer.Dtos.MessageIsTooLongError
-  alias Core.DomainLayer.Dtos.EmailIsInvalidError
-  alias Core.DomainLayer.Dtos.NameIsInvalidError
-  alias Core.DomainLayer.Dtos.MessageIsInvalidError
-  alias Core.DomainLayer.Dtos.SubjectIsTooLongError
-  alias Core.DomainLayer.Dtos.SubjectIsInvalidError
+  alias Core.DomainLayer.Errors.DomainError
 
   alias Core.DomainLayer.NotificationEntity
 
@@ -29,19 +23,13 @@ defmodule Core.DomainLayer.NotificationEntity do
 
   @type ok :: {:ok, NotificationEntity.t()}
 
-  @type error_creating ::
+  @type error ::
           {
             :error,
-            ImpossibleCreateError.t()
-            | MessageIsTooLongError.t()
-            | EmailIsInvalidError.t()
-            | NameIsInvalidError.t()
-            | MessageIsInvalidError.t()
-            | SubjectIsTooLongError.t()
-            | SubjectIsInvalidError.t()
+            DomainError.t()
           }
 
-  @spec new_for_email(binary(), binary(), binary(), binary()) :: ok() | error_creating()
+  @spec new_for_email(binary(), binary(), binary(), binary()) :: ok() | error()
   def new_for_email(from, to, subject, mess)
       when is_binary(from) and is_binary(to) and is_binary(subject) and is_binary(mess) do
     with {:ok, value_email_from} <- Email.new(from),
@@ -62,6 +50,6 @@ defmodule Core.DomainLayer.NotificationEntity do
   end
 
   def new_for_email(_, _, _, _) do
-    {:error, ImpossibleCreateError.new()}
+    {:error, DomainError.new("Invalid input data")}
   end
 end

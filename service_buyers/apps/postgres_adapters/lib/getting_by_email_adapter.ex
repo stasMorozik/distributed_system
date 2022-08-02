@@ -8,8 +8,7 @@ defmodule GettingByEmailAdapter do
 
   alias Core.DomainLayer.BuyerEntity
 
-  alias Core.DomainLayer.Dtos.NotFoundError
-  alias Core.DomainLayer.Dtos.ImpossibleGetError
+  alias Core.DomainLayer.Errors.InfrastructureError
 
   alias Core.DomainLayer.ValueObjects.Email
   alias Core.DomainLayer.ValueObjects.Created
@@ -30,7 +29,7 @@ defmodule GettingByEmailAdapter do
 
     case Repo.one(query) do
       nil ->
-        {:error, NotFoundError.new()}
+        {:error, InfrastructureError.new("Buyer not found")}
 
       buyer ->
         {
@@ -46,7 +45,7 @@ defmodule GettingByEmailAdapter do
   end
 
   def get_by_email(_) do
-    {:error, ImpossibleGetError.new()}
+    {:error, InfrastructureError.new("Invalid input data for select")}
   end
 
 end

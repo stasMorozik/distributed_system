@@ -14,7 +14,7 @@ defmodule MailerAdapters do
 
   alias Core.DomainLayer.NotificationEntity
 
-  alias Core.DomainLayer.Dtos.ImpossibleSendError
+  alias Core.DomainLayer.Errors.InfrastructureError
 
   @behaviour SendMailPort
 
@@ -40,11 +40,11 @@ defmodule MailerAdapters do
       NewEamil.create_email(from, to, subject, "#{DateTime.to_string(created)} #{message}") |> Mailer.deliver_now!()
       {:ok, true}
     else
-      false -> {:error, ImpossibleSendError.new()}
+      false -> {:error, InfrastructureError.new("Invalid input data for sending email")}
     end
   end
 
   def send(_) do
-    {:error, ImpossibleSendError.new()}
+    {:error, InfrastructureError.new("Invalid input data for sending email")}
   end
 end

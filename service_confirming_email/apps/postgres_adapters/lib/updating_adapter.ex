@@ -6,8 +6,7 @@ defmodule UpdatingAdapter do
 
   alias Core.DomainLayer.Ports.UpdatingPort
 
-  alias Core.DomainLayer.Dtos.ImpossibleUpdateError
-  alias Core.DomainLayer.Dtos.AlreadyExistsError
+  alias Core.DomainLayer.Errors.InfrastructureError
 
   alias Core.DomainLayer.ConfirmingCodeEntity
 
@@ -25,11 +24,11 @@ defmodule UpdatingAdapter do
          |> Multi.update(:users, changeset_code)
          |> Repo.transaction() do
       {:ok, _} -> {:ok, true}
-      {:error, _} -> {:error, AlreadyExistsError.new()}
+      {:error, _} -> {:error, InfrastructureError.new("Code already exists")}
     end
   end
 
   def update(_) do
-    {:error, ImpossibleUpdateError.new()}
+    {:error, InfrastructureError.new("Invalid input data for updating")}
   end
 end

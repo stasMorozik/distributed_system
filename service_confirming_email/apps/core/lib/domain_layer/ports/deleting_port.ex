@@ -2,10 +2,7 @@ defmodule Core.DomainLayer.Ports.DeletingPort do
   @moduledoc false
 
   alias Core.DomainLayer.ValueObjects.Email
-
-  alias Core.DomainLayer.Dtos.ImpossibleDeleteError
-
-  alias Core.DomainLayer.Dtos.NotFoundError
+  alias Core.DomainLayer.Errors.InfrastructureError
 
   @type t :: Module
 
@@ -13,8 +10,7 @@ defmodule Core.DomainLayer.Ports.DeletingPort do
 
   @type error :: {
           :error,
-          ImpossibleDeleteError.t()
-          | NotFoundError.t()
+          InfrastructureError.t()
         }
 
   @callback delete(Email.t()) :: ok() | error()
